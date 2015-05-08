@@ -55,8 +55,11 @@ var SuperHearts = (function() {
                 ty *= -1;
             }
             this.image.style.cssText += "transform:" + transforms.join(" ") + ";";
+            this.image.style.cssText += "-webkit-transform:" + transforms.join(" ") + ";";
+
             setTimeout(function() {
                 this.image.style.transform += "translate("+tx + "px, " + ty +"px)";
+                this.image.style["-webkit-transform"] += "translate("+tx + "px, " + ty +"px)";
                 this.hide();
             }.bind(this), 1);
             return this;
