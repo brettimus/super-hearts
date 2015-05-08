@@ -2,22 +2,33 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, user-scalable=no initial-scale=1.0, minimum-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SuperHearts</title>
 </head>
 <style>
-  html, body {
-    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
-    font-weight: 300;
-    height: 100%;
+  html,
+  body {
+    font-family : "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+    font-weight : 300;
+    height      : 100%;
   }
-  h1 {
-    padding-top: 40px;
-    text-align: center;
+  h1,
+  h2 {
+    padding-top : 40px;
+    text-align  : center;
   }
 </style>
 <body>
-  <h1>click this page</h1>
+  <h1>click (or touch) the page for hearts</h1>
   <script src="./super-hearts.js"></script>
+  <script>
+    SuperHearts("body", {
+        heartDelay: 0,
+        heartsCount: [10, 15],
+        transformOrigin: "center center",
+        transitionDuration: 600,
+        transitionFunction: "ease-out"
+    });
+  </script>
 </body>
 </html>

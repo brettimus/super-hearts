@@ -1,24 +1,13 @@
-// Desired API:
-// SuperHearts("#clicker", options)
-// options = {
-//   blastNoise: 0,
-//   blastRadius: 75,
-//   heartsCount: [10, 20],
-//   imageSrc: "./heart.png",
-//   scalarRange: [],
-//   transitionDuration: "300ms",
-//   transitionFunction: ease-in-out,
-// }
-
 var SuperHearts = (function() {
 
-    // NB:
-    // DEAFULTS gets mixed into heartProto...
+    // NB: DEAFULTS object gets mixed into heartProto...
     var DEFAULTS = {
         blastRange: [60, 80],
         heartsCount: [15, 22],
         imageSrc: "./heart.png",
+        rotateHearts: true,
         scalarRange: [0.2, 1.2],
+        transformOrigin: "center center",
         transitionDuration: 300,
         transitionFunction: "ease-in-out",
     };
@@ -28,13 +17,18 @@ var SuperHearts = (function() {
         heartsCount: null,
         image: null,
         imageSrc: null,
+        rotateHearts: null,
         scalarRange: null,
+        transformOrigin: null,
+        transitionDuration: null,
+        transitionFunction: null,
         x: null,
         y: null,
         animate: function animate(next) {
             // move the heart!
 
             var rotate = "rotate("+this.angle+"deg)",
+                rotate_back = "rotate("+(-this.angle)+"deg)",
                 scale = "scale("+randomScalar(this.scalarRange[0], this.scalarRange[1])+")",
                 transforms = [
                     "scale(1)",
@@ -57,10 +51,13 @@ var SuperHearts = (function() {
             }
             this.image.style.cssText += "transform:" + transforms.join(" ") + ";";
             this.image.style.cssText += "-webkit-transform:" + transforms.join(" ") + ";";
+            this.image.style.cssText += "-ms-transform:" + transforms.join(" ") + ";";
+
 
             setTimeout(function() {
-                this.image.style.transform += "translate("+tx + "px, " + ty +"px)";
-                this.image.style["-webkit-transform"] += "translate("+tx + "px, " + ty +"px)";
+                this.image.style.transform += "translate("+tx + "px, " + ty +"px)"; // + " " + rotate_back;
+                this.image.style["-webkit-transform"] += "translate("+tx + "px, " + ty +"px)"; // + " " + rotate_back;
+                this.image.style["-ms-transform"] += "translate("+tx + "px, " + ty +"px)"; // + " " + rotate_back;
                 this.hide();
             }.bind(this), 1);
             return this;
@@ -89,8 +86,12 @@ var SuperHearts = (function() {
                     "position:fixed",
                     "pointer-events:none",
                     "top:"+top+"px",
-                    "transform-origin:bottom center",
-                    "transition: "+this.transitionDuration+"ms "+ this.transitionFunction
+                    "transform-origin:"+this.transformOrigin,
+                    "-webkit-transform-origin:"+this.transformOrigin,
+                    "-ms-transform-origin:"+this.transformOrigin,
+                    "transition: "+this.transitionDuration+"ms "+ this.transitionFunction,
+                    "-moz-transition: "+this.transitionDuration+"ms "+ this.transitionFunction,
+                    "-webkit-transition: "+this.transitionDuration+"ms "+ this.transitionFunction,
                 ];
 
             this.image.style.cssText += initStyles.join(";");
@@ -99,22 +100,27 @@ var SuperHearts = (function() {
         },
     };
 
-    function heartFactory(x, y) {
-        var result = Object.create(heartProto);
-        result.x = x;
-        result.y = y;
-        result.image = document.createElement("img"); // dims: 50x44
-        result.image.src = result.imageSrc;
 
-        result.angle = randomAngle();
-
-        return result;
-    }
 
     function result(selector, options) {
-        var config = _extend(heartProto, DEFAULTS, options);
-        var a = config.heartsCount[0],
-            b = config.heartsCount[1];
+        var elt    = document.querySelector(selector),
+            config = _extend({}, heartProto, DEFAULTS, options),
+            a      = config.heartsCount[0],
+            b      = config.heartsCount[1];
+
+        function heartFactory(x, y) {
+            var heart = Object.create(config);
+            heart.x = x;
+            heart.y = y;
+            heart.image = document.createElement("img");
+            heart.image.src = heart.imageSrc;
+            if (heart.rotateHearts) {
+                heart.angle = randomAngle();
+            } else {
+                heart.angle = 0;
+            }
+            return heart;
+        }
 
         function spewHeart(x,y) {
             return function() {
@@ -122,15 +128,12 @@ var SuperHearts = (function() {
             };
         }
         function onclick(e) {
-            var count = randomInRange(a,b);
+            var count = randomInRange(a, b);
             for (var i = 0; i < count; i++) {
                 setTimeout(spewHeart(e.pageX, e.pageY), config.heartDelay*2);
             }
         }
         function ontouch(e) {
-            var test = document.createElement("p");
-            test.innerHTML = "hi this is a test";
-            document.querySelector("body").appendChild(test);
             var count = randomInRange(a,b),
                 x = e.changedTouches[0].pageX,
                 y = e.changedTouches[0].pageY;
@@ -138,13 +141,9 @@ var SuperHearts = (function() {
                 setTimeout(spewHeart(x, y), config.heartDelay*2);
             }
         }
-
-        document
-            .querySelector(selector)
-            .addEventListener("click", onclick);
-        document
-            .querySelector(selector)
-            .addEventListener("touchend", ontouch);
+        
+        elt.addEventListener("click", onclick);
+        elt.addEventListener("touchend", ontouch);
     }
 
     // helpers
@@ -161,8 +160,17 @@ var SuperHearts = (function() {
         return Math.floor(Math.random()*b + a);
     }
 
-    // thanks angus kroll
+    function _extend() {
+        // extends an arbitrary number of objects
+        var args   = [].slice.call(arguments, 0),
+            result = args[0];
+        for (var i=1; i < args.length; i++) {
+            result = _extend2(result, args[i]);
+        }
+        return result;
+    }
     function _extend2(destination, source) {
+        // thanks angus kroll
         for (var k in source) {
             if (source.hasOwnProperty(k)) {
               destination[k] = source[k];
@@ -170,20 +178,6 @@ var SuperHearts = (function() {
         }
         return destination;
     }
-    function _extend() {
-        var args = [].slice.call(arguments, 0),
-            result = args[0];
-        for (var i=1; i < args.length; i++) {
-            result = _extend2(result, args[i]);
-        }
-        return result;
-    }
 
     return result;
 })();
-
-SuperHearts("body", {
-    heartDelay: 0,
-    transitionDuration: 600,
-    transitionFunction: "ease-out"
-});
