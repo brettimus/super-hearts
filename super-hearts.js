@@ -37,6 +37,7 @@ var SuperHearts = (function() {
             var rotate = "rotate("+this.angle+"deg)",
                 scale = "scale("+randomScalar(this.scalarRange[0], this.scalarRange[1])+")",
                 transforms = [
+                    "scale(1)",
                     rotate,
                     scale,
                 ];
@@ -167,7 +168,7 @@ var SuperHearts = (function() {
 })();
 
 SuperHearts("body", {
-    heartDelay: 5,
+    heartDelay: 0,
     transitionDuration: 600,
-    transitionFunction: "linear"
+    transitionFunction: "ease-out"
 });
