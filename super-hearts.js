@@ -9,7 +9,7 @@ var SuperHearts = (function() {
         scalarRange: [0.2, 1.2],
         transformOrigin: "center center",
         transitionDuration: 300,
-        transitionFunction: "ease-in-out",
+        transitionFunction: "ease-out",
     };
 
     var heartProto = {
