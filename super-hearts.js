@@ -128,17 +128,23 @@ var SuperHearts = (function() {
             }
         }
         function ontouch(e) {
+            var test = document.createElement("p");
+            test.innerHTML = "hi this is a test";
+            document.querySelector("body").appendChild(test);
             var count = randomInRange(a,b),
-                x = e.originalEvent.touches[0].pageX,
-                y = e.originalEvent.touches[0].pageY;
+                x = e.changedTouches[0].pageX,
+                y = e.changedTouches[0].pageY;
             for (var i = 0; i < count; i++) {
                 setTimeout(spewHeart(x, y), config.heartDelay*2);
             }
         }
+
         document
             .querySelector(selector)
-            .addEventListener("click", onclick)
-            .addEventListener("touchstart", ontouch);
+            .addEventListener("click", onclick);
+        document
+            .querySelector(selector)
+            .addEventListener("touchend", ontouch);
     }
 
     // helpers
