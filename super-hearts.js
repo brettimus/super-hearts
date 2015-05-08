@@ -127,10 +127,18 @@ var SuperHearts = (function() {
                 setTimeout(spewHeart(e.pageX, e.pageY), config.heartDelay*2);
             }
         }
+        function ontouch(e) {
+            var count = randomInRange(a,b),
+                x = e.originalEvent.touches[0].pageX,
+                y = e.originalEvent.touches[0].pageY;
+            for (var i = 0; i < count; i++) {
+                setTimeout(spewHeart(x, y), config.heartDelay*2);
+            }
+        }
         document
             .querySelector(selector)
             .addEventListener("click", onclick)
-            .addEventListener("touchstart", onclick);
+            .addEventListener("touchstart", ontouch);
     }
 
     // helpers
