@@ -130,7 +130,7 @@ var SuperHearts = (function() {
         document
             .querySelector(selector)
             .addEventListener("click", onclick)
-            .addEventListener("touchStart", onclick);
+            .addEventListener("touchstart", onclick);
     }
 
     // helpers
