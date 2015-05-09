@@ -1,12 +1,13 @@
 var SuperHearts = (function() {
 
-    // NB: DEAFULTS object gets mixed into heartProto...
     var DEFAULTS = {
         blastRange: [60, 80],
-        heartsCount: [15, 22],
-        imageSrc: "./heart.png",
+        heartDelay: 0,
+        heartsCount: [18, 22],
+        imageSrc: "./heart-icon-1.svg",
+        opacityRange: [0.10, 1.00],
         rotateHearts: true,
-        scalarRange: [0.2, 1.2],
+        scalarRange: [0.50, 2.00],
         transformOrigin: "center center",
         transitionDuration: 300,
         transitionFunction: "ease-out",
@@ -14,9 +15,11 @@ var SuperHearts = (function() {
 
     var heartProto = {
         blastRange: null,
+        heartDelay: null,
         heartsCount: null,
         image: null,
         imageSrc: null,
+        opacityRange: null,
         rotateHearts: null,
         scalarRange: null,
         transformOrigin: null,
@@ -24,6 +27,9 @@ var SuperHearts = (function() {
         transitionFunction: null,
         x: null,
         y: null,
+        add: function add() {
+            document.querySelector("body").appendChild(this.image);
+        },
         animate: function animate(next) {
             // move the heart!
 
@@ -77,9 +83,9 @@ var SuperHearts = (function() {
             return this;
         },
         show: function show() {
-            var left = (this.x-this.image.width/2),
-                opacity = randomOpacity(),
-                top = (this.y-this.image.height/2),
+            var left       = (this.x - this.image.width/2),
+                top        = (this.y - this.image.height/2),
+                opacity    = randomOpacity(this.opacityRange[0], this.opacityRange[1]),
                 initStyles = [
                     "left:"+left+"px",
                     "opacity:"+opacity,
@@ -95,11 +101,10 @@ var SuperHearts = (function() {
                 ];
 
             this.image.style.cssText += initStyles.join(";");
-            document.querySelector("body").appendChild(this.image);
+            this.add();
             return this;
         },
     };
-
 
 
     function result(selector, options) {
@@ -128,9 +133,11 @@ var SuperHearts = (function() {
             };
         }
         function onclick(e) {
-            var count = randomInRange(a, b);
+            var count = randomInRange(a, b),
+                x = e.pageX,
+                y = e.pageY;
             for (var i = 0; i < count; i++) {
-                setTimeout(spewHeart(e.pageX, e.pageY), config.heartDelay*2);
+                setTimeout(window.requestAnimationFrame(spewHeart(x, y)), config.heartDelay*i);
             }
         }
         function ontouch(e) {
@@ -138,7 +145,7 @@ var SuperHearts = (function() {
                 x = e.changedTouches[0].pageX,
                 y = e.changedTouches[0].pageY;
             for (var i = 0; i < count; i++) {
-                setTimeout(spewHeart(x, y), config.heartDelay*2);
+                setTimeout(window.requestAnimationFrame(spewHeart(x, y)), config.heartDelay*i);
             }
         }
         
@@ -146,15 +153,17 @@ var SuperHearts = (function() {
         elt.addEventListener("touchend", ontouch);
     }
 
-    // helpers
+    /***********/
+    /* Helpers */
+    /***********/
     function randomAngle() {
         return randomInRange(0, 360);
     }
-    function randomOpacity() {
-        return randomInRange(0, 100)/100;
+    function randomOpacity(a, b) {
+        return randomInRange(a*100, b*100)/100;
     }
     function randomScalar(a, b) { // assumes we're working with tenths...
-        return randomInRange(a*10, b*10)/10;
+        return randomInRange(a*100, b*100)/100;
     }
     function randomInRange(a, b) {
         return Math.floor(Math.random()*b + a);
