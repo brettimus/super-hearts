@@ -23,14 +23,16 @@
   <script src="./super-hearts.js"></script>
   <script>
     SuperHearts("body", {
-        blastRange: [80, 100],
+        blastRange: [65, 90],
+        floatingInSpace: false,
         heartDelay: 0,
         heartsCount: [8, 12],
         imageSrc: "./heart-icon-1.svg",
-        opacityRange: [0.1, 0.8],
-        scalarRange: [.15, .55],
+        opacityRange: [0.1, 0.75],
+        rotateHearts: true,
+        scalarRange: [.15, .45],
         transformOrigin: "center center",
-        transitionDuration: 650,
+        transitionDuration: 600,
         transitionFunction: "ease-out"
     });
   </script>

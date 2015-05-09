@@ -2,6 +2,7 @@ var SuperHearts = (function() {
 
     var DEFAULTS = {
         blastRange: [60, 80],
+        floatingInSpace: false,
         heartDelay: 0,
         heartsCount: [18, 22],
         imageSrc: "./heart-icon-1.svg",
@@ -36,34 +37,45 @@ var SuperHearts = (function() {
             var rotate = "rotate("+this.angle+"deg)",
                 rotate_back = "rotate("+(-this.angle)+"deg)",
                 scale = "scale("+randomScalar(this.scalarRange[0], this.scalarRange[1])+")",
+                translate,
                 transforms = [
                     "scale(1)",
                     rotate,
                     scale,
-                ];
+                ],
+                l = randomInRange(this.blastRange[0], this.blastRange[1]),
+                angle,
+                theta,
+                tx,
+                ty;
 
-            var l = randomInRange(this.blastRange[0], this.blastRange[1]),
-                angle = this.angle,
-                theta = angle*(Math.PI/180),
-                tx = l * Math.sin(theta),
-                ty = l * Math.cos(theta);
-
-            if (angle > 0 && angle <= 90)         { ty *= -1;  }
-            else if (angle > 90 && angle <= 180)  { /* pass */ }
-            else if (angle > 180 && angle <= 270) { tx *= -1;  }
-            else {
-                tx *= -1;
-                ty *= -1;
-            }
             this.image.style.cssText += "transform:" + transforms.join(" ") + ";";
             this.image.style.cssText += "-webkit-transform:" + transforms.join(" ") + ";";
             this.image.style.cssText += "-ms-transform:" + transforms.join(" ") + ";";
 
-
             setTimeout(function() {
-                this.image.style.transform += "translate("+tx + "px, " + ty +"px)"; // + " " + rotate_back;
-                this.image.style["-webkit-transform"] += "translate("+tx + "px, " + ty +"px)"; // + " " + rotate_back;
-                this.image.style["-ms-transform"] += "translate("+tx + "px, " + ty +"px)"; // + " " + rotate_back;
+                if (this.floatingInSpace) {
+                    angle = this.angle;
+                    theta = angle*(Math.PI/180);
+                    tx = l * Math.sin(theta);
+                    ty = l * Math.cos(theta);
+                    if (angle > 0 && angle <= 90)         { ty *= -1;  }
+                    else if (angle > 90 && angle <= 180)  { /* pass */ }
+                    else if (angle > 180 && angle <= 270) { tx *= -1;  }
+                    else {
+                        tx *= -1;
+                        ty *= -1;
+                    }
+                    translate = "translate("+tx + "px, " + ty +"px)"
+                    this.image.style["-webkit-transform"] += translate;
+                    this.image.style["-ms-transform"]     += translate;
+                    this.image.style.transform            += translate;
+                } else {
+                    translate = "translate("+ 0 + "px, " + -l +"px)";
+                    this.image.style["-webkit-transform"] += translate;
+                    this.image.style["-ms-transform"]     += translate;
+                    this.image.style.transform            += translate;
+                }
                 this.hide();
             }.bind(this), 1);
             return this;

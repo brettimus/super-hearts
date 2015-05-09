@@ -22,12 +22,22 @@ Array of length 2
 How far (in px) a heart is translated from the original click.
 
 
+### floatingInSpace
+Default is `false`.
+
+Bool
+
+Affects how hearts are oriented when they are translated. 
+When `false`, all hearts appear to "shoot out" from the click/touch point. 
+When `true`, the hearts' orientation is a little more scattered, like they were thrown lazily by a small child.
+
 ### heartDelay
 Default is 0.
 
 Number
 
 The amount of time (in ms) to delay between spewing each heart on a given heart-spew.
+
 
 ### heartsCount
 Default is `[18, 22]`
@@ -51,6 +61,12 @@ Default is `[0.10, 1.00]`
 Array of length 2
 
 Hearts are given random opacity from `opacityRange[0]` to `opacityRange[1]`. You may only specify scalars to a hundredth.
+
+
+### rotateHearts
+Default is `true`.
+
+Don't mess with this option yet...
 
 
 ### scalarRange
