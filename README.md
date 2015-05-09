@@ -49,10 +49,11 @@ The number of hearts that are spewed on a given touch/click is random.
 
 
 ### imageSrc
-Default is `./heart-icon-1.svg`. 
+No default. 
 
-String with path to an image. 
-(This default will probably change.)
+Accepts a String with path to an image that you want to spew (preferably a heart). 
+
+If unspecified, an svg heart icon is inlined and used as the source. How awesome is that?!
 
 
 ### opacityRange
