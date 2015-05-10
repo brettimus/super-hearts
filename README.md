@@ -1,10 +1,10 @@
 # super-hearts
-Question: Do you want to spew hearts everywhere?
+**Question: Do you want to spew hearts everywhere?**
 
-Well, you are in luck! 
+Well, fine person, you are in luck! 
 
 ## usage
-Give us a selector, and we'll make sure your `click` and `touchend` events are full of happy joy.
+Give us a selector, and we'll make sure your `click` and `touchend` events are full of happy, happy joy.
 
 ```javascript
 var selector = "#myThingIWantToSpewHeartsWhenClicked"
@@ -12,7 +12,12 @@ SuperHearts(selector, options);
 ```
 
 ## options
-Eff yeah configuration!
+_Eff yeah configuration!_
+
+Wait. Are you not into configuration? That's okay! All options have defaults.
+
+_Eff yeah defaults!_
+
 
 ### blastRange
 Default is `[60, 80]`.
@@ -21,6 +26,13 @@ Array of length 2
 
 How far (in px) a heart is translated from the original click.
 
+
+### fanHearts
+Default is `false`.
+
+Bool
+
+If true, hearts are animated in a circular, fanning pattern around the click/touch.
 
 ### floatingInSpace
 Default is `false`.
@@ -49,11 +61,11 @@ The number of hearts that are spewed on a given touch/click is random.
 
 
 ### imageSrc
-No default. 
+Defaults to an inlined SVG heart icon.
 
-Accepts a String with path to an image that you want to spew (preferably a heart). 
+String
 
-If unspecified, an svg heart icon is inlined and used as the source. How awesome is that?!
+Path to an image that you want to spew (preferably a heart). 
 
 
 ### opacityRange

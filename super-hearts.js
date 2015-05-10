@@ -1,11 +1,12 @@
 var SuperHearts = (function() {
+    var HEART_IMAGE = 'data:image/svg+xml;charset=utf-8,<?xml version="1.0" encoding="utf-8"?><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px" height="87.501px" viewBox="-12.058 0.441 100 87.501" enable-background="new -12.058 0.441 100 87.501" xml:space="preserve"><path style="fill: #B91319;" d="M0.441,50.606c-8.714-8.552-12.499-17.927-12.499-26.316c0-14.308,9.541-23.849,24.011-23.849c13.484,0,18.096,6.252,25.989,15.297C45.836,6.693,50.44,0.441,63.925,0.441c14.477,0,24.018,9.541,24.018,23.849c0,8.389-3.784,17.765-12.498,26.316L37.942,87.942L0.441,50.606z"/></svg>';
     var DEFAULTS = {
         blastRange: [60, 80],
+        fanHearts: false,
         floatingInSpace: false,
         heartDelay: 0,
         heartsCount: [18, 22],
-        heartString: '<?xml version="1.0" encoding="utf-8"?><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px" height="87.501px" viewBox="-12.058 0.441 100 87.501" enable-background="new -12.058 0.441 100 87.501" xml:space="preserve"><path style="fill: #B91319;" d="M0.441,50.606c-8.714-8.552-12.499-17.927-12.499-26.316c0-14.308,9.541-23.849,24.011-23.849c13.484,0,18.096,6.252,25.989,15.297C45.836,6.693,50.44,0.441,63.925,0.441c14.477,0,24.018,9.541,24.018,23.849c0,8.389-3.784,17.765-12.498,26.316L37.942,87.942L0.441,50.606z"/></svg>',
-        imageSrc: undefined,
+        imageSrc: HEART_IMAGE,
         opacityRange: [0.10, 1.00],
         rotateHearts: true,
         scalarRange: [0.50, 2.00],
@@ -16,9 +17,10 @@ var SuperHearts = (function() {
 
     var heartProto = {
         blastRange: null,
+        fanHearts: null,
+        floatingInSpace: null,
         heartDelay: null,
         heartsCount: null,
-        heartString: null,
         image: null,
         imageSrc: null,
         opacityRange: null,
@@ -29,71 +31,53 @@ var SuperHearts = (function() {
         transitionFunction: null,
         x: null,
         y: null,
-        add: function add() {
-            document.querySelector("body").appendChild(this.image);
-        },
-        animate: function animate(next) {
-            // move the heart!
-
-            var rotate = "rotate("+this.angle+"deg)",
-                rotate_back = "rotate("+(-this.angle)+"deg)",
-                scale = "scale("+randomScalar(this.scalarRange[0], this.scalarRange[1])+")",
-                translate,
-                transforms = [
-                    "scale(1)",
-                    rotate,
-                    scale,
-                ],
-                l = randomInRange(this.blastRange[0], this.blastRange[1]),
-                angle,
-                theta,
-                tx,
-                ty;
-
-            this.image.style.cssText += "transform:" + transforms.join(" ") + ";";
-            this.image.style.cssText += "-webkit-transform:" + transforms.join(" ") + ";";
-            this.image.style.cssText += "-ms-transform:" + transforms.join(" ") + ";";
-
-            setTimeout(function() {
-                if (this.floatingInSpace) {
-                    angle = this.angle;
-                    theta = angle*(Math.PI/180);
-                    tx = l * Math.sin(theta);
-                    ty = l * Math.cos(theta);
-                    if (angle > 0 && angle <= 90)         { ty *= -1;  }
-                    else if (angle > 90 && angle <= 180)  { /* pass */ }
-                    else if (angle > 180 && angle <= 270) { tx *= -1;  }
-                    else {
-                        tx *= -1;
-                        ty *= -1;
-                    }
-                    translate = "translate("+tx + "px, " + ty +"px)"
-                    this.image.style["-webkit-transform"] += translate;
-                    this.image.style["-ms-transform"]     += translate;
-                    this.image.style.transform            += translate;
-                } else {
-                    translate = "translate("+ 0 + "px, " + -l +"px)";
-                    this.image.style["-webkit-transform"] += translate;
-                    this.image.style["-ms-transform"]     += translate;
-                    this.image.style.transform            += translate;
-                }
-                this.hide();
-            }.bind(this), 1);
+        addTransform: function addTransform(operation) {
+            this.image.style["-webkit-transform"] += operation;
+            this.image.style["-ms-transform"]     += operation;
+            this.image.style.transform            += operation;
             return this;
         },
-        hide: function hide(next) {
-            this.image.style.opacity = 0;
-            if (typeof next === "function") next();
-            else {
-                setTimeout(function() {
-                    this.remove();
-                }.bind(this), this.transitionDuration);
+        appendToBody: function appendToBody() {
+            document.querySelector("body").appendChild(this.image);
+        },
+        animate: function animate() {
+            // move the heart!
+            var translate,
+                transforms = [
+                    this.scale(1), // apparently this helps for scaling on an iPad? haven't checked tbh
+                    this.rotate(),
+                    this.scale(),
+                ];
+
+            // TODO - clean this logick up. yuckie.
+            if (!this.fanHearts) {
+                transforms.forEach(this.addTransform.bind(this));
             }
+            window.requestAnimationFrame(function() {
+                if (this.fanHearts) {
+                    transforms.forEach(this.addTransform.bind(this));
+                }
+                this.addTransform(this.translate()).fadeOut();
+            }.bind(this));
+
+            return this;
+        },
+        fadeOut: function fadeOut() {
+            var removeHeart = this.remove.bind(this);
+            this.image.style.opacity = 0;
+            setTimeout(removeHeart, this.transitionDuration);
             return this;
         },
         remove: function remove() {
             document.querySelector("body").removeChild(this.image);
             return this;
+        },
+        rotate: function rotate() {
+            return "rotate("+this.angle+"deg)";
+        },
+        scale: function scale(k) {
+            if (k === undefined) k = randomScalar(this.scalarRange[0], this.scalarRange[1]);
+            return "scale("+k+")";
         },
         show: function show() {
             var left       = (this.x - this.image.width/2),
@@ -114,11 +98,33 @@ var SuperHearts = (function() {
                 ];
 
             this.image.style.cssText += initStyles.join(";");
-            this.add();
+            this.appendToBody();
             return this;
         },
-    };
+        translate: function translate() {
+            var angle,
+                theta,
+                tx,
+                ty,
+                translateLength = randomInRange(this.blastRange[0], this.blastRange[1]);
 
+            tx = 0;
+            ty = -translateLength;
+
+            if (this.floatingInSpace) {
+                angle = this.angle;
+                theta = angle*(Math.PI/180);
+                tx = translateLength * Math.sin(theta);
+                ty = translateLength * Math.cos(theta);
+                if      (angle > 0 && angle <= 90)    { ty *= -1;  }
+                else if (angle > 90 && angle <= 180)  { /* pass */ }
+                else if (angle > 180 && angle <= 270) { tx *= -1;  }
+                else                                  { tx *= -1; ty *= -1;  }
+            }
+
+            return "translate("+tx + "px," + ty +"px)";
+        }
+    };
 
     function result(selector, options) {
         var elt    = document.querySelector(selector),
@@ -131,17 +137,11 @@ var SuperHearts = (function() {
             heart.x = x;
             heart.y = y;
             heart.image = document.createElement("img");
-            if (heart.imageSrc) {
-                heart.image.src = heart.imageSrc;
-            } else {
-                heart.image.src = "data:image/svg+xml;charset=utf-8,"+heart.heartString;
-            }
-
-            if (heart.rotateHearts) {
-                heart.angle = randomAngle();
-            } else {
-                heart.angle = 0;
-            }
+            heart.image.src = heart.imageSrc;
+            heart.angle = heart.rotateHearts ? randomAngle() : 0;
+            // if (heart.rotateHearts) {
+            //     heart.angle = randomAngle();
+            // }
             return heart;
         }
 
