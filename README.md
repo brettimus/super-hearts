@@ -24,19 +24,11 @@ _Eff yeah defaults!_
 
 
 ### angleRange
-Default is `[0, 360]`
+Default is `[0, 359]` (deg)
 
 Array of length 2
 
-Determines the (inclusive) range of angles that is used to randomly rotate hearts.
-
-
-### blastRange
-Default is `[65, 90]`.
-
-Array of length 2
-
-How far (in px) a heart is translated from the original click.
+Determines the (inclusive) range of angles (measured in degrees) that is used to randomly rotate hearts. You may specify a range outside of `[0, 360]`.
 
 
 ### fanHearts
@@ -55,6 +47,16 @@ Bool
 Affects how hearts are oriented when they are translated. 
 When `false`, all hearts appear to "shoot out" from the click/touch point. 
 When `true`, the hearts' orientation is a little more scattered, like they were thrown lazily by a small child.
+
+_This could use a lot of work if you want to help!_
+
+
+### heartColor
+Default is `"#B91319"`.
+
+String
+
+Sets the fill for the default heart icon. (Should _hopefully_ do nothing if you configure your own image.)
 
 
 ### heartsCount
@@ -91,7 +93,7 @@ If `false`, hearts are not rotated, and the original click/touch point becomes a
 
 
 ### scalarRange
-Default is `[0.50, 2.00]`
+Default is `[0.10, 0.45]`
 
 Array of length 2
 
@@ -116,6 +118,22 @@ Number
 Default is `"ease-out"`.
 
 String
+
+
+### translateXRange
+Default is `[0, 0]`.
+
+Array of length 2
+
+How far (in px) a heart is translated along the x-axis from the original click. I think in cartesian coordinates, so treat this as a cartesian translation (not that it makes a difference in this case).
+
+
+### translateYRange
+Default is `[65, 90]`.
+
+Array of length 2
+
+How far (in px) a heart is translated along the y-axis from the original click. I think in cartesian coordinates, so treat this as a cartesian translation.
 
 
 ## TODO

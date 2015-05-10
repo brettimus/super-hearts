@@ -17,18 +17,40 @@
     padding-top : 40px;
     text-align  : center;
   }
+  .geyser-example {
+    padding: 40px;
+    text-align: center;
+  }
 </style>
 <body>
   <h1>click (or touch) the page for hearts</h1>
+  <div class="geyser-example">
+    <span id="geyser">&nbsp;</span> look, a geyser!
+  </div>
   <script src="./super-hearts.js"></script>
   <script>
+    /* Circle of Hearts */
     SuperHearts("body", {
-        angleRange: [-60,60],
-        opacityRange: [0.1, 0.75],
-        rotateHearts: true,
-        scalarRange: [.15, .45],
         transitionDuration: 650,
     });
+
+    /* Geyser */
+    SuperHearts("#geyser", {
+        angleRange: [-75, 75],
+        heartsCount: [3,5],
+        scaleRange: [.05, .25],
+        geyser: true,
+        geyserInterval: 600,
+        transitionDuration: 850,
+    });
+
+    /* No rotation, large translateXRange */
+    // SuperHearts("body", {
+    //     heartColor: "blue",
+    //     rotateHearts: false,
+    //     transitionDuration: 650,
+    //     translateXRange: [-120, 120]
+    // });
   </script>
 </body>
 </html>
