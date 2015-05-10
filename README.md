@@ -19,6 +19,14 @@ Wait. Are you not into configuration? That's okay! All options have defaults.
 _Eff yeah defaults!_
 
 
+### angleRange
+Default is `[0, 360]`
+
+Array of length 2
+
+Determines the (inclusive) range of angles that is used to randomly rotate hearts.
+
+
 ### blastRange
 Default is `[60, 80]`.
 

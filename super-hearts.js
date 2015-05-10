@@ -1,6 +1,9 @@
+// possible code smell: transition and transform related methods return strings instead of doing the operation themselves
+// (it is kind of inconsistent with the methods that return `this`)
 var SuperHearts = (function() {
     var HEART_IMAGE = 'data:image/svg+xml;charset=utf-8,<?xml version="1.0" encoding="utf-8"?><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px" height="87.501px" viewBox="-12.058 0.441 100 87.501" enable-background="new -12.058 0.441 100 87.501" xml:space="preserve"><path style="fill: #B91319;" d="M0.441,50.606c-8.714-8.552-12.499-17.927-12.499-26.316c0-14.308,9.541-23.849,24.011-23.849c13.484,0,18.096,6.252,25.989,15.297C45.836,6.693,50.44,0.441,63.925,0.441c14.477,0,24.018,9.541,24.018,23.849c0,8.389-3.784,17.765-12.498,26.316L37.942,87.942L0.441,50.606z"/></svg>';
     var DEFAULTS = {
+        angleRange: [0, 360],
         blastRange: [60, 80],
         fanHearts: false,
         floatingInSpace: false,
@@ -16,6 +19,7 @@ var SuperHearts = (function() {
     };
 
     var heartProto = {
+        angleRange: null,
         blastRange: null,
         fanHearts: null,
         floatingInSpace: null,
@@ -72,34 +76,39 @@ var SuperHearts = (function() {
             document.querySelector("body").removeChild(this.image);
             return this;
         },
-        rotate: function rotate() {
-            return "rotate("+this.angle+"deg)";
+        rotate: function rotate(theta) {
+            if (theta === undefined) theta = this.angle;
+            return "rotate("+theta+"deg)";
         },
         scale: function scale(k) {
             if (k === undefined) k = randomScalar(this.scalarRange[0], this.scalarRange[1]);
             return "scale("+k+")";
         },
         show: function show() {
-            var left       = (this.x - this.image.width/2),
-                top        = (this.y - this.image.height/2),
-                opacity    = randomOpacity(this.opacityRange[0], this.opacityRange[1]),
-                initStyles = [
-                    "left:"+left+"px",
-                    "opacity:"+opacity,
-                    "position:fixed",
-                    "pointer-events:none",
-                    "top:"+top+"px",
-                    "transform-origin:"+this.transformOrigin,
-                    "-webkit-transform-origin:"+this.transformOrigin,
-                    "-ms-transform-origin:"+this.transformOrigin,
-                    "transition: "+this.transitionDuration+"ms "+ this.transitionFunction,
-                    "-moz-transition: "+this.transitionDuration+"ms "+ this.transitionFunction,
-                    "-webkit-transition: "+this.transitionDuration+"ms "+ this.transitionFunction,
-                ];
-
-            this.image.style.cssText += initStyles.join(";");
+            this.image.style.cssText += this.style();
             this.appendToBody();
             return this;
+        },
+        style: function style() {
+            var left       = (this.x - this.image.width/2),
+                top        = (this.y - this.image.height/2),
+                opacity    = randomOpacity(this.opacityRange[0], this.opacityRange[1]);
+            return [
+                "left:"+left+"px",
+                "opacity:"+opacity,
+                "position:fixed",
+                "pointer-events:none",
+                "top:"+top+"px",
+                "transform-origin:"+this.transformOrigin,
+                "-webkit-transform-origin:"+this.transformOrigin,
+                "-ms-transform-origin:"+this.transformOrigin,
+                "transition: "+this.transition(),
+                "-moz-transition: "+this.transition(),
+                "-webkit-transition: "+this.transition(),
+            ].join(";");
+        },
+        transition: function transition() {
+            return this.transitionDuration+"ms "+ this.transitionFunction;
         },
         translate: function translate() {
             var angle,
@@ -138,10 +147,10 @@ var SuperHearts = (function() {
             heart.y = y;
             heart.image = document.createElement("img");
             heart.image.src = heart.imageSrc;
-            heart.angle = heart.rotateHearts ? randomAngle() : 0;
-            // if (heart.rotateHearts) {
-            //     heart.angle = randomAngle();
-            // }
+            heart.angle = 0;
+            if (heart.rotateHearts) {
+                heart.angle = randomAngle(heart.angleRange[0], heart.angleRange[1]);
+            }
             return heart;
         }
 
@@ -174,8 +183,8 @@ var SuperHearts = (function() {
     /***********/
     /* Helpers */
     /***********/
-    function randomAngle() {
-        return randomInRange(0, 360);
+    function randomAngle(a, b) {
+        return randomInRange(a, b);
     }
     function randomOpacity(a, b) {
         return randomInRange(a*100, b*100)/100;
@@ -184,7 +193,7 @@ var SuperHearts = (function() {
         return randomInRange(a*100, b*100)/100;
     }
     function randomInRange(a, b) {
-        return Math.floor(Math.random()*b + a);
+        return Math.floor(Math.random() * (b - a + 1)) + a;
     }
 
     function _extend() {
