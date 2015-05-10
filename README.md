@@ -51,6 +51,23 @@ When `true`, the hearts' orientation is a little more scattered, like they were 
 _This could use a lot of work if you want to help!_
 
 
+### geyser
+Default is `false`
+
+Bool
+
+When `true`, creates a continuous stream of hearts. Starting coordinates are calculated based off of the targeted element's `boundingRect`. 
+
+**Note:** turning on `geyser` means that `click` and `touch` events are not attached to the target element.
+
+
+### geyserInterval
+Default is `transitionDuration/2` (ms)
+
+Number
+
+Sets how often hearts are spewed from the geyser.
+
 ### heartColor
 Default is `"#B91319"`.
 
