@@ -1,13 +1,17 @@
 # super-hearts
+_Inspired by `super.me`_
+
 **Question: Do you want to spew hearts everywhere?**
 
 Well, fine person, you are in luck! 
 
-## usage
+## Quick Start (the defibrillator)
 Give us a selector, and we'll make sure your `click` and `touchend` events are full of happy, happy joy.
 
 ```javascript
-var selector = "#myThingIWantToSpewHeartsWhenClicked"
+var options = {},
+    selector = "#myThingIWantToSpewHeartsWhenClicked";
+
 SuperHearts(selector, options);
 ```
 
@@ -28,7 +32,7 @@ Determines the (inclusive) range of angles that is used to randomly rotate heart
 
 
 ### blastRange
-Default is `[60, 80]`.
+Default is `[65, 90]`.
 
 Array of length 2
 
@@ -40,7 +44,8 @@ Default is `false`.
 
 Bool
 
-If true, hearts are animated in a circular, fanning pattern around the click/touch.
+If true, hearts are spewed in a circular, fanning pattern.
+
 
 ### floatingInSpace
 Default is `false`.
@@ -51,16 +56,9 @@ Affects how hearts are oriented when they are translated.
 When `false`, all hearts appear to "shoot out" from the click/touch point. 
 When `true`, the hearts' orientation is a little more scattered, like they were thrown lazily by a small child.
 
-### heartDelay
-Default is 0.
-
-Number
-
-The amount of time (in ms) to delay between spewing each heart on a given heart-spew.
-
 
 ### heartsCount
-Default is `[18, 22]`
+Default is `[6, 10]`
 
 Array of length 2
 
@@ -77,7 +75,7 @@ Path to an image that you want to spew (preferably a heart).
 
 
 ### opacityRange
-Default is `[0.10, 1.00]`
+Default is `[0.10, 0.75]`
 
 Array of length 2
 
@@ -87,7 +85,9 @@ Hearts are given random opacity from `opacityRange[0]` to `opacityRange[1]`. You
 ### rotateHearts
 Default is `true`.
 
-Don't mess with this option yet...
+Bool
+
+If `false`, hearts are not rotated, and the original click/touch point becomes a geyser of hearts.
 
 
 ### scalarRange
@@ -101,23 +101,26 @@ Hearts are randomly scaled in size from `scalarRange[0]` to `scalarRange[1]`. Yo
 ### transformOrigin
 Default is `"center center"`
 
+String
+
 
 ### transitionDuration
-Default is `300` (ms).
+Default is `400` (ms).
 
-Number.
+Number
 
 `SuperHearts` only supports milliseconds for now. **Make sure to pass a number**, as this parameter is also used in a call to `setTimeout`. (Dude, I know. I'm sorry.)
 
 
 ### transitionFunction
-Default is `ease-out`.
+Default is `"ease-out"`.
+
+String
 
 
 ## TODO
-* Remove things that I'm doing that are probably dumb
-* 
+* Write the TODO
 
 
 ## If you want to contribute
-Tell me! Let's talk! I want helps.
+Tell me! Let's talk!

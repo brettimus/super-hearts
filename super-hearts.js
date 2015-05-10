@@ -4,17 +4,16 @@ var SuperHearts = (function() {
     var HEART_IMAGE = 'data:image/svg+xml;charset=utf-8,<?xml version="1.0" encoding="utf-8"?><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px" height="87.501px" viewBox="-12.058 0.441 100 87.501" enable-background="new -12.058 0.441 100 87.501" xml:space="preserve"><path style="fill: #B91319;" d="M0.441,50.606c-8.714-8.552-12.499-17.927-12.499-26.316c0-14.308,9.541-23.849,24.011-23.849c13.484,0,18.096,6.252,25.989,15.297C45.836,6.693,50.44,0.441,63.925,0.441c14.477,0,24.018,9.541,24.018,23.849c0,8.389-3.784,17.765-12.498,26.316L37.942,87.942L0.441,50.606z"/></svg>';
     var DEFAULTS = {
         angleRange: [0, 360],
-        blastRange: [60, 80],
+        blastRange: [65, 90],
         fanHearts: false,
         floatingInSpace: false,
-        heartDelay: 0,
-        heartsCount: [18, 22],
+        heartsCount: [6, 10],
         imageSrc: HEART_IMAGE,
-        opacityRange: [0.10, 1.00],
+        opacityRange: [0.10, 0.75],
         rotateHearts: true,
         scalarRange: [0.50, 2.00],
         transformOrigin: "center center",
-        transitionDuration: 300,
+        transitionDuration: 400,
         transitionFunction: "ease-out",
     };
 
@@ -23,13 +22,13 @@ var SuperHearts = (function() {
         blastRange: null,
         fanHearts: null,
         floatingInSpace: null,
-        heartDelay: null,
         heartsCount: null,
         image: null,
         imageSrc: null,
         opacityRange: null,
         rotateHearts: null,
         scalarRange: null,
+        "_THETA": null,
         transformOrigin: null,
         transitionDuration: null,
         transitionFunction: null,
@@ -43,14 +42,15 @@ var SuperHearts = (function() {
         },
         appendToBody: function appendToBody() {
             document.querySelector("body").appendChild(this.image);
+            return this;
         },
         animate: function animate() {
             // move the heart!
             var translate,
                 transforms = [
-                    this.scale(1), // apparently this helps for scaling on an iPad? haven't checked tbh
-                    this.rotate(),
-                    this.scale(),
+                    this.getScale(1), // apparently this helps for scaling on an iPad? haven't checked tbh
+                    this.getRotate(),
+                    this.getScale(),
                 ];
 
             // TODO - clean this logick up. yuckie.
@@ -61,7 +61,7 @@ var SuperHearts = (function() {
                 if (this.fanHearts) {
                     transforms.forEach(this.addTransform.bind(this));
                 }
-                this.addTransform(this.translate()).fadeOut();
+                this.addTransform(this.getTranslate()).fadeOut();
             }.bind(this));
 
             return this;
@@ -76,20 +76,22 @@ var SuperHearts = (function() {
             document.querySelector("body").removeChild(this.image);
             return this;
         },
-        rotate: function rotate(theta) {
-            if (theta === undefined) theta = this.angle;
+        getAngle: function getAngle() {
+            if (!this.rotateHearts) return 0;
+            if (typeof this._THETA !== "number") {
+                this._THETA = randomAngle(this.angleRange[0], this.angleRange[1]);
+            }
+            return this._THETA;
+        },
+        getRotate: function getRotate(theta) {
+            if (theta === undefined) theta = this.getAngle();
             return "rotate("+theta+"deg)";
         },
-        scale: function scale(k) {
+        getScale: function getScale(k) {
             if (k === undefined) k = randomScalar(this.scalarRange[0], this.scalarRange[1]);
             return "scale("+k+")";
         },
-        show: function show() {
-            this.image.style.cssText += this.style();
-            this.appendToBody();
-            return this;
-        },
-        style: function style() {
+        getStyle: function getStyle() {
             var left       = (this.x - this.image.width/2),
                 top        = (this.y - this.image.height/2),
                 opacity    = randomOpacity(this.opacityRange[0], this.opacityRange[1]);
@@ -102,26 +104,25 @@ var SuperHearts = (function() {
                 "transform-origin:"+this.transformOrigin,
                 "-webkit-transform-origin:"+this.transformOrigin,
                 "-ms-transform-origin:"+this.transformOrigin,
-                "transition: "+this.transition(),
-                "-moz-transition: "+this.transition(),
-                "-webkit-transition: "+this.transition(),
+                "transition: "+this.getTransition(),
+                "-moz-transition: "+this.getTransition(),
+                "-webkit-transition: "+this.getTransition(),
             ].join(";");
         },
-        transition: function transition() {
+        getTransition: function getTransition() {
             return this.transitionDuration+"ms "+ this.transitionFunction;
         },
-        translate: function translate() {
+        getTranslate: function getTranslate() {
             var angle,
                 theta,
-                tx,
-                ty,
+                tx, ty,
                 translateLength = randomInRange(this.blastRange[0], this.blastRange[1]);
 
             tx = 0;
             ty = -translateLength;
 
             if (this.floatingInSpace) {
-                angle = this.angle;
+                angle = this.getAngle();
                 theta = angle*(Math.PI/180);
                 tx = translateLength * Math.sin(theta);
                 ty = translateLength * Math.cos(theta);
@@ -131,15 +132,22 @@ var SuperHearts = (function() {
                 else                                  { tx *= -1; ty *= -1;  }
             }
 
-            return "translate("+tx + "px," + ty +"px)";
-        }
+            return "translate("+tx+"px,"+ty+"px)";
+        },
+
+        show: function show() {
+            this.image.style.cssText += this.getStyle();
+            this.appendToBody();
+            return this;
+        },
+
     };
 
     function result(selector, options) {
-        var elt    = document.querySelector(selector),
-            config = _extend({}, heartProto, DEFAULTS, options),
-            a      = config.heartsCount[0],
-            b      = config.heartsCount[1];
+        var elt       = document.querySelector(selector),
+            config    = _extend({}, heartProto, DEFAULTS, options),
+            minHearts = config.heartsCount[0],
+            maxHearts = config.heartsCount[1];
 
         function heartFactory(x, y) {
             var heart = Object.create(config);
@@ -147,10 +155,6 @@ var SuperHearts = (function() {
             heart.y = y;
             heart.image = document.createElement("img");
             heart.image.src = heart.imageSrc;
-            heart.angle = 0;
-            if (heart.rotateHearts) {
-                heart.angle = randomAngle(heart.angleRange[0], heart.angleRange[1]);
-            }
             return heart;
         }
 
@@ -159,21 +163,24 @@ var SuperHearts = (function() {
                 heartFactory(x, y).show().animate();
             };
         }
-        function onclick(e) {
-            var count = randomInRange(a, b),
-                x = e.pageX,
-                y = e.pageY;
+
+        function spewHearts(x,y) {
+            var count = randomInRange(minHearts, maxHearts);
             for (var i = 0; i < count; i++) {
-                setTimeout(window.requestAnimationFrame(spewHeart(x, y)), config.heartDelay*i);
+                window.requestAnimationFrame(spewHeart(x, y));
             }
         }
+
+        function onclick(e) {
+            var x = e.pageX,
+                y = e.pageY;
+            spewHearts(x, y);
+        }
+
         function ontouch(e) {
-            var count = randomInRange(a,b),
-                x = e.changedTouches[0].pageX,
+            var x = e.changedTouches[0].pageX,
                 y = e.changedTouches[0].pageY;
-            for (var i = 0; i < count; i++) {
-                setTimeout(window.requestAnimationFrame(spewHeart(x, y)), config.heartDelay*i);
-            }
+            spewHearts(x, y);
         }
         
         elt.addEventListener("click", onclick);
