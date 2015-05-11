@@ -66,7 +66,7 @@ Default is `transitionDuration/2` (ms)
 
 Number
 
-Sets how often hearts are spewed from the geyser.
+Sets how often hearts are spewed from the geyser. **`0` is ignored**
 
 ### heartColor
 Default is `"#B91319"`.
