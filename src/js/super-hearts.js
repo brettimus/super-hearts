@@ -7,12 +7,8 @@
 
 var argumentsHelper = require("./arguments-helper");
 var loadPresets = require("./preset-loader");
-var animationCollectionProto = require("./prototypes/animation-collection-prototype");
+var animationCollectionFactory = require("./factories/animation-collection-factory");
 
-
-loadPresets(SuperHearts);
-
-global.SuperHearts = SuperHearts;
 
 function SuperHearts() {
     var args         = argumentsHelper(arguments),
@@ -23,8 +19,7 @@ function SuperHearts() {
     // TODO
     // cache results of calls to SuperHearts
     // coud use an object whose keys are selectors!
-    var result = Object.create(animationCollectionProto);
-    result.selector = selector;
+    var result = animationCollectionFactory(selector);
 
     // hack
     if (optionsArray.length === 0) optionsArray.push({});
@@ -34,6 +29,11 @@ function SuperHearts() {
 
     return result;
 }
+
+loadPresets(SuperHearts);
+global.SuperHearts = SuperHearts;
+
+
 
 /* All the ways you can call SuperHearts */
 /* SuperHearts() */

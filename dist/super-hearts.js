@@ -59,6 +59,14 @@ module.exports = {
     }
 };
 },{}],3:[function(require,module,exports){
+var animationCollectionProto = require("../prototypes/animation-collection-prototype");
+
+module.exports = function animationCollectionFactory(selector) {
+    var result = Object.create(animationCollectionProto);
+    result.setSelector(selector);
+    return result;
+};
+},{"../prototypes/animation-collection-prototype":7}],4:[function(require,module,exports){
 // TODO - refactor that factory
 // the factory function does stuff it shouldn't be responsible for
 
@@ -95,7 +103,7 @@ module.exports = function animationFactory(selector, options) {
         elt.addEventListener("touchend", animation.ontouch.bind(animation));
     }
 };
-},{"../defaults":2,"../icon-factory":4,"../prototypes/animation-prototype":7,"../prototypes/heart-prototype":8,"../utilities":10}],4:[function(require,module,exports){
+},{"../defaults":2,"../icon-factory":5,"../prototypes/animation-prototype":8,"../prototypes/heart-prototype":9,"../utilities":11}],5:[function(require,module,exports){
 // TODO - construct this from actual SVG file (close!)
 //      - look into using an SVG lib instead of xml2js
 //
@@ -125,7 +133,7 @@ module.exports = function(options) {
         src = 'data:image/svg+xml;charset=utf-8,'+icon;
     return src;
 };
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 // TODO - move this to its own directory
 var DEFAULTS = require("./defaults"),
     argumentsHelper = require("./arguments-helper");
@@ -156,11 +164,10 @@ module.exports = function loadPresets(SuperHearts) { // is this a confusing or c
         return presetHandler(DEFAULTS.geyser);
     };
 };
-},{"./arguments-helper":1,"./defaults":2,"./utilities":10}],6:[function(require,module,exports){
+},{"./arguments-helper":1,"./defaults":2,"./utilities":11}],7:[function(require,module,exports){
 var animationFactory = require("../factories/animation-factory");
 
 module.exports = {
-    selector: null,
     animations: [],
 
     addAnimation: function addAnimation(options) {
@@ -170,9 +177,18 @@ module.exports = {
     compose: function compose() {
         this.addAnimation(options);
         return this;
-    }
+    },
+    setSelector: function setSelector(selector) {
+        // consider freezing property?
+        var description = {
+            configurable: false,
+            writable: false,
+            value: selector,
+        };
+        Object.defineProperty(this, "selector", description);
+    },
 };
-},{"../factories/animation-factory":3}],7:[function(require,module,exports){
+},{"../factories/animation-factory":4}],8:[function(require,module,exports){
 var randomInRange = require("../utilities").randomInRange;
 
 module.exports = {
@@ -221,7 +237,7 @@ module.exports = {
     }
 
 };
-},{"../utilities":10}],8:[function(require,module,exports){
+},{"../utilities":11}],9:[function(require,module,exports){
 // TODO
 // make this smaller! it does too much
 
@@ -391,7 +407,7 @@ module.exports = {
     }
 
 };
-},{"../utilities":10}],9:[function(require,module,exports){
+},{"../utilities":11}],10:[function(require,module,exports){
 (function (global){
 // TODO
 // - allow blur config
@@ -402,12 +418,8 @@ module.exports = {
 
 var argumentsHelper = require("./arguments-helper");
 var loadPresets = require("./preset-loader");
-var animationCollectionProto = require("./prototypes/animation-collection-prototype");
+var animationCollectionFactory = require("./factories/animation-collection-factory");
 
-
-loadPresets(SuperHearts);
-
-global.SuperHearts = SuperHearts;
 
 function SuperHearts() {
     var args         = argumentsHelper(arguments),
@@ -418,8 +430,7 @@ function SuperHearts() {
     // TODO
     // cache results of calls to SuperHearts
     // coud use an object whose keys are selectors!
-    var result = Object.create(animationCollectionProto);
-    result.selector = selector;
+    var result = animationCollectionFactory(selector);
 
     // hack
     if (optionsArray.length === 0) optionsArray.push({});
@@ -429,6 +440,11 @@ function SuperHearts() {
 
     return result;
 }
+
+loadPresets(SuperHearts);
+global.SuperHearts = SuperHearts;
+
+
 
 /* All the ways you can call SuperHearts */
 /* SuperHearts() */
@@ -440,7 +456,7 @@ function SuperHearts() {
 /* */
 /* aaaand SuperHearts.PRESET */
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./arguments-helper":1,"./preset-loader":5,"./prototypes/animation-collection-prototype":6}],10:[function(require,module,exports){
+},{"./arguments-helper":1,"./factories/animation-collection-factory":3,"./preset-loader":6}],11:[function(require,module,exports){
 module.exports = {
     square: function square(x) {
         return x*x;
@@ -493,4 +509,4 @@ function extendHelper(destination, source) {
     }
     return destination;
 }
-},{}]},{},[9]);
+},{}]},{},[10]);
