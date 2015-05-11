@@ -2,156 +2,46 @@
 // - allow blur config
 // - cache existing animations
 // - let user specify numbers + arrays for options
+// - 'noise' option for initial coords
 // - rename configs
 
-var DEFAULTS = require("./defaults");
+var argumentsHelper = require("./arguments-helper");
+var loadPresets = require("./preset-loader");
+// var animationFactory = require("./animation-factory");
 
-var heartIconFactory = require("./icon-factory");
-
-var heartProto = require("./heart-prototype");
-
-// TODO
-// switch to only using utils module...
-var utils         = require("./utilities"),
-    randomInRange = utils.randomInRange,
-    extend        = utils.extend;
+var animationProto = require("./prototypes/animation-prototype");
 
 
-function argumentsHelper() {
-    var args = [].slice.call(arguments[0]), // NB this call to `arguments[0]` is weird but i like being able to pass in another function's args
-        result = {
-            selector: "body",
-            optionsArray: [],
-        };
+loadPresets(SuperHearts);
 
-    if (typeof args[0] === "string") {
-        result.selector = args[0];
-        result.optionsArray = args.slice(1);
-    }
-    else {
-        result.optionsArray = args.slice(0);
-    }
+global.SuperHearts = SuperHearts;
+
+function SuperHearts() {
+    var args         = argumentsHelper(arguments),
+        selector     = args.selector,
+        optionsArray = args.optionsArray;
+
+
+    // TODO
+    // cache results of SuperHearts
+    // use an object whose keys are selectors!!!
+    var result = Object.create(animationProto);
+
+    // hack
+    if (optionsArray.length === 0) optionsArray.push({});
+    optionsArray.forEach(function(options) {
+        result.addAnimation(selector, options);
+    });
+
     return result;
 }
 
-global.SuperHearts = (function() {
-
-    // var DEFAULTS = defaults.circle;
-
-    var mainDefault = DEFAULTS.circle;
-
-    function initialize(selector, options) {
-        var elt       = document.querySelector(selector),
-            config    = extend({}, heartProto, mainDefault, options),
-            eltRect   = elt.getBoundingClientRect(),
-            geyserX   = eltRect.left + ((eltRect.width) / 2),
-            geyserY   = eltRect.top + (eltRect.height / 2);
-
-        // TODO put this somewhere else... this is sloppy
-        if (!config.imageSrc) {
-            config.imageSrc = heartIconFactory({
-                fill: config.heartColor,
-            });
-        }
-
-        if (config.geyser) {
-            geyser();
-        }
-        else {
-            elt.addEventListener("click", onclick);
-            elt.addEventListener("touchend", ontouch);
-        }
-
-        function heartFactory(x, y) {
-            return Object.create(config).setCoordinates(x, y).setImage();
-        }
-
-        function heartSpewer(x,y) {
-            return function() {
-                heartFactory(x, y).show().animate();
-            };
-        }
-
-        function spewHearts(x,y) {
-            var count = randomInRange(config.heartsCount);
-            for (var i = 0; i < count; i++) {
-                window.requestAnimationFrame(heartSpewer(x, y));
-            }
-        }
-
-        function onclick(e) {
-            var x = e.pageX,
-                y = e.pageY;
-            spewHearts(x, y);
-        }
-
-        function ontouch(e) {
-            var x = e.changedTouches[0].pageX,
-                y = e.changedTouches[0].pageY;
-            spewHearts(x, y);
-        }
-
-        function geyser() {
-            config.geyserInterval = config.geyserInterval || config.transitionDuration/2;
-            setInterval(function(){
-                spewHearts(geyserX, geyserY);
-            }, config.geyserInterval);
-        }
-    }
-
-    /* All the ways you can call this function */
-    /* SuperHearts() */
-    /* SuperHearts(selector) */
-    /* SuperHearts(options) */
-    /* SuperHearts(options1, options2, ...) */
-    /* SuperHearts(selector, options) */
-    /* SuperHearts(selector, options1, options2, ...) */
-    /* aaaand SuperHearts.PRESET */
-    function result() {
-        var args         = argumentsHelper(arguments),
-            selector     = args.selector,
-            optionsArray = args.optionsArray;
-
-        // TODO
-        // refactor. this is ugly
-        if (optionsArray.length > 0) {
-            optionsArray.forEach(function(options) {
-                initialize(selector, options);
-            });
-        } else {
-            initialize(selector, {});
-        }
-
-
-        return {
-            compose: function compose(options) {
-                initialize(selector, options);
-                return this;
-            }
-        };
-    }
-
-    function presetHandler(presetDefaults) {
-        var args         = argumentsHelper(arguments),
-            selector     = args.selector,
-            optionsArray = args.optionsArray;
-
-        // TODO - test this?
-        //        We are merging user options _after_ preset defaults so they can override at their leisure!
-        optionsArray.forEach(function(options, index) {
-            optionsArray[index] = extend({}, presetDefaults, options);
-        });
-
-        return result.apply(result, [selector].concat(optionsArray));
-    }
-
-    result.Line = function Line() {
-        return presetHandler(DEFAULTS.line);
-    };
-
-    result.Geyser = function Geyser() {
-        return presetHandler(DEFAULTS.geyser);
-    };
-
-    return result;
-})();
+/* All the ways you can call SuperHearts */
+/* SuperHearts() */
+/* SuperHearts(selector) */
+/* SuperHearts(options) */
+/* SuperHearts(options1, options2, ...) */
+/* SuperHearts(selector, options) */
+/* SuperHearts(selector, options1, options2, ...) */
+/* */
+/* aaaand SuperHearts.PRESET */

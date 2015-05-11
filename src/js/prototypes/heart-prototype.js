@@ -1,6 +1,6 @@
 // TODO
 // switch to only using utils module...
-var utils = require("./utilities"),
+var utils = require("../utilities"),
     square = utils.square,
     toRadians = utils.toRadians,
     randomAngle = utils.randomAngle,
