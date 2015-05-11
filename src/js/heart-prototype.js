@@ -1,6 +1,3 @@
-// assigning `null` out the gate speeds up assignment.
-// it's probably neglible but...
-// I ONLY HAVE ONE SPEED AND IT IS OPTIMAL
 // TODO
 // switch to only using utils module...
 var utils = require("./utilities"),
@@ -9,9 +6,14 @@ var utils = require("./utilities"),
     randomAngle = utils.randomAngle,
     randomOpacity = utils.randomOpacity,
     randomScalar = utils.randomScalar,
-    randomInRange = utils.randomInRange,
-    extend = utils.extend;
+    randomInRange = utils.randomInRange;
 
+/*** Note ***/
+// assigning `null` out the gate speeds up future assignments.
+// the performance gain is probably neglible...
+// BUT I ONLY HAVE ONE SPEED 
+// AND IT IS OPTIMAL
+/*** End of Note ***/
 module.exports = {
     "_SCALAR": null,
     "_THETA": null,

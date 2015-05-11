@@ -1,4 +1,5 @@
-// TODO - construct this from actual SVG file
+// TODO - construct this from actual SVG file (close!)
+//      - look into using an SVG lib instead of xml2js
 //
 // var fs = require('fs'),
 //     xml2js = require('xml2js'),
