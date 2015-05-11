@@ -16,4 +16,20 @@ module.exports = {
         translateXRange: [0, 0],
         translateYRange: [15, 45],
     },
+    line: {
+        rotateHearts: false,
+        transitionDuration: 650,
+        translateXRange: [-60, 60]
+    },
+    geyser: {
+        angleRange: [-10, 10],
+        geyser: true,
+        geyserInterval: 200,
+        heartsCount: [1,1],
+        opacityRange: [0.3, 0.6],
+        scalarRange: [0.20, 0.25],
+        transitionDuration: 800,
+        translateXRange: [-45, 45],
+        translateYRange: [30, 60]
+    }
 };

@@ -4,9 +4,9 @@
 // - let user specify numbers + arrays for options
 // - rename configs
 
-var defaults = require("./defaults");
+var DEFAULTS = require("./defaults");
 
-var heartIconFactory = require("./icon-factory"); // todo
+var heartIconFactory = require("./icon-factory");
 
 var heartProto = require("./heart-prototype");
 
@@ -38,7 +38,7 @@ global.SuperHearts = (function() {
 
     // var DEFAULTS = defaults.circle;
 
-    var mainDefault =  defaults.circle;
+    var mainDefault = DEFAULTS.circle;
 
     function initialize(selector, options) {
         var elt       = document.querySelector(selector),
@@ -92,7 +92,6 @@ global.SuperHearts = (function() {
         }
 
         function geyser() {
-            console.log(eltRect);
             config.geyserInterval = config.geyserInterval || config.transitionDuration/2;
             setInterval(function(){
                 spewHearts(geyserX, geyserY);
@@ -147,29 +146,11 @@ global.SuperHearts = (function() {
     }
 
     result.Line = function Line() {
-        var lineDefaults = {
-                rotateHearts: false,
-                transitionDuration: 650,
-                translateXRange: [-60, 60]
-            };
-
-        return presetHandler(lineDefaults);
+        return presetHandler(DEFAULTS.line);
     };
 
     result.Geyser = function Geyser() {
-        var geyserDefaults = {
-                angleRange: [-10, 10],
-                geyser: true,
-                geyserInterval: 200,
-                heartsCount: [1,1],
-                opacityRange: [0.3, 0.6],
-                scalarRange: [0.20, 0.25],
-                transitionDuration: 800,
-                translateXRange: [-45, 45],
-                translateYRange: [30, 60]
-            };
-
-        return presetHandler(geyserDefaults);
+        return presetHandler(DEFAULTS.geyser);
     };
 
     return result;
