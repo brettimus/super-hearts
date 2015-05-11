@@ -62,12 +62,10 @@ module.exports = {
 var animationCollectionProto = require("../prototypes/animation-collection-prototype");
 
 module.exports = function animationCollectionFactory(selector) {
-    var result = Object.create(animationCollectionProto);
-    result.setSelector(selector);
-    return result;
+    return Object.create(animationCollectionProto).setSelector(selector);
 };
 },{"../prototypes/animation-collection-prototype":7}],4:[function(require,module,exports){
-// TODO - refactor that factory
+// TODO - refactor dat factory
 // the factory function does stuff it shouldn't be responsible for
 
 var heartProto = require("../prototypes/heart-prototype"),
@@ -77,9 +75,11 @@ var mainDefault = require("../defaults").circle;
 var extend = require("../utilities").extend;
 var heartIconFactory = require("../icon-factory");
 
-
-
 module.exports = function animationFactory(selector, options) {
+    // TODO
+    // this shouldn't need to know `selector`
+    // have animationCollection inject an `elt` corresponding to original anim?
+    //
     var animation     = Object.create(animationProto),
         elt           = document.querySelector(selector),
         modHeartProto = extend({}, heartProto, mainDefault, options);
@@ -87,12 +87,9 @@ module.exports = function animationFactory(selector, options) {
     animation.selector = selector;
     animation.modHeartProto = modHeartProto;
 
-    // TODO put this somewhere else... this is sloppy
-    if (!modHeartProto.imageSrc) {
-        modHeartProto.imageSrc = heartIconFactory({
-            fill: modHeartProto.heartColor,
-        });
-    }
+
+    // TODO
+    // doesn't it seem like this 
 
     if (modHeartProto.geyser) {
         animation.modHeartProto.geyserInterval = animation.modHeartProto.geyserInterval || animation.modHeartProto.transitionDuration/2;
@@ -102,6 +99,8 @@ module.exports = function animationFactory(selector, options) {
         elt.addEventListener("click", animation.onclick.bind(animation));
         elt.addEventListener("touchend", animation.ontouch.bind(animation));
     }
+
+    return animation;
 };
 },{"../defaults":2,"../icon-factory":5,"../prototypes/animation-prototype":8,"../prototypes/heart-prototype":9,"../utilities":11}],5:[function(require,module,exports){
 // TODO - construct this from actual SVG file (close!)
@@ -142,8 +141,8 @@ var extend = require("./utilities").extend;
 
 module.exports = function loadPresets(SuperHearts) { // is this a confusing or consistent parameter name?
 
-    function presetHandler(presetDefaults) {
-        var args         = argumentsHelper(arguments),
+    function presetHandler(originalArgs, presetDefaults) {
+        var args         = argumentsHelper(originalArgs),
             selector     = args.selector,
             optionsArray = args.optionsArray;
 
@@ -157,11 +156,11 @@ module.exports = function loadPresets(SuperHearts) { // is this a confusing or c
     }
 
     SuperHearts.Line = function Line() {
-        return presetHandler(DEFAULTS.line);
+        return presetHandler(arguments, DEFAULTS.line);
     };
 
     SuperHearts.Geyser = function Geyser() {
-        return presetHandler(DEFAULTS.geyser);
+        return presetHandler(arguments, DEFAULTS.geyser);
     };
 };
 },{"./arguments-helper":1,"./defaults":2,"./utilities":11}],7:[function(require,module,exports){
@@ -172,20 +171,37 @@ module.exports = {
 
     addAnimation: function addAnimation(options) {
         var result = animationFactory(this.selector, options);
+        this.animations.push(result);
         return this;
     },
-    compose: function compose() {
+
+    compose: function compose(options) {
         this.addAnimation(options);
         return this;
     },
+
+    // TODO - store element instead of selector
+    // Not in use
+    setElement: function setElement(selector) {
+        var value = document.querySelector(selector),
+            description = {
+                configurable: false,
+                writable: false,
+                value: value,
+            };
+        Object.defineProperty(this, "element", description);
+        return this;
+    },
+
+    // NB Freezes selector
     setSelector: function setSelector(selector) {
-        // consider freezing property?
         var description = {
             configurable: false,
             writable: false,
             value: selector,
         };
         Object.defineProperty(this, "selector", description);
+        return this;
     },
 };
 },{"../factories/animation-factory":4}],8:[function(require,module,exports){
@@ -250,6 +266,9 @@ var utils = require("../utilities"),
     randomOpacity = utils.randomOpacity,
     randomScalar = utils.randomScalar,
     randomInRange = utils.randomInRange;
+
+var heartIconFactory = require("../icon-factory");
+
 
 /*** Note ***/
 // assigning `null` out the gate speeds up future assignments.
@@ -331,6 +350,14 @@ module.exports = {
         }
         return this._THETA;
     },
+    getImageSrc: function getImageSrc() {
+        if (!this.imageSrc) {
+            this.imageSrc = heartIconFactory({
+                fill: this.heartColor,
+            });
+        }
+        return this.imageSrc;
+    },
     getRotate: function getRotate(theta) {
         if (theta === undefined) theta = this.getAngle();
         return "rotate("+theta+"deg)";
@@ -382,7 +409,7 @@ module.exports = {
     },
     setImage: function setImage() {
         this.image = document.createElement("img");
-        this.image.src = this.imageSrc;
+        this.image.src = this.getImageSrc();
         return this;
     },
     show: function show() {
@@ -407,7 +434,7 @@ module.exports = {
     }
 
 };
-},{"../utilities":11}],10:[function(require,module,exports){
+},{"../icon-factory":5,"../utilities":11}],10:[function(require,module,exports){
 (function (global){
 // TODO
 // - allow blur config

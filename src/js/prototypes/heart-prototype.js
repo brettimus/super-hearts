@@ -11,6 +11,9 @@ var utils = require("../utilities"),
     randomScalar = utils.randomScalar,
     randomInRange = utils.randomInRange;
 
+var heartIconFactory = require("../icon-factory");
+
+
 /*** Note ***/
 // assigning `null` out the gate speeds up future assignments.
 // the performance gain is probably neglible...
@@ -91,6 +94,14 @@ module.exports = {
         }
         return this._THETA;
     },
+    getImageSrc: function getImageSrc() {
+        if (!this.imageSrc) {
+            this.imageSrc = heartIconFactory({
+                fill: this.heartColor,
+            });
+        }
+        return this.imageSrc;
+    },
     getRotate: function getRotate(theta) {
         if (theta === undefined) theta = this.getAngle();
         return "rotate("+theta+"deg)";
@@ -142,7 +153,7 @@ module.exports = {
     },
     setImage: function setImage() {
         this.image = document.createElement("img");
-        this.image.src = this.imageSrc;
+        this.image.src = this.getImageSrc();
         return this;
     },
     show: function show() {

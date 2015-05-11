@@ -6,13 +6,12 @@ var extend = require("./utilities").extend;
 
 module.exports = function loadPresets(SuperHearts) { // is this a confusing or consistent parameter name?
 
-    function presetHandler(presetDefaults) {
-        var args         = argumentsHelper(arguments),
+    function presetHandler(presetDefaults, originalArgs) {
+        var args         = argumentsHelper(originalArgs),
             selector     = args.selector,
             optionsArray = args.optionsArray;
 
-        // TODO - test this?
-        //        We are merging user options _after_ preset defaults so they can override at their leisure!
+        // Merge user options _after_ preset defaults so they can override at their leisure!
         optionsArray.forEach(function(options, index) {
             optionsArray[index] = extend({}, presetDefaults, options);
         });
@@ -21,10 +20,10 @@ module.exports = function loadPresets(SuperHearts) { // is this a confusing or c
     }
 
     SuperHearts.Line = function Line() {
-        return presetHandler(DEFAULTS.line);
+        return presetHandler(DEFAULTS.line, arguments);
     };
 
     SuperHearts.Geyser = function Geyser() {
-        return presetHandler(DEFAULTS.geyser);
+        return presetHandler(DEFAULTS.geyser, arguments);
     };
 };
