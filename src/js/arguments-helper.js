@@ -14,9 +14,10 @@ module.exports = function argumentsHelper() {
         result.optionsArray = args.slice(0);
     }
 
-    if (result.optionsArray.length === 0) {
-        result.optionsArray.push({});
-    }
+    // // 
+    // if (result.optionsArray.length === 0) {
+    //     result.optionsArray.push({});
+    // }
 
     return result;
 };

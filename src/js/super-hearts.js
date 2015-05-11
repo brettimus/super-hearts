@@ -1,13 +1,14 @@
 // TODO
 // - allow blur config
 // - cache existing animations
-// - let user specify numbers + arrays for options
+// - let user specify numbers & arrays for options
 // - 'noise' option for initial coords
 // - rename configs
 
 var argumentsHelper = require("./arguments-helper");
 var loadPresets = require("./preset-loader");
-var animationProto = require("./prototypes/animation-prototype");
+var animationCollectionProto = require("./prototypes/animation-collection-prototype");
+
 
 loadPresets(SuperHearts);
 
@@ -18,15 +19,17 @@ function SuperHearts() {
         selector     = args.selector,
         optionsArray = args.optionsArray;
 
+
     // TODO
-    // cache results of SuperHearts
-    // use an object whose keys are selectors!!!
-    var result = Object.create(animationProto);
+    // cache results of calls to SuperHearts
+    // coud use an object whose keys are selectors!
+    var result = Object.create(animationCollectionProto);
+    result.selector = selector;
 
     // hack
     if (optionsArray.length === 0) optionsArray.push({});
     optionsArray.forEach(function(options) {
-        result.addAnimation(selector, options);
+        result.addAnimation(options);
     });
 
     return result;

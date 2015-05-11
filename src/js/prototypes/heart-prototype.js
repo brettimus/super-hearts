@@ -1,4 +1,7 @@
 // TODO
+// make this smaller! it does too much
+
+// TODO
 // switch to only using utils module...
 var utils = require("../utilities"),
     square = utils.square,

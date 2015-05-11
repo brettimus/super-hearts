@@ -15,9 +15,10 @@ module.exports = function argumentsHelper() {
         result.optionsArray = args.slice(0);
     }
 
-    if (result.optionsArray.length === 0) {
-        result.optionsArray.push({});
-    }
+    // // 
+    // if (result.optionsArray.length === 0) {
+    //     result.optionsArray.push({});
+    // }
 
     return result;
 };
@@ -58,6 +59,43 @@ module.exports = {
     }
 };
 },{}],3:[function(require,module,exports){
+// TODO - refactor that factory
+// the factory function does stuff it shouldn't be responsible for
+
+var heartProto = require("../prototypes/heart-prototype"),
+    animationProto = require("../prototypes/animation-prototype");
+
+var mainDefault = require("../defaults").circle;
+var extend = require("../utilities").extend;
+var heartIconFactory = require("../icon-factory");
+
+
+
+module.exports = function animationFactory(selector, options) {
+    var animation     = Object.create(animationProto),
+        elt           = document.querySelector(selector),
+        modHeartProto = extend({}, heartProto, mainDefault, options);
+
+    animation.selector = selector;
+    animation.modHeartProto = modHeartProto;
+
+    // TODO put this somewhere else... this is sloppy
+    if (!modHeartProto.imageSrc) {
+        modHeartProto.imageSrc = heartIconFactory({
+            fill: modHeartProto.heartColor,
+        });
+    }
+
+    if (modHeartProto.geyser) {
+        animation.modHeartProto.geyserInterval = animation.modHeartProto.geyserInterval || animation.modHeartProto.transitionDuration/2;
+        animation.geyser(elt);
+    }
+    else {
+        elt.addEventListener("click", animation.onclick.bind(animation));
+        elt.addEventListener("touchend", animation.ontouch.bind(animation));
+    }
+};
+},{"../defaults":2,"../icon-factory":4,"../prototypes/animation-prototype":7,"../prototypes/heart-prototype":8,"../utilities":10}],4:[function(require,module,exports){
 // TODO - construct this from actual SVG file (close!)
 //      - look into using an SVG lib instead of xml2js
 //
@@ -87,10 +125,12 @@ module.exports = function(options) {
         src = 'data:image/svg+xml;charset=utf-8,'+icon;
     return src;
 };
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 // TODO - move this to its own directory
 var DEFAULTS = require("./defaults"),
     argumentsHelper = require("./arguments-helper");
+
+var extend = require("./utilities").extend;
 
 module.exports = function loadPresets(SuperHearts) { // is this a confusing or consistent parameter name?
 
@@ -116,92 +156,75 @@ module.exports = function loadPresets(SuperHearts) { // is this a confusing or c
         return presetHandler(DEFAULTS.geyser);
     };
 };
-},{"./arguments-helper":1,"./defaults":2}],5:[function(require,module,exports){
-var heartProto = require("./heart-prototype");
-var mainDefault = require("../defaults").circle;
-
-var heartIconFactory = require("../icon-factory");
-
-var utils         = require("../utilities"),
-    randomInRange = utils.randomInRange,
-    extend        = utils.extend;
-
+},{"./arguments-helper":1,"./defaults":2,"./utilities":10}],6:[function(require,module,exports){
+var animationFactory = require("../factories/animation-factory");
 
 module.exports = {
-    modHeartProto: null,
     selector: null,
-    liveAnimations: [],
+    animations: [],
 
-    addAnimation: addAnimation,
+    addAnimation: function addAnimation(options) {
+        var result = animationFactory(this.selector, options);
+        return this;
+    },
     compose: function compose() {
-        this.addAnimation(this.selector, options);
+        this.addAnimation(options);
         return this;
     }
 };
+},{"../factories/animation-factory":3}],7:[function(require,module,exports){
+var randomInRange = require("../utilities").randomInRange;
 
+module.exports = {
 
-function addAnimation(selector, options) {
-    var elt       = document.querySelector(selector),
-        config    = extend({}, heartProto, mainDefault, options);
+    modHeartProto: null,
 
-    // * TODO group with other geyser shit
-    // * BUG - coordinates do not automagically correct on window resizing
-    var eltRect   = elt.getBoundingClientRect(),
-        geyserX   = eltRect.left + ((eltRect.width) / 2),
-        geyserY   = eltRect.top + (eltRect.height / 2);
-
-    // TODO put this somewhere else... this is sloppy
-    if (!config.imageSrc) {
-        config.imageSrc = heartIconFactory({
-            fill: config.heartColor,
-        });
-    }
-
-    if (config.geyser) {
-        geyser();
-    }
-    else {
-        elt.addEventListener("click", onclick);
-        elt.addEventListener("touchend", ontouch);
-    }
-
-    function heartFactory(x, y) {
-        return Object.create(config).setCoordinates(x, y).setImage();
-    }
-
-    function heartSpewer(x,y) {
-        return function() {
-            heartFactory(x, y).show().animate();
-        };
-    }
-
-    function spewHearts(x,y) {
-        var count = randomInRange(config.heartsCount);
-        for (var i = 0; i < count; i++) {
-            window.requestAnimationFrame(heartSpewer(x, y));
-        }
-    }
-
-    function onclick(e) {
+    onclick: function onclick(e) {
         var x = e.pageX,
             y = e.pageY;
-        spewHearts(x, y);
-    }
+        this.spewHearts(x, y);
+    },
 
-    function ontouch(e) {
+    ontouch: function ontouch(e) {
         var x = e.changedTouches[0].pageX,
             y = e.changedTouches[0].pageY;
-        spewHearts(x, y);
+        this.spewHearts(x, y);
+    },
+
+    spewHearts: function spewHearts(x,y) {
+        var count = randomInRange(this.modHeartProto.heartsCount);
+        for (var i = 0; i < count; i++) {
+            window.requestAnimationFrame(this.heartSpewer(x, y).bind(this));
+        }
+    },
+
+    heartFactory: function heartFactory(x, y) {
+        return Object.create(this.modHeartProto).setCoordinates(x, y).setImage();
+    },
+
+    heartSpewer: function heartSpewer(x,y) {
+        return function() {
+            this.heartFactory(x, y).show().animate();
+        };
+    },
+
+    // TODO - make a `geyserAnimation` prototype
+    // * BUG - coordinates do not automagically correct on window resizing
+    geyser: function geyser(elt) {
+        var eltRect   = elt.getBoundingClientRect(),
+            geyserX   = eltRect.left + ((eltRect.width) / 2),
+            geyserY   = eltRect.top + (eltRect.height / 2);
+
+        setInterval(function(){
+            this.spewHearts(geyserX, geyserY);
+        }.bind(this), this.modHeartProto.geyserInterval);
     }
 
-    function geyser() {
-        config.geyserInterval = config.geyserInterval || config.transitionDuration/2;
-        setInterval(function(){
-            spewHearts(geyserX, geyserY);
-        }, config.geyserInterval);
-    }
-}
-},{"../defaults":2,"../icon-factory":3,"../utilities":8,"./heart-prototype":6}],6:[function(require,module,exports){
+};
+},{"../utilities":10}],8:[function(require,module,exports){
+// TODO
+// make this smaller! it does too much
+
 // TODO
 // switch to only using utils module...
 var utils = require("../utilities"),
@@ -368,20 +391,18 @@ module.exports = {
     }
 
 };
-},{"../utilities":8}],7:[function(require,module,exports){
+},{"../utilities":10}],9:[function(require,module,exports){
 (function (global){
 // TODO
 // - allow blur config
 // - cache existing animations
-// - let user specify numbers + arrays for options
+// - let user specify numbers & arrays for options
 // - 'noise' option for initial coords
 // - rename configs
 
 var argumentsHelper = require("./arguments-helper");
 var loadPresets = require("./preset-loader");
-// var animationFactory = require("./animation-factory");
-
-var animationProto = require("./prototypes/animation-prototype");
+var animationCollectionProto = require("./prototypes/animation-collection-prototype");
 
 
 loadPresets(SuperHearts);
@@ -395,29 +416,18 @@ function SuperHearts() {
 
 
     // TODO
-    // cache results of SuperHearts
-    // use an object whose keys are selectors!!!
-    var result = Object.create(animationProto);
+    // cache results of calls to SuperHearts
+    // coud use an object whose keys are selectors!
+    var result = Object.create(animationCollectionProto);
+    result.selector = selector;
 
     // hack
     if (optionsArray.length === 0) optionsArray.push({});
     optionsArray.forEach(function(options) {
-        result.addAnimation(selector, options);
+        result.addAnimation(options);
     });
 
     return result;
-
-    // if (optionsArray.length === 0) optionsArray.push({});
-    // optionsArray.forEach(function(options) {
-    //     animationFactory(selector, options);
-    // });
-
-    // return {
-    //     compose: function compose(options) {
-    //         animationFactory(selector, options);
-    //         return this;
-    //     }
-    // };
 }
 
 /* All the ways you can call SuperHearts */
@@ -430,7 +440,7 @@ function SuperHearts() {
 /* */
 /* aaaand SuperHearts.PRESET */
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./arguments-helper":1,"./preset-loader":4,"./prototypes/animation-prototype":5}],8:[function(require,module,exports){
+},{"./arguments-helper":1,"./preset-loader":5,"./prototypes/animation-collection-prototype":6}],10:[function(require,module,exports){
 module.exports = {
     square: function square(x) {
         return x*x;
@@ -483,4 +493,4 @@ function extendHelper(destination, source) {
     }
     return destination;
 }
-},{}]},{},[7]);
+},{}]},{},[9]);

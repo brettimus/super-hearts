@@ -9,10 +9,7 @@ Well, fine person, you are in luck!
 Give us a selector, and we'll make sure your `click` and `touchend` events are full of happy, happy joy.
 
 ```javascript
-var options = {},
-    selector = "#myThingIWantToSpewHeartsWhenClicked";
-
-SuperHearts(selector, options);
+var dawh = SuperHearts(); // now try clicking around
 ```
 
 ## options
@@ -52,6 +49,7 @@ _This could use a lot of work if you want to help!_
 
 
 ### geyser
+** SOON-TO-BE-PRIVATE **
 Default is `false`
 
 Bool
@@ -158,8 +156,11 @@ _Not affected by scalar_
 
 
 ## TODO
-* Write the TODO
+* Refactor heart-prototype
+* Refactor SVG manipulation
+* Add more SVG manipulation
+* Cache image?
 
 
 ## If you want to contribute
-Tell me! Let's talk!
+I only accept pull requests in writing.

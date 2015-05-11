@@ -2,6 +2,8 @@
 var DEFAULTS = require("./defaults"),
     argumentsHelper = require("./arguments-helper");
 
+var extend = require("./utilities").extend;
+
 module.exports = function loadPresets(SuperHearts) { // is this a confusing or consistent parameter name?
 
     function presetHandler(presetDefaults) {
