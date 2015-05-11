@@ -26,6 +26,8 @@ function addAnimation(selector, options) {
     var elt       = document.querySelector(selector),
         config    = extend({}, heartProto, mainDefault, options);
 
+    this.selector = selector;
+
     // * TODO group with other geyser shit
     // * BUG - coordinates do not automagically correct on window resizing
     var eltRect   = elt.getBoundingClientRect(),

@@ -7,10 +7,7 @@
 
 var argumentsHelper = require("./arguments-helper");
 var loadPresets = require("./preset-loader");
-// var animationFactory = require("./animation-factory");
-
 var animationProto = require("./prototypes/animation-prototype");
-
 
 loadPresets(SuperHearts);
 
@@ -20,7 +17,6 @@ function SuperHearts() {
     var args         = argumentsHelper(arguments),
         selector     = args.selector,
         optionsArray = args.optionsArray;
-
 
     // TODO
     // cache results of SuperHearts
