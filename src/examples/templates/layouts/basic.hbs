@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title> SuperHearts | {{title}} </title>
+</head>
+<link rel="stylesheet" href="./style.css">
+<body>
+  <h1>{{page.header}}</h1>
+  <p>you can experiment with the current animation in the console</p>
+  <p>it is stored as the global variable &ldquo;SHTEST&rdquo;</p>
+  {{>body}}
+  {{>script-tag}}
+  <script>
+    var SHTEST = {{page.example}};
+  </script>
+</body>
+</html>

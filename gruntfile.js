@@ -3,6 +3,7 @@ module.exports = function(grunt) {
 
     // load all grunt npm modules
     require("matchdep").filterDev("grunt-*").forEach(grunt.loadNpmTasks);
+    grunt.loadNpmTasks('assemble');
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
@@ -26,9 +27,35 @@ module.exports = function(grunt) {
                 }
             }
         },
+
+        // Takes your scss files and compiles them to css
+        sass: {
+          dist: {
+            options: {
+              style: 'expanded'
+            },
+            files: {
+              'dist/examples/style.css': 'src/examples/scss/style.scss',
+            }
+          }
+        },
+
+        // assembles hbs templates
+        assemble: {
+          options: {
+            data: 'src/examples/templates/data/*.json',
+            layoutdir: 'src/examples/templates/layouts',
+            flatten  : true,
+            partials : 'src/examples/templates/partials/**/*.hbs'
+          },
+          pages: {
+            src: ['src/examples/templates/pages/*.hbs'],
+            dest: 'dist/examples'
+          }
+        },
     });
 
     // default task
     // * this is what runs when we just type `grunt`
-    grunt.registerTask('default', ['browserify', 'uglify']);
+    grunt.registerTask('default', ['browserify', 'uglify', 'sass', 'assemble']);
 };

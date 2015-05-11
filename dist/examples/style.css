@@ -1,0 +1,25 @@
+html,
+body {
+  color: #222222;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-weight: 300;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  font-size: 36px;
+  line-height: 45px;
+  padding-top: 40px;
+  text-align: center;
+}
+
+p {
+  color: #888888;
+  font-size: 18px;
+  line-height: 22px;
+  text-align: center;
+}
+
+/*# sourceMappingURL=style.css.map */
