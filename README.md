@@ -144,6 +144,8 @@ Array of length 2
 
 How far (in px) a heart is translated along the x-axis from the original click. I think in cartesian coordinates, so treat this as a cartesian translation (not that it makes a difference in this case).
 
+_Not affected by scalar_
+
 
 ### translateYRange
 Default is `[65, 90]`.
@@ -151,6 +153,8 @@ Default is `[65, 90]`.
 Array of length 2
 
 How far (in px) a heart is translated along the y-axis from the original click. I think in cartesian coordinates, so treat this as a cartesian translation.
+
+_Not affected by scalar_
 
 
 ## TODO

@@ -24,32 +24,24 @@
 </style>
 <body>
   <h1>click (or touch) the page for hearts</h1>
-  <div class="geyser-example">
+<!--   <div class="geyser-example">
     <span id="geyser">&nbsp;</span> look, a geyser!
-  </div>
+  </div> -->
   <script src="./super-hearts.js"></script>
   <script>
     /* Circle of Hearts */
-    SuperHearts("body", {
-        transitionDuration: 650,
-    });
-
+    var t = SuperHearts("body");
+    // SuperHearts.Geyser();
+    // var dawh = SuperHearts.Line("body", { transitionDuration: 650 });
+    // dawh.compose({ heartColor: "blue", transitionDuration: 200 });
     /* Geyser */
-    SuperHearts("#geyser", {
-        angleRange: [-75, 75],
-        heartsCount: [3,5],
-        scaleRange: [.05, .25],
-        geyser: true,
-        geyserInterval: 600,
-        transitionDuration: 850,
-    });
-
-    /* No rotation, large translateXRange */
-    // SuperHearts("body", {
-    //     heartColor: "blue",
-    //     rotateHearts: false,
-    //     transitionDuration: 650,
-    //     translateXRange: [-120, 120]
+    // SuperHearts("#geyser", {
+    //     angleRange: [-75, 75],
+    //     heartsCount: [3,5],
+    //     scaleRange: [.05, .25],
+    //     geyser: true,
+    //     geyserInterval: 600,
+    //     transitionDuration: 850,
     // });
   </script>
 </body>
