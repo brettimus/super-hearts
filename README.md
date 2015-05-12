@@ -5,14 +5,42 @@ _Inspired by `super.me`_
 
 Well, fine person, you are in luck! 
 
-## Quick Start (the defibrillator)
+## Quick Start (a.k.a The Defibrillator)
 Give us a selector, and we'll make sure your `click` and `touchend` events are full of happy, happy joy.
 
 ```javascript
 var dawh = SuperHearts(); // now try clicking around
 ```
 
-## options
+## Presets
+
+### Circle
+**Evented**
+```javascript
+// Hearts radiate in a ring pattern around a user's click or touch
+var circ = SuperHearts.Circle(); // note: this is equivalent to calling `SuperHearts()`
+```
+
+### Line
+**Evented**
+```javascript
+// Hearts float upwards and horizontally from the user's click or touch
+var line = SuperHearts.Line();
+```
+
+### Geyser
+**Continuous**
+```javascript
+// Hearts continuously spew from a fixed point
+var line = SuperHearts.Line();
+```
+
+### Button
+**Evented**
+_Coming soon!_
+
+
+## Options
 _Eff yeah configuration!_
 
 Wait. Are you not into configuration? That's okay! All options have defaults.
@@ -21,145 +49,162 @@ _Eff yeah defaults!_
 
 
 ### angle
+`Array` of length 2 **or** `Number`
+
+Determines the (inclusive) range of angles (measured in degrees) that is used to randomly rotate hearts. You may specify a range outside of `[0, 360]`. 
+
+If you only supply a `Number` (call it `n`), it is implicitly converted to `[n,n]`.
+
 Default is `[0, 359]` (deg)
-
-Array of length 2
-
-Determines the (inclusive) range of angles (measured in degrees) that is used to randomly rotate hearts. You may specify a range outside of `[0, 360]`.
 
 
 ### fan
-Default is `false`.
-
-Bool
+`Boolean`
 
 If true, hearts are spewed in a circular, fanning pattern.
 
-
-### floatingInSpace
 Default is `false`.
 
-Bool
 
+### floatingInSpace
+`Boolean`
+
+_This could use a lot of work if you want to help!_
 Affects how hearts are oriented when they are translated. 
 When `false`, all hearts appear to "shoot out" from the click/touch point. 
 When `true`, the hearts' orientation is a little more scattered, like they were thrown lazily by a small child.
 
-_This could use a lot of work if you want to help!_
+Default is `false`.
 
 
 ### geyser
-** SOON-TO-BE-PRIVATE **
+`Boolean`
+
+When `true`, creates a continuous stream of hearts. 
+Starting coordinates are calculated based off of the targeted element's `boundingRect`.
+
 Default is `false`
 
-Bool
-
-When `true`, creates a continuous stream of hearts. Starting coordinates are calculated based off of the targeted element's `boundingRect`. 
-
 **Note:** turning on `geyser` means that `click` and `touch` events are not attached to the target element.
+_This could use a lot of work if you want to help!_
 
 
 ### geyserInterval
-Default is `transitionDuration/2` (ms)
-
-Number
+`Number`
 
 Sets how often hearts are spewed from the geyser. **`0` is ignored**
 
-### color
-Default is `"#B91319"`.
+Default is `transitionDuration/2` (ms)
 
-String
+
+### color
+`String`
 
 Sets the fill for the default heart icon. (Should _hopefully_ do nothing if you configure your own image.)
 
+Default is `"#B91319"`.
+
 
 ### count
+`Array` of length 2 **or** `Number`.
+
 Default is `[6, 10]`
 
-Array of length 2
 
 The number of hearts that are spewed on a given touch/click is random.
-`heartsCount` determines the (inclusive) range from which said random number of hearts is chosen.
+Determines the (inclusive) range from which said random number of hearts is chosen. 
+If you only supply a `Number` (call it `n`), it is implicitly converted to `[n,n]`.
 
 
 ### imageSrc
-Defaults to an inlined SVG heart icon.
-
-String
+`String`
 
 Path to an image that you want to spew (preferably a heart). 
 
+Defaults to an SVG heart icon that is stored as a string in the source code.
+
 
 ### opacity
+`Array` of length 2 **or** `Number`.
+
+Hearts are given random opacity from `opacityRange[0]` to `opacityRange[1]`. You may only specify scalars to a hundredth. 
+If you only supply a `Number` (call it `n`), it is implicitly converted to `[n,n]`.
+
 Default is `[0.10, 0.75]`
-
-Array of length 2
-
-Hearts are given random opacity from `opacityRange[0]` to `opacityRange[1]`. You may only specify scalars to a hundredth.
 
 
 ### rotate
-Default is `true`.
-
-Bool
+`Boolean`
 
 If `false`, hearts are not rotated, and the original click/touch point becomes a geyser of hearts.
 
+Default is `true`.
+
 
 ### scalar
+`Array` of length 2 **or** `Number`.
+
+Hearts are randomly scaled in size from `scalarRange[0]` to `scalarRange[1]`. 
+You may only specify scalars to a hundredth. 
+If you only supply a `Number` (call it `n`), it is implicitly converted to `[n,n]`.
+
 Default is `[0.10, 0.45]`
-
-Array of length 2
-
-Hearts are randomly scaled in size from `scalarRange[0]` to `scalarRange[1]`. You may only specify scalars to a hundredth.
 
 
 ### transformOrigin
-Default is `"center center"`
+`String`
 
-String
+Sets the `transform-origin` property of images.
+
+Default is `"center center"`
 
 
 ### transitionDuration
+`Number`
+
+`SuperHearts` only supports milliseconds for now. 
+**Make sure to pass a number**, as this parameter is also used in a call to `setTimeout`. 
+(I know. I'm sorry.)
+
 Default is `400` (ms).
-
-Number
-
-`SuperHearts` only supports milliseconds for now. **Make sure to pass a number**, as this parameter is also used in a call to `setTimeout`. (Dude, I know. I'm sorry.)
 
 
 ### transitionFunction
+`String`
+
+Sets the function used in the `transition` property of images.
+
 Default is `"ease-out"`.
 
-String
+
+### translateX
+`Array` of length 2 **or** `Number`.
 
 
-### translateXRange
-Default is `[0, 0]`.
+How far (in px) a heart is translated along the x-axis from the original click. 
+I think in cartesian coordinates, so treat this as a cartesian translation (not that it makes a difference in this case).
+If you only supply a `Number` (call it `n`), it is implicitly converted to `[n,n]`.
 
-Array of length 2
+_Not affected by `scalar`._
 
-How far (in px) a heart is translated along the x-axis from the original click. I think in cartesian coordinates, so treat this as a cartesian translation (not that it makes a difference in this case).
-
-_Not affected by scalar_
+Default is `[0,0]`.
 
 
-### translateYRange
-Default is `[65, 90]`.
-
-Array of length 2
+### translateY
+`Array` of length 2 **or** `Number`.
 
 How far (in px) a heart is translated along the y-axis from the original click. I think in cartesian coordinates, so treat this as a cartesian translation.
 
-_Not affected by scalar_
+_Not affected by `scalar`._
+
+Default is `[65, 90]`.
 
 
 ## TODO
 * Refactor heart-prototype
 * Refactor SVG manipulation
 * Add more SVG manipulation
-* Cache image?
+* Draw hidden SVG image on the page and use a relative URL as an image source
 
 
 ## If you want to contribute
