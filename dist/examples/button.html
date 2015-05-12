@@ -3,18 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title> SuperHearts | Ole Heartful </title>
+  <title> SuperHearts |  </title>
 </head>
 <link rel="stylesheet" href="./style.css">
 <body>
-  <h1>ooh look at that geyser!</h1>
+  <h1>confine the hearts to a button</h1>
   <p>also, try opening the console to experiment with the current animation</p>
-  <code class="example">var dawh = SuperHearts.Geyser();</code>
+  <code class="example">var dawh = SuperHearts.Button("#click-me");</code>
   
-
+<div>
+  <button class="button" id="click-me">Click Me!</button>
+</div>
   <script src="../super-hearts.js"></script>
   <script>
-    var dawh = SuperHearts.Geyser();
+    var dawh = SuperHearts.Button("#click-me", { color: "orange", });
     console.log("Hello today!\nThe current animation object is stored as the variable `dawh`.\nEnjoy!")
   </script>
 </body>

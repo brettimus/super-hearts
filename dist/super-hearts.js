@@ -1,12 +1,10 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-// This is a `utility` but it deserves its own file...
 module.exports = function argumentsHelper() {
-    var args = [].slice.call(arguments[0]), // NB this call to `arguments[0]` is weird but i like being able to pass in another function's args
+    var args = [].slice.call(arguments),
         result = {
             selector: "body",
             optionsArray: [],
         };
-
     if (typeof args[0] === "string") {
         result.selector = args[0];
         result.optionsArray = args.slice(1);
@@ -15,23 +13,25 @@ module.exports = function argumentsHelper() {
         result.optionsArray = args.slice(0);
     }
 
-    // // 
-    // if (result.optionsArray.length === 0) {
-    //     result.optionsArray.push({});
-    // }
+    // hack
+    if (result.optionsArray.length === 0) {
+        result.optionsArray.push({});
+    }
 
     return result;
 };
 },{}],2:[function(require,module,exports){
 // The "main" default is the Circle preset
 module.exports = require("./presets/circle");
-},{"./presets/circle":6}],3:[function(require,module,exports){
+},{"./presets/circle":7}],3:[function(require,module,exports){
 var animationCollectionProto = require("../prototypes/animation-collection-prototype");
 
 module.exports = function animationCollectionFactory(selector) {
-    return Object.create(animationCollectionProto).setSelector(selector);
+    var animationCollection = Object.create(animationCollectionProto).setSelector(selector);
+    animationCollection.animations = []; // NB - this is necessary to keep the collection's prototype from being modified by calls to `addAnimation`
+    return animationCollection;
 };
-},{"../prototypes/animation-collection-prototype":10}],4:[function(require,module,exports){
+},{"../prototypes/animation-collection-prototype":11}],4:[function(require,module,exports){
 // TODO - refactor dat factory
 // the factory function does stuff it shouldn't be responsible for
 
@@ -50,16 +50,26 @@ module.exports = function animationFactory(selector, options) {
         elt           = document.querySelector(selector),
         modHeartProto = extend({}, heartProto, mainDefault, options);
 
+    if (elt === null) {
+        console.log("No element matched the given selector: \""+selector+"\"");
+        console.log("~i shall fail silently~");
+        return;
+    }
+
     animation.selector = selector;
     animation.modHeartProto = modHeartProto;
 
 
     // TODO
-    // doesn't it seem like this 
+    // this is so wrong
 
     if (modHeartProto.geyser) {
         animation.modHeartProto.geyserInterval = animation.modHeartProto.geyserInterval || animation.modHeartProto.transitionDuration/2;
         animation.geyser(elt);
+    }
+    else if (modHeartProto.fixed) {
+        elt.addEventListener("click", animation.onclickFixed.bind(animation));
+        elt.addEventListener("touchEnd", animation.ontouchFixed.bind(animation));
     }
     else {
         elt.addEventListener("click", animation.onclick.bind(animation));
@@ -68,7 +78,7 @@ module.exports = function animationFactory(selector, options) {
 
     return animation;
 };
-},{"../default":2,"../prototypes/animation-prototype":11,"../prototypes/heart-prototype":12,"../utilities/extend":14}],5:[function(require,module,exports){
+},{"../default":2,"../prototypes/animation-prototype":12,"../prototypes/heart-prototype":13,"../utilities/extend":15}],5:[function(require,module,exports){
 // TODO - construct this from actual SVG file (close!)
 //      - look into using an SVG lib instead of xml2js
 //
@@ -101,6 +111,16 @@ module.exports = function(options) {
 },{}],6:[function(require,module,exports){
 module.exports = {
     angle: [0, 359],
+    count: [6, 10],
+    fixed: true,
+    opacity: [0.10, 0.75],
+    scalar: [0.15, 0.45],
+    transitionDuration: 600,
+    translateY: [15, 45],
+};
+},{}],7:[function(require,module,exports){
+module.exports = {
+    angle: [0, 359],
     fan: false,
     floatingInSpace: false,
     geyser: false,
@@ -116,7 +136,7 @@ module.exports = {
     translateX: [0, 0],
     translateY: [15, 45],
 };
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 module.exports = {
     angle: [-10, 10],
     geyser: true,
@@ -128,16 +148,17 @@ module.exports = {
     translateX: [-45, 45],
     translateY: [30, 60]
 };
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 module.exports = {
     rotate: false,
     transitionDuration: 650,
     translateX: [-60, 60]
 };
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 // TODO
-// loop through all files in sub-dir, add them programmatically
-var circleDefaults  = require("./circle"),
+// loop through all files in sub-dir and register them as presets
+var buttonDefaults  = require("./button"),
+    circleDefaults  = require("./circle"),
     lineDefaults    = require("./line"),
     geyserDefaults  = require("./geyser"),
     argumentsHelper = require("../arguments-helper"),
@@ -146,7 +167,7 @@ var circleDefaults  = require("./circle"),
 module.exports = function loadPresets(SuperHearts) { // is this a confusing or consistent parameter name?
 
     function presetHandler(presetDefaults, originalArgs) {
-        var args         = argumentsHelper(arguments),
+        var args         = argumentsHelper.apply(null, originalArgs),
             selector     = args.selector,
             optionsArray = args.optionsArray;
 
@@ -155,10 +176,12 @@ module.exports = function loadPresets(SuperHearts) { // is this a confusing or c
             optionsArray[index] = extend({}, presetDefaults, options);
         });
 
-        var normalizedArgs = [selector].concat(optionsArray);
-        console.log("normalized args", normalizedArgs);
-        return SuperHearts.apply(SuperHearts, normalizedArgs);
+        return SuperHearts.apply(SuperHearts, [selector].concat(optionsArray));
     }
+
+    SuperHearts.Button = function Button() {
+        return presetHandler(buttonDefaults, arguments);
+    };
 
     SuperHearts.Circle = function Circle() {
         return presetHandler(circleDefaults, arguments);
@@ -172,11 +195,13 @@ module.exports = function loadPresets(SuperHearts) { // is this a confusing or c
         return presetHandler(geyserDefaults, arguments);
     };
 };
-},{"../arguments-helper":1,"../utilities/extend":14,"./circle":6,"./geyser":7,"./line":8}],10:[function(require,module,exports){
+
+
+},{"../arguments-helper":1,"../utilities/extend":15,"./button":6,"./circle":7,"./geyser":8,"./line":9}],11:[function(require,module,exports){
 var animationFactory = require("../factories/animation-factory");
 
 module.exports = {
-    animations: [],
+    animations: null, // Array (assigned on instance creation in factory function).
 
     addAnimation: function addAnimation(options) {
         var result = animationFactory(this.selector, options);
@@ -213,7 +238,7 @@ module.exports = {
         return this;
     },
 };
-},{"../factories/animation-factory":4}],11:[function(require,module,exports){
+},{"../factories/animation-factory":4}],12:[function(require,module,exports){
 var randomInRange = require("../utilities/random").randomInRange;
 
 module.exports = {
@@ -222,21 +247,30 @@ module.exports = {
     modHeartProto: null,
 
     onclick: function onclick(e) {
-        console.log(e);
         var x = e.pageX,
             y = e.pageY;
-        console.log(x, y);
-        // this.spewHearts(x, y - e.clientY);
-        this.spewHearts(e.x, e.y);
-        // this.spewHearts(e.screenX, e.screenY);
-        // this.spewHearts(e.clientX, e.clientY);
+        this.spewHearts(x, y);
     },
 
     ontouch: function ontouch(e) {
-        // var x = e.changedTouches[0].pageX,
-        //     y = e.changedTouches[0].pageY;
-        var x = e.changedTouches[0].x,
-            y = e.changedTouches[0].y;
+        var x = e.changedTouches[0].pageX,
+            y = e.changedTouches[0].pageY;
+        this.spewHearts(x, y);
+    },
+
+    onclickFixed: function onclickFixed(e) {
+        var elt = e.target;
+        var eltRect = elt.getBoundingClientRect(),
+            x       = eltRect.left + ((eltRect.width) / 2),
+            y       = eltRect.top + (eltRect.height / 2);
+        this.spewHearts(x, y);
+    },
+
+    ontouchFixed: function ontouchFixed(e) {
+        var elt = e.target;
+        var eltRect = elt.getBoundingClientRect(),
+            x       = eltRect.left + ((eltRect.width) / 2),
+            y       = eltRect.top + (eltRect.height / 2);
         this.spewHearts(x, y);
     },
 
@@ -260,9 +294,9 @@ module.exports = {
     // TODO - make a `geyserAnimation` prototype
     // * BUG - coordinates do not automagically correct on window resizing
     geyser: function geyser(elt) {
-        var eltRect   = elt.getBoundingClientRect(),
-            geyserX   = eltRect.left + ((eltRect.width) / 2),
-            geyserY   = eltRect.top + (eltRect.height / 2);
+        var eltRect = elt.getBoundingClientRect(),
+            geyserX = eltRect.left + ((eltRect.width) / 2),
+            geyserY = eltRect.top + (eltRect.height / 2);
 
         setInterval(function(){
             this.spewHearts(geyserX, geyserY);
@@ -270,7 +304,7 @@ module.exports = {
     }
 
 };
-},{"../utilities/random":16}],12:[function(require,module,exports){
+},{"../utilities/random":17}],13:[function(require,module,exports){
 // TODO
 // make this smaller! it does too much
 
@@ -302,6 +336,7 @@ module.exports = {
     geyser: null,
     color: null,
     count: null,
+    fixed: null,
     image: null,
     imageSrc: null,
     opacity: null,
@@ -446,35 +481,28 @@ module.exports = {
     }
 
 };
-},{"../icon-factory":5,"../utilities/misc":15,"../utilities/random":16}],13:[function(require,module,exports){
+},{"../icon-factory":5,"../utilities/misc":16,"../utilities/random":17}],14:[function(require,module,exports){
 (function (global){
 // TODO
 // - allow blur config
 // - cache existing animations
-// - let user specify numbers & arrays for options
 // - 'noise' option for initial coords
-// - rename configs
+// - use querySelectorAll
 
 var argumentsHelper = require("./arguments-helper");
 var loadPresets = require("./presets/preset-loader");
 var animationCollectionFactory = require("./factories/animation-collection-factory");
 
-
-// TODO - provide interface for clicking an icon... we want to spew hearts from a consistent spot
-
 function SuperHearts() {
-    var args         = argumentsHelper(arguments),
+    var args         = argumentsHelper.apply(null, arguments),
         selector     = args.selector,
         optionsArray = args.optionsArray;
-
 
     // TODO
     // cache results of calls to SuperHearts
     // coud use an object whose keys are selectors!
     var result = animationCollectionFactory(selector);
 
-    // hack
-    if (optionsArray.length === 0) optionsArray.push({});
     optionsArray.forEach(function(options) {
         result.addAnimation(options);
     });
@@ -485,19 +513,17 @@ function SuperHearts() {
 loadPresets(SuperHearts);
 global.SuperHearts = SuperHearts;
 
-
-
 /* All the ways you can call SuperHearts */
 /* SuperHearts() */
-/* SuperHearts(selector) */
 /* SuperHearts(options) */
 /* SuperHearts(options1, options2, ...) */
+/* SuperHearts(selector) */
 /* SuperHearts(selector, options) */
 /* SuperHearts(selector, options1, options2, ...) */
 /* */
 /* aaaand SuperHearts.PRESET */
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./arguments-helper":1,"./factories/animation-collection-factory":3,"./presets/preset-loader":9}],14:[function(require,module,exports){
+},{"./arguments-helper":1,"./factories/animation-collection-factory":3,"./presets/preset-loader":10}],15:[function(require,module,exports){
 module.exports = function extend() {
     // extends an arbitrary number of objects
     var args   = [].slice.call(arguments, 0),
@@ -520,7 +546,7 @@ function extendHelper(destination, source) {
     }
     return destination;
 }
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 module.exports = {
     toRadians: function toRadians(theta) {
         return normalizeAngle(theta)*(Math.PI / 180);
@@ -532,7 +558,7 @@ function normalizeAngle(theta) {
     while (theta < 0) { theta += 360; }
     return theta % 360;
 }
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 module.exports = {
     randomAngle: function randomAngle() {
         return randomInRange.apply(null, arguments);
@@ -583,4 +609,4 @@ function normalizeArguments(args) {
 function noArgumentError() {
     throw new Error("You supplied no arguments to a function that needed arguments. Check the call stack!");
 }
-},{}]},{},[13]);
+},{}]},{},[14]);

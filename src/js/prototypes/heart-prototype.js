@@ -29,6 +29,7 @@ module.exports = {
     geyser: null,
     color: null,
     count: null,
+    fixed: null,
     image: null,
     imageSrc: null,
     opacity: null,

@@ -7,13 +7,14 @@
 </head>
 <link rel="stylesheet" href="./style.css">
 <body>
-  <h1>{{page.header}}</h1>
-  <p>you can experiment with the current animation in the console</p>
-  <p>it is stored as the global variable &ldquo;SHTEST&rdquo;</p>
+  <h1>{{page.heading}}</h1>
+  <p>also, try opening the console to experiment with the current animation</p>
+  <code class="example">var dawh = {{page.example}};</code>
   {{>body}}
   {{>script-tag}}
   <script>
-    var SHTEST = {{page.example}};
+    var dawh = {{page.example}};
+    console.log("Hello today!\nThe current animation object is stored as the variable `dawh`.\nEnjoy!")
   </script>
 </body>
 </html>

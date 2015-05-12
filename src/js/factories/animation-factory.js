@@ -16,16 +16,26 @@ module.exports = function animationFactory(selector, options) {
         elt           = document.querySelector(selector),
         modHeartProto = extend({}, heartProto, mainDefault, options);
 
+    if (elt === null) {
+        console.log("No element matched the given selector: \""+selector+"\"");
+        console.log("~i shall fail silently~");
+        return;
+    }
+
     animation.selector = selector;
     animation.modHeartProto = modHeartProto;
 
 
     // TODO
-    // doesn't it seem like this 
+    // this is so wrong
 
     if (modHeartProto.geyser) {
         animation.modHeartProto.geyserInterval = animation.modHeartProto.geyserInterval || animation.modHeartProto.transitionDuration/2;
         animation.geyser(elt);
+    }
+    else if (modHeartProto.fixed) {
+        elt.addEventListener("click", animation.onclickFixed.bind(animation));
+        elt.addEventListener("touchEnd", animation.ontouchFixed.bind(animation));
     }
     else {
         elt.addEventListener("click", animation.onclick.bind(animation));

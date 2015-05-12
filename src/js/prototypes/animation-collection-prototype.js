@@ -1,7 +1,7 @@
 var animationFactory = require("../factories/animation-factory");
 
 module.exports = {
-    animations: [],
+    animations: null, // Array (assigned on instance creation in factory function).
 
     addAnimation: function addAnimation(options) {
         var result = animationFactory(this.selector, options);

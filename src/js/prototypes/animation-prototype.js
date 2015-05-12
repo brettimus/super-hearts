@@ -6,21 +6,30 @@ module.exports = {
     modHeartProto: null,
 
     onclick: function onclick(e) {
-        console.log(e);
         var x = e.pageX,
             y = e.pageY;
-        console.log(x, y);
-        // this.spewHearts(x, y - e.clientY);
-        this.spewHearts(e.x, e.y);
-        // this.spewHearts(e.screenX, e.screenY);
-        // this.spewHearts(e.clientX, e.clientY);
+        this.spewHearts(x, y);
     },
 
     ontouch: function ontouch(e) {
-        // var x = e.changedTouches[0].pageX,
-        //     y = e.changedTouches[0].pageY;
-        var x = e.changedTouches[0].x,
-            y = e.changedTouches[0].y;
+        var x = e.changedTouches[0].pageX,
+            y = e.changedTouches[0].pageY;
+        this.spewHearts(x, y);
+    },
+
+    onclickFixed: function onclickFixed(e) {
+        var elt = e.target;
+        var eltRect = elt.getBoundingClientRect(),
+            x       = eltRect.left + ((eltRect.width) / 2),
+            y       = eltRect.top + (eltRect.height / 2);
+        this.spewHearts(x, y);
+    },
+
+    ontouchFixed: function ontouchFixed(e) {
+        var elt = e.target;
+        var eltRect = elt.getBoundingClientRect(),
+            x       = eltRect.left + ((eltRect.width) / 2),
+            y       = eltRect.top + (eltRect.height / 2);
         this.spewHearts(x, y);
     },
 
@@ -44,9 +53,9 @@ module.exports = {
     // TODO - make a `geyserAnimation` prototype
     // * BUG - coordinates do not automagically correct on window resizing
     geyser: function geyser(elt) {
-        var eltRect   = elt.getBoundingClientRect(),
-            geyserX   = eltRect.left + ((eltRect.width) / 2),
-            geyserY   = eltRect.top + (eltRect.height / 2);
+        var eltRect = elt.getBoundingClientRect(),
+            geyserX = eltRect.left + ((eltRect.width) / 2),
+            geyserY = eltRect.top + (eltRect.height / 2);
 
         setInterval(function(){
             this.spewHearts(geyserX, geyserY);

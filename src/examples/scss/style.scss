@@ -1,21 +1,49 @@
+$black: #222;
+$black-light: lighten($black, 20%);
+$white: #fff;
+$sans-serif: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+
 html,
 body {
-  color       : #222222;
-  font-family : "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
+  color       : $black;
+  font-family : $sans-serif;
+  font-size   : 14px;
   font-weight : 300;
   height      : 100%;
   margin      : 0;
   padding     : 0;
+  text-align  : center;
 }
 h1 {
   font-size   : 36px;
   line-height : 45px;
-  padding-top : 40px;
-  text-align  : center;
+  padding-top : 60px;
 }
 p {
-  color       : #888888;
+  color       : $black-light;
   font-size   : 18px;
   line-height : 22px;
-  text-align  : center;
+}
+
+.example {
+  border: solid 1px lighten($black, 50%);
+  border-radius: 5px;
+  display: block;
+  margin: 20px auto 30px auto;
+  max-width: 400px;
+  padding: 25px;
+}
+
+.button {
+  background: $black-light;
+  border: solid $black 2px;
+  border-radius: 10px;
+  color: $white;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 300;
+  height: 50px;
+  outline: none;
+  padding: 10px 10px 10px 18px;
+  width: 150px;
 }

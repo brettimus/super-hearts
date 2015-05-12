@@ -1,6 +1,7 @@
 // TODO
-// loop through all files in sub-dir, add them programmatically
-var circleDefaults  = require("./circle"),
+// loop through all files in sub-dir and register them as presets
+var buttonDefaults  = require("./button"),
+    circleDefaults  = require("./circle"),
     lineDefaults    = require("./line"),
     geyserDefaults  = require("./geyser"),
     argumentsHelper = require("../arguments-helper"),
@@ -9,7 +10,7 @@ var circleDefaults  = require("./circle"),
 module.exports = function loadPresets(SuperHearts) { // is this a confusing or consistent parameter name?
 
     function presetHandler(presetDefaults, originalArgs) {
-        var args         = argumentsHelper(arguments),
+        var args         = argumentsHelper.apply(null, originalArgs),
             selector     = args.selector,
             optionsArray = args.optionsArray;
 
@@ -18,10 +19,12 @@ module.exports = function loadPresets(SuperHearts) { // is this a confusing or c
             optionsArray[index] = extend({}, presetDefaults, options);
         });
 
-        var normalizedArgs = [selector].concat(optionsArray);
-        console.log("normalized args", normalizedArgs);
-        return SuperHearts.apply(SuperHearts, normalizedArgs);
+        return SuperHearts.apply(SuperHearts, [selector].concat(optionsArray));
     }
+
+    SuperHearts.Button = function Button() {
+        return presetHandler(buttonDefaults, arguments);
+    };
 
     SuperHearts.Circle = function Circle() {
         return presetHandler(circleDefaults, arguments);
@@ -35,3 +38,4 @@ module.exports = function loadPresets(SuperHearts) { // is this a confusing or c
         return presetHandler(geyserDefaults, arguments);
     };
 };
+
