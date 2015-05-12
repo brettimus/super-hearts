@@ -6,6 +6,6 @@ module.exports = {
     opacity: [0.3, 0.6],
     scalar: [0.20, 0.25],
     transitionDuration: 800,
-    translateXRange: [-45, 45],
-    translateYRange: [30, 60]
+    translateX: [-45, 45],
+    translateY: [30, 60]
 };

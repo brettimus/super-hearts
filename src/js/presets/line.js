@@ -1,5 +1,5 @@
 module.exports = {
     rotate: false,
     transitionDuration: 650,
-    translateXRange: [-60, 60]
+    translateX: [-60, 60]
 };

@@ -12,6 +12,6 @@ module.exports = {
     transformOrigin: "center center",
     transitionDuration: 400,
     transitionFunction: "ease-out",
-    translateXRange: [0, 0],
-    translateYRange: [15, 45],
+    translateX: [0, 0],
+    translateY: [15, 45],
 };

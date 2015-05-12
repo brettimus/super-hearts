@@ -4,9 +4,9 @@
 // TODO
 // switch to only using utils module...
 var miscUtils = require("../utilities/misc"),
-    randUtils  = require("../utilities/random"),
-    square = miscUtils.square,
+    randUtils = require("../utilities/random"),
     toRadians = miscUtils.toRadians,
+    normalizeAngle = miscUtils.normalizeAngle,
     randomAngle = randUtils.randomAngle,
     randomOpacity = randUtils.randomOpacity,
     randomScalar = randUtils.randomScalar,
@@ -37,8 +37,8 @@ module.exports = {
     transformOrigin: null,
     transitionDuration: null,
     transitionFunction: null,
-    translateXRange: null,
-    translateYRange: null,
+    translateX: null,
+    translateY: null,
     x: null,
     y: null,
     addTransform: function addTransform(operation) {
@@ -83,14 +83,9 @@ module.exports = {
         return this;
     },
     getAngle: function getAngle() {
-        // normalize the angle for consistency
-        var theta;
         if (!this.rotate) return 0;
         if (typeof this._THETA !== "number") {
-            theta = randomAngle(this.angle[0], this.angle[1]);
-            while (theta < 0) { theta += 360; }
-            theta = theta % 360;
-            this._THETA = theta;
+            this._THETA = normalizeAngle(randomAngle(this.angle));
         }
         return this._THETA;
     },
@@ -108,7 +103,7 @@ module.exports = {
     },
     getScalar: function getScalar() {
         if (typeof this._SCALAR !== "number") {
-            this._SCALAR = randomScalar(this.scalar[0], this.scalar[1]);
+            this._SCALAR = randomScalar(this.scalar);
         }
         return this._SCALAR;
     },
@@ -119,7 +114,7 @@ module.exports = {
     getStyle: function getStyle() {
         var left       = (this.x - this.image.width/2),
             top        = (this.y - this.image.height/2),
-            opacity    = randomOpacity(this.opacity[0], this.opacity[1]);
+            opacity    = randomOpacity(this.opacity);
         return [
             "left:"+left+"px",
             "opacity:"+opacity,
@@ -139,8 +134,8 @@ module.exports = {
     },
     getTranslate: function getTranslate() {
         // TODO: separate this into translateX and translateY
-        var tx = randomInRange(this.translateXRange),
-            ty = -randomInRange(this.translateYRange);
+        var tx = randomInRange(this.translateX),
+            ty = -randomInRange(this.translateY);
 
         if (this.floatingInSpace) return this.spaceyTranslate(tx, ty);
 
@@ -165,7 +160,7 @@ module.exports = {
     // this is a fixer-upper...
     spaceyTranslate: function spaceyTranslate(tx, ty) {
         var angle = this.getAngle(),
-            translateLength = Math.sqrt(square(tx) + square(ty));
+            translateLength = Math.sqrt(tx*tx + ty*ty);
         tx = translateLength * Math.sin(toRadians(angle));
         ty = translateLength * Math.cos(toRadians(angle));
 

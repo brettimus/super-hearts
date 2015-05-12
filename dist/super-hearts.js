@@ -113,8 +113,8 @@ module.exports = {
     transformOrigin: "center center",
     transitionDuration: 400,
     transitionFunction: "ease-out",
-    translateXRange: [0, 0],
-    translateYRange: [15, 45],
+    translateX: [0, 0],
+    translateY: [15, 45],
 };
 },{}],7:[function(require,module,exports){
 module.exports = {
@@ -125,14 +125,14 @@ module.exports = {
     opacity: [0.3, 0.6],
     scalar: [0.20, 0.25],
     transitionDuration: 800,
-    translateXRange: [-45, 45],
-    translateYRange: [30, 60]
+    translateX: [-45, 45],
+    translateY: [30, 60]
 };
 },{}],8:[function(require,module,exports){
 module.exports = {
     rotate: false,
     transitionDuration: 650,
-    translateXRange: [-60, 60]
+    translateX: [-60, 60]
 };
 },{}],9:[function(require,module,exports){
 // TODO
@@ -270,20 +270,20 @@ module.exports = {
     }
 
 };
-},{"../utilities/random":15}],12:[function(require,module,exports){
+},{"../utilities/random":16}],12:[function(require,module,exports){
 // TODO
 // make this smaller! it does too much
 
 // TODO
 // switch to only using utils module...
-var utils = require("../utilities/utilities"),
-    rand  = require("../utilities/random"),
-    square = utils.square,
-    toRadians = utils.toRadians,
-    randomAngle = rand.randomAngle,
-    randomOpacity = rand.randomOpacity,
-    randomScalar = rand.randomScalar,
-    randomInRange = rand.randomInRange;
+var miscUtils = require("../utilities/misc"),
+    randUtils = require("../utilities/random"),
+    toRadians = miscUtils.toRadians,
+    normalizeAngle = miscUtils.normalizeAngle,
+    randomAngle = randUtils.randomAngle,
+    randomOpacity = randUtils.randomOpacity,
+    randomScalar = randUtils.randomScalar,
+    randomInRange = randUtils.randomInRange;
 
 var heartIconFactory = require("../icon-factory");
 
@@ -310,8 +310,8 @@ module.exports = {
     transformOrigin: null,
     transitionDuration: null,
     transitionFunction: null,
-    translateXRange: null,
-    translateYRange: null,
+    translateX: null,
+    translateY: null,
     x: null,
     y: null,
     addTransform: function addTransform(operation) {
@@ -356,14 +356,9 @@ module.exports = {
         return this;
     },
     getAngle: function getAngle() {
-        // normalize the angle for consistency
-        var theta;
         if (!this.rotate) return 0;
         if (typeof this._THETA !== "number") {
-            theta = randomAngle(this.angle[0], this.angle[1]);
-            while (theta < 0) { theta += 360; }
-            theta = theta % 360;
-            this._THETA = theta;
+            this._THETA = normalizeAngle(randomAngle(this.angle));
         }
         return this._THETA;
     },
@@ -381,7 +376,7 @@ module.exports = {
     },
     getScalar: function getScalar() {
         if (typeof this._SCALAR !== "number") {
-            this._SCALAR = randomScalar(this.scalar[0], this.scalar[1]);
+            this._SCALAR = randomScalar(this.scalar);
         }
         return this._SCALAR;
     },
@@ -392,7 +387,7 @@ module.exports = {
     getStyle: function getStyle() {
         var left       = (this.x - this.image.width/2),
             top        = (this.y - this.image.height/2),
-            opacity    = randomOpacity(this.opacity[0], this.opacity[1]);
+            opacity    = randomOpacity(this.opacity);
         return [
             "left:"+left+"px",
             "opacity:"+opacity,
@@ -412,8 +407,8 @@ module.exports = {
     },
     getTranslate: function getTranslate() {
         // TODO: separate this into translateX and translateY
-        var tx = randomInRange(this.translateXRange),
-            ty = -randomInRange(this.translateYRange);
+        var tx = randomInRange(this.translateX),
+            ty = -randomInRange(this.translateY);
 
         if (this.floatingInSpace) return this.spaceyTranslate(tx, ty);
 
@@ -438,7 +433,7 @@ module.exports = {
     // this is a fixer-upper...
     spaceyTranslate: function spaceyTranslate(tx, ty) {
         var angle = this.getAngle(),
-            translateLength = Math.sqrt(square(tx) + square(ty));
+            translateLength = Math.sqrt(tx*tx + ty*ty);
         tx = translateLength * Math.sin(toRadians(angle));
         ty = translateLength * Math.cos(toRadians(angle));
 
@@ -451,7 +446,7 @@ module.exports = {
     }
 
 };
-},{"../icon-factory":5,"../utilities/random":15,"../utilities/utilities":16}],13:[function(require,module,exports){
+},{"../icon-factory":5,"../utilities/misc":15,"../utilities/random":16}],13:[function(require,module,exports){
 (function (global){
 // TODO
 // - allow blur config
@@ -527,36 +522,65 @@ function extendHelper(destination, source) {
 }
 },{}],15:[function(require,module,exports){
 module.exports = {
-    randomAngle: function randomAngle(a, b) {
-        return randomInRange(a, b);
+    toRadians: function toRadians(theta) {
+        return normalizeAngle(theta)*(Math.PI / 180);
     },
-    randomOpacity: function randomOpacity(a, b) {
-        return randomInRange(a*100, b*100)/100;
+    normalizeAngle: normalizeAngle,
+};
+
+function normalizeAngle(theta) {
+    while (theta < 0) { theta += 360; }
+    return theta % 360;
+}
+},{}],16:[function(require,module,exports){
+module.exports = {
+    randomAngle: function randomAngle() {
+        return randomInRange.apply(null, arguments);
     },
-    randomScalar: function randomScalar(a, b) { // assumes we're working with tenths...
-        return randomInRange(a*100, b*100)/100;
+    randomOpacity: function randomOpacity() {
+        return randomInRange_hundreths.apply(null, arguments);
+    },
+    randomScalar: function randomScalar() {
+        return randomInRange_hundreths.apply(null, arguments);
     },
     randomInRange: randomInRange,
 };
 
-// TODO - clean this up
-function randomInRange(a, b) {
-    var args = [].slice.call(arguments);
-    if (args.length === 1) {
-        if (args[0].length < 2) throw new Error("a range array must have two values");
-        a = args[0][0];
-        b = args[0][1];
-    }
-    return Math.floor(Math.random() * (b - a + 1)) + a;
+function randomInRange() {
+    var args = normalizeArguments(arguments),
+        min  = args[0],
+        max  = args[1];
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-},{}],16:[function(require,module,exports){
-module.exports = {
-    square: function square(x) {
-        return x*x;
-    },
-    toRadians: function toRadians(theta) {
-        while (theta < 0) { theta += 360; }
-        return (theta % 360)*(Math.PI / 180);
-    },
-};
+
+function randomInRange_hundreths() {
+    var args = normalizeArguments(arguments),
+        min  = args[0],
+        max  = args[1];
+    return randomInRange(min*100, max*100)/100;
+}
+
+function normalizeArguments(args) {
+
+    args = [].slice.call(args);
+    var result = [],
+        head   = args[0];
+
+    if (!args.length) noArgumentError();
+
+    // Case 1: Two numbers (hopefully), which we return as a Range
+    if (args.length > 1) return args;
+
+    // Case 2: Only one argument, and it's a number.
+    if (typeof head === "number") {
+        return [head, head];
+    }
+
+    // Case 3: Only one argument, and it's a Range (hopefully)
+    return head;
+}
+
+function noArgumentError() {
+    throw new Error("You supplied no arguments to a function that needed arguments. Check the call stack!");
+}
 },{}]},{},[13]);

@@ -1,23 +1,50 @@
 module.exports = {
-    randomAngle: function randomAngle(a, b) {
-        return randomInRange(a, b);
+    randomAngle: function randomAngle() {
+        return randomInRange.apply(null, arguments);
     },
-    randomOpacity: function randomOpacity(a, b) {
-        return randomInRange(a*100, b*100)/100;
+    randomOpacity: function randomOpacity() {
+        return randomInRange_hundreths.apply(null, arguments);
     },
-    randomScalar: function randomScalar(a, b) { // assumes we're working with tenths...
-        return randomInRange(a*100, b*100)/100;
+    randomScalar: function randomScalar() {
+        return randomInRange_hundreths.apply(null, arguments);
     },
     randomInRange: randomInRange,
 };
 
-// TODO - clean this up
-function randomInRange(a, b) {
-    var args = [].slice.call(arguments);
-    if (args.length === 1) {
-        if (args[0].length < 2) throw new Error("a range array must have two values");
-        a = args[0][0];
-        b = args[0][1];
+function randomInRange() {
+    var args = normalizeArguments(arguments),
+        min  = args[0],
+        max  = args[1];
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function randomInRange_hundreths() {
+    var args = normalizeArguments(arguments),
+        min  = args[0],
+        max  = args[1];
+    return randomInRange(min*100, max*100)/100;
+}
+
+function normalizeArguments(args) {
+
+    args = [].slice.call(args);
+    var result = [],
+        head   = args[0];
+
+    if (!args.length) noArgumentError();
+
+    // Case 1: Two numbers (hopefully), which we return as a Range
+    if (args.length > 1) return args;
+
+    // Case 2: Only one argument, and it's a number.
+    if (typeof head === "number") {
+        return [head, head];
     }
-    return Math.floor(Math.random() * (b - a + 1)) + a;
+
+    // Case 3: Only one argument, and it's a Range (hopefully)
+    return head;
+}
+
+function noArgumentError() {
+    throw new Error("You supplied no arguments to a function that needed arguments. Check the call stack!");
 }
