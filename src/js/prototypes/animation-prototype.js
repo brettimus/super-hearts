@@ -3,6 +3,7 @@ var randomInRange = require("../utilities/random").randomInRange;
 module.exports = {
 
     count: null, // TODO - should store this here...
+    events: null,
     modHeartProto: null,
 
     onclick: function onclick(e) {
@@ -31,6 +32,13 @@ module.exports = {
             x       = eltRect.left + ((eltRect.width) / 2),
             y       = eltRect.top + (eltRect.height / 2);
         this.spewHearts(x, y);
+    },
+
+    remove: function remove(selector) {
+        var elt = document.querySelector(selector);
+        Object.keys(this.events).forEach(function(eventName, i) {
+            elt.removeEventListener(eventName, this.events[eventName]);
+        }, this);
     },
 
     spewHearts: function spewHearts(x,y) {

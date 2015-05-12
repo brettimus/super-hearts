@@ -22,6 +22,10 @@ module.exports = function animationFactory(selector, options) {
         return;
     }
 
+    animation.events = {
+        click: null,
+        touch: null,
+    };
     animation.selector = selector;
     animation.modHeartProto = modHeartProto;
 
@@ -34,12 +38,16 @@ module.exports = function animationFactory(selector, options) {
         animation.geyser(elt);
     }
     else if (modHeartProto.fixed) {
-        elt.addEventListener("click", animation.onclickFixed.bind(animation));
-        elt.addEventListener("touchEnd", animation.ontouchFixed.bind(animation));
+        animation.events.click = animation.onclickFixed.bind(animation);
+        elt.addEventListener("click", animation.events.click);
+        animation.events.touchend = animation.ontouchFixed.bind(animation);
+        elt.addEventListener("touchend", animation.events.touchend);
     }
     else {
-        elt.addEventListener("click", animation.onclick.bind(animation));
-        elt.addEventListener("touchend", animation.ontouch.bind(animation));
+        animation.events.click = animation.onclick.bind(animation);
+        elt.addEventListener("click", animation.events.click);
+        animation.events.touchend = animation.ontouch.bind(animation);
+        elt.addEventListener("touchend", animation.events.touchend);
     }
 
     return animation;

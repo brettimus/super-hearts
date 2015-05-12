@@ -56,6 +56,10 @@ module.exports = function animationFactory(selector, options) {
         return;
     }
 
+    animation.events = {
+        click: null,
+        touch: null,
+    };
     animation.selector = selector;
     animation.modHeartProto = modHeartProto;
 
@@ -68,12 +72,16 @@ module.exports = function animationFactory(selector, options) {
         animation.geyser(elt);
     }
     else if (modHeartProto.fixed) {
-        elt.addEventListener("click", animation.onclickFixed.bind(animation));
-        elt.addEventListener("touchEnd", animation.ontouchFixed.bind(animation));
+        animation.events.click = animation.onclickFixed.bind(animation);
+        elt.addEventListener("click", animation.events.click);
+        animation.events.touchend = animation.ontouchFixed.bind(animation);
+        elt.addEventListener("touchend", animation.events.touchend);
     }
     else {
-        elt.addEventListener("click", animation.onclick.bind(animation));
-        elt.addEventListener("touchend", animation.ontouch.bind(animation));
+        animation.events.click = animation.onclick.bind(animation);
+        elt.addEventListener("click", animation.events.click);
+        animation.events.touchend = animation.ontouch.bind(animation);
+        elt.addEventListener("touchend", animation.events.touchend);
     }
 
     return animation;
@@ -262,8 +270,23 @@ module.exports = {
         return this;
     },
 
+    removeAnimation: function removeAnimation() {
+        console.log("removeAnimation is _not yet implemented_");
+        return this;
+    },
+
     compose: function compose(options) {
         this.addAnimation(options);
+        return this;
+    },
+
+    removeAll: function removeAll() {
+        this.animations.forEach(function(animation, i, animations) {
+            console.log(this.animation);
+            animation.remove(this.selector);
+            animations[i] = null;
+        }, this);
+        this.animations = [];
         return this;
     },
 
@@ -290,6 +313,7 @@ module.exports = {
         Object.defineProperty(this, "selector", description);
         return this;
     },
+
 };
 },{"../factories/animation-factory":4}],12:[function(require,module,exports){
 var randomInRange = require("../utilities/random").randomInRange;
@@ -297,6 +321,7 @@ var randomInRange = require("../utilities/random").randomInRange;
 module.exports = {
 
     count: null, // TODO - should store this here...
+    events: null,
     modHeartProto: null,
 
     onclick: function onclick(e) {
@@ -325,6 +350,13 @@ module.exports = {
             x       = eltRect.left + ((eltRect.width) / 2),
             y       = eltRect.top + (eltRect.height / 2);
         this.spewHearts(x, y);
+    },
+
+    remove: function remove(selector) {
+        var elt = document.querySelector(selector);
+        Object.keys(this.events).forEach(function(eventName, i) {
+            elt.removeEventListener(eventName, this.events[eventName]);
+        }, this);
     },
 
     spewHearts: function spewHearts(x,y) {

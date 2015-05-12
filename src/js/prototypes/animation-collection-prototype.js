@@ -2,6 +2,8 @@ var animationFactory = require("../factories/animation-factory");
 
 module.exports = {
     animations: null, // Array (assigned on instance creation in factory function).
+    element: null,    // will be frozen
+    selector: null,   // will be frozen
 
     addAnimation: function addAnimation(options) {
         var result = animationFactory(this.selector, options);
@@ -9,8 +11,22 @@ module.exports = {
         return this;
     },
 
+    removeAnimation: function removeAnimation() {
+        console.log("removeAnimation is _not yet implemented_");
+        return this;
+    },
+
     compose: function compose(options) {
         this.addAnimation(options);
+        return this;
+    },
+
+    removeAll: function removeAll() {
+        this.animations.forEach(function(animation, i, animations) {
+            animation.remove(this.selector);
+            animations[i] = null;
+        }, this);
+        this.animations = [];
         return this;
     },
 
@@ -37,4 +53,5 @@ module.exports = {
         Object.defineProperty(this, "selector", description);
         return this;
     },
+
 };
