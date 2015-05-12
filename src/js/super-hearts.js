@@ -1,7 +1,5 @@
 // TODO
-// - allow blur config
 // - cache existing animations
-// - 'noise' option for initial coords
 // - use querySelectorAll
 
 var argumentsHelper = require("./arguments-helper");

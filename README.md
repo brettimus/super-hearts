@@ -67,6 +67,14 @@ Modifies the `stdDeviation` of an `<feGaussianBlur>` filter on the default SVG h
 Default is `0`
 
 
+### doNotRemove
+`Boolean`
+
+If true, image elemnts will stay on the page indefinitely;
+
+Default is `false`
+
+
 ### fan
 `Boolean`
 
@@ -209,11 +217,28 @@ _Not affected by `scalar`._
 Default is `[65, 90]`.
 
 
+### xNoise
+`Array` of length 2 **or** `Number`.
+
+Random noise added to the initial `x` coordinate of an image.
+
+Default is `0`.
+
+
+### yNoise
+`Array` of length 2 **or** `Number`.
+
+Random noise added to the initial `x` coordinate of an image.
+
+Default is `0`.
+
+
 ## TODO
-* Refactor heart-prototype
+* Refactor logic around `doNotRemove` option
+* Compose `heart-prototype` from several mixins (it's a behemoth right now)
 * Refactor SVG manipulation
 * Add more SVG manipulation
-* Draw hidden SVG image on the page and use a relative URL as an image source
+* Draw hidden SVG image on the page and use a relative URL as an image source (_close_)
 
 
 ## If you want to contribute

@@ -1,5 +1,7 @@
 module.exports = {
     angle: [0, 359],
+    blur: 0,
+    doNotRemove: false,
     fan: false,
     floatingInSpace: false,
     geyser: false,
@@ -14,4 +16,6 @@ module.exports = {
     transitionFunction: "ease-out",
     translateX: [0, 0],
     translateY: [15, 45],
+    xNoise: 0,
+    yNoise: 0,
 };

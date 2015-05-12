@@ -25,6 +25,7 @@ module.exports = {
     "_THETA": null,
     angle: null,
     blur: null,
+    doNotRemove: null,
     fan: null,
     floatingInSpace: null,
     geyser: null,
@@ -42,7 +43,9 @@ module.exports = {
     translateX: null,
     translateY: null,
     x: null,
+    xNoise: null,
     y: null,
+    yNoise: null,
     addTransform: function addTransform(operation) {
         this.image.style["-webkit-transform"] += operation;
         this.image.style["-ms-transform"]     += operation;
@@ -75,10 +78,12 @@ module.exports = {
         return this;
     },
     fadeOut: function fadeOut() {
-        var removeHeart = this.remove.bind(this);
-        this.image.style.opacity = 0;
-        setTimeout(removeHeart, this.transitionDuration);
-        return this;
+        if (!this.doNotRemove) {
+            var removeHeart = this.remove.bind(this);
+            this.image.style.opacity = 0;
+            setTimeout(removeHeart, this.transitionDuration);
+            return this;
+        }
     },
     remove: function remove() {
         document.querySelector("body").removeChild(this.image);
@@ -115,8 +120,8 @@ module.exports = {
         return "scale("+k+")";
     },
     getStyle: function getStyle() {
-        var left       = (this.x - this.image.width/2),
-            top        = (this.y - this.image.height/2),
+        var left       = (this.getX() - this.image.width/2),
+            top        = (this.getY() - this.image.height/2),
             opacity    = randomOpacity(this.opacity);
         return [
             "left:"+left+"px",
@@ -143,6 +148,18 @@ module.exports = {
         if (this.floatingInSpace) return this.spaceyTranslate(tx, ty);
 
         return "translate("+tx/this.getScalar()+"px,"+ty/this.getScalar()+"px)";
+    },
+    getX: function getX() {
+        return this.x + this.getXNoise();
+    },
+    getXNoise: function getXNoise() {
+        return randomInRange(this.xNoise||0);
+    },
+    getY: function getY() {
+        return this.y + this.getYNoise();
+    },
+    getYNoise: function getYNoise() {
+        return randomInRange(this.yNoise||0);
     },
     setCoordinates: function setCoordinates(x, y) {
         this.x = x;
