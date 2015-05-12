@@ -58,6 +58,15 @@ If you only supply a `Number` (call it `n`), it is implicitly converted to `[n,n
 Default is `[0, 359]` (deg)
 
 
+### blur
+`Number`
+
+_Work in progress._ 
+Modifies the `stdDeviation` of an `<feGaussianBlur>` filter on the default SVG heart.
+
+Default is `0`
+
+
 ### fan
 `Boolean`
 
