@@ -1,7 +1,10 @@
-var lineDefaults    = require("./line"),
+// TODO
+// loop through all files in sub-dir, add them programmatically
+var circleDefaults  = require("./circle"),
+    lineDefaults    = require("./line"),
     geyserDefaults  = require("./geyser"),
     argumentsHelper = require("../arguments-helper"),
-    extend          = require("../utilities").extend;
+    extend          = require("../utilities/extend");
 
 module.exports = function loadPresets(SuperHearts) { // is this a confusing or consistent parameter name?
 
@@ -19,6 +22,10 @@ module.exports = function loadPresets(SuperHearts) { // is this a confusing or c
         console.log("normalized args", normalizedArgs);
         return SuperHearts.apply(SuperHearts, normalizedArgs);
     }
+
+    SuperHearts.Circle = function Circle() {
+        return presetHandler(circleDefaults, arguments);
+    };
 
     SuperHearts.Line = function Line() {
         return presetHandler(lineDefaults, arguments);

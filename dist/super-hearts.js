@@ -23,40 +23,23 @@ module.exports = function argumentsHelper() {
     return result;
 };
 },{}],2:[function(require,module,exports){
-module.exports = {
-    circle: {
-        angle: [0, 359],
-        fan: false,
-        floatingInSpace: false,
-        geyser: false,
-        count: [6, 10],
-        color: "#B91319",
-        imageSrc: undefined,
-        opacity: [0.10, 0.75],
-        rotate: true,
-        scalar: [0.15, 0.45],
-        transformOrigin: "center center",
-        transitionDuration: 400,
-        transitionFunction: "ease-out",
-        translateXRange: [0, 0],
-        translateYRange: [15, 45],
-    }
-};
-},{}],3:[function(require,module,exports){
+// The "main" default is the Circle preset
+module.exports = require("./presets/circle");
+},{"./presets/circle":6}],3:[function(require,module,exports){
 var animationCollectionProto = require("../prototypes/animation-collection-prototype");
 
 module.exports = function animationCollectionFactory(selector) {
     return Object.create(animationCollectionProto).setSelector(selector);
 };
-},{"../prototypes/animation-collection-prototype":9}],4:[function(require,module,exports){
+},{"../prototypes/animation-collection-prototype":10}],4:[function(require,module,exports){
 // TODO - refactor dat factory
 // the factory function does stuff it shouldn't be responsible for
 
 var heartProto = require("../prototypes/heart-prototype"),
     animationProto = require("../prototypes/animation-prototype");
 
-var mainDefault = require("../defaults").circle,
-    extend = require("../utilities").extend;
+var mainDefault = require("../default"),
+    extend = require("../utilities/extend");
 
 module.exports = function animationFactory(selector, options) {
     // TODO
@@ -85,7 +68,7 @@ module.exports = function animationFactory(selector, options) {
 
     return animation;
 };
-},{"../defaults":2,"../prototypes/animation-prototype":10,"../prototypes/heart-prototype":11,"../utilities":13}],5:[function(require,module,exports){
+},{"../default":2,"../prototypes/animation-prototype":11,"../prototypes/heart-prototype":12,"../utilities/extend":14}],5:[function(require,module,exports){
 // TODO - construct this from actual SVG file (close!)
 //      - look into using an SVG lib instead of xml2js
 //
@@ -117,6 +100,24 @@ module.exports = function(options) {
 };
 },{}],6:[function(require,module,exports){
 module.exports = {
+    angle: [0, 359],
+    fan: false,
+    floatingInSpace: false,
+    geyser: false,
+    count: [6, 10],
+    color: "#B91319",
+    imageSrc: undefined,
+    opacity: [0.10, 0.75],
+    rotate: true,
+    scalar: [0.15, 0.45],
+    transformOrigin: "center center",
+    transitionDuration: 400,
+    transitionFunction: "ease-out",
+    translateXRange: [0, 0],
+    translateYRange: [15, 45],
+};
+},{}],7:[function(require,module,exports){
+module.exports = {
     angle: [-10, 10],
     geyser: true,
     geyserInterval: 200,
@@ -127,17 +128,20 @@ module.exports = {
     translateXRange: [-45, 45],
     translateYRange: [30, 60]
 };
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 module.exports = {
     rotate: false,
     transitionDuration: 650,
     translateXRange: [-60, 60]
 };
-},{}],8:[function(require,module,exports){
-var lineDefaults    = require("./line"),
+},{}],9:[function(require,module,exports){
+// TODO
+// loop through all files in sub-dir, add them programmatically
+var circleDefaults  = require("./circle"),
+    lineDefaults    = require("./line"),
     geyserDefaults  = require("./geyser"),
     argumentsHelper = require("../arguments-helper"),
-    extend          = require("../utilities").extend;
+    extend          = require("../utilities/extend");
 
 module.exports = function loadPresets(SuperHearts) { // is this a confusing or consistent parameter name?
 
@@ -156,6 +160,10 @@ module.exports = function loadPresets(SuperHearts) { // is this a confusing or c
         return SuperHearts.apply(SuperHearts, normalizedArgs);
     }
 
+    SuperHearts.Circle = function Circle() {
+        return presetHandler(circleDefaults, arguments);
+    };
+
     SuperHearts.Line = function Line() {
         return presetHandler(lineDefaults, arguments);
     };
@@ -164,7 +172,7 @@ module.exports = function loadPresets(SuperHearts) { // is this a confusing or c
         return presetHandler(geyserDefaults, arguments);
     };
 };
-},{"../arguments-helper":1,"../utilities":13,"./geyser":6,"./line":7}],9:[function(require,module,exports){
+},{"../arguments-helper":1,"../utilities/extend":14,"./circle":6,"./geyser":7,"./line":8}],10:[function(require,module,exports){
 var animationFactory = require("../factories/animation-factory");
 
 module.exports = {
@@ -205,8 +213,8 @@ module.exports = {
         return this;
     },
 };
-},{"../factories/animation-factory":4}],10:[function(require,module,exports){
-var randomInRange = require("../utilities").randomInRange;
+},{"../factories/animation-factory":4}],11:[function(require,module,exports){
+var randomInRange = require("../utilities/random").randomInRange;
 
 module.exports = {
 
@@ -262,22 +270,22 @@ module.exports = {
     }
 
 };
-},{"../utilities":13}],11:[function(require,module,exports){
+},{"../utilities/random":15}],12:[function(require,module,exports){
 // TODO
 // make this smaller! it does too much
 
 // TODO
 // switch to only using utils module...
-var utils = require("../utilities"),
+var utils = require("../utilities/utilities"),
+    rand  = require("../utilities/random"),
     square = utils.square,
     toRadians = utils.toRadians,
-    randomAngle = utils.randomAngle,
-    randomOpacity = utils.randomOpacity,
-    randomScalar = utils.randomScalar,
-    randomInRange = utils.randomInRange;
+    randomAngle = rand.randomAngle,
+    randomOpacity = rand.randomOpacity,
+    randomScalar = rand.randomScalar,
+    randomInRange = rand.randomInRange;
 
 var heartIconFactory = require("../icon-factory");
-
 
 /*** Note ***/
 // assigning `null` out the gate speeds up future assignments.
@@ -443,7 +451,7 @@ module.exports = {
     }
 
 };
-},{"../icon-factory":5,"../utilities":13}],12:[function(require,module,exports){
+},{"../icon-factory":5,"../utilities/random":15,"../utilities/utilities":16}],13:[function(require,module,exports){
 (function (global){
 // TODO
 // - allow blur config
@@ -494,15 +502,31 @@ global.SuperHearts = SuperHearts;
 /* */
 /* aaaand SuperHearts.PRESET */
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./arguments-helper":1,"./factories/animation-collection-factory":3,"./presets/preset-loader":8}],13:[function(require,module,exports){
+},{"./arguments-helper":1,"./factories/animation-collection-factory":3,"./presets/preset-loader":9}],14:[function(require,module,exports){
+module.exports = function extend() {
+    // extends an arbitrary number of objects
+    var args   = [].slice.call(arguments, 0),
+        result = args[0];
+
+    for (var i=1; i < args.length; i++) {
+        result = extendHelper(result, args[i]);
+    }
+
+    return result;
+};
+
+function extendHelper(destination, source) {
+    // thanks be to angus kroll
+    // https://javascriptweblog.wordpress.com/2011/05/31/a-fresh-look-at-javascript-mixins/
+    for (var k in source) {
+        if (source.hasOwnProperty(k)) {
+          destination[k] = source[k];
+        }
+    }
+    return destination;
+}
+},{}],15:[function(require,module,exports){
 module.exports = {
-    square: function square(x) {
-        return x*x;
-    },
-    toRadians: function toRadians(theta) {
-        while (theta < 0) { theta += 360; }
-        return (theta % 360)*(Math.PI / 180);
-    },
     randomAngle: function randomAngle(a, b) {
         return randomInRange(a, b);
     },
@@ -513,17 +537,6 @@ module.exports = {
         return randomInRange(a*100, b*100)/100;
     },
     randomInRange: randomInRange,
-    extend: function extend() {
-        // extends an arbitrary number of objects
-        var args   = [].slice.call(arguments, 0),
-            result = args[0];
-
-        for (var i=1; i < args.length; i++) {
-            result = extendHelper(result, args[i]);
-        }
-
-        return result;
-    },
 };
 
 // TODO - clean this up
@@ -536,15 +549,14 @@ function randomInRange(a, b) {
     }
     return Math.floor(Math.random() * (b - a + 1)) + a;
 }
-
-function extendHelper(destination, source) {
-    // thanks be to angus kroll
-    // https://javascriptweblog.wordpress.com/2011/05/31/a-fresh-look-at-javascript-mixins/
-    for (var k in source) {
-        if (source.hasOwnProperty(k)) {
-          destination[k] = source[k];
-        }
-    }
-    return destination;
-}
-},{}]},{},[12]);
+},{}],16:[function(require,module,exports){
+module.exports = {
+    square: function square(x) {
+        return x*x;
+    },
+    toRadians: function toRadians(theta) {
+        while (theta < 0) { theta += 360; }
+        return (theta % 360)*(Math.PI / 180);
+    },
+};
+},{}]},{},[13]);

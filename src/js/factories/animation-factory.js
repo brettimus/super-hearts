@@ -4,8 +4,8 @@
 var heartProto = require("../prototypes/heart-prototype"),
     animationProto = require("../prototypes/animation-prototype");
 
-var mainDefault = require("../defaults").circle,
-    extend = require("../utilities").extend;
+var mainDefault = require("../default"),
+    extend = require("../utilities/extend");
 
 module.exports = function animationFactory(selector, options) {
     // TODO

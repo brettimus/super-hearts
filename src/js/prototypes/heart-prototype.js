@@ -3,16 +3,16 @@
 
 // TODO
 // switch to only using utils module...
-var utils = require("../utilities"),
-    square = utils.square,
-    toRadians = utils.toRadians,
-    randomAngle = utils.randomAngle,
-    randomOpacity = utils.randomOpacity,
-    randomScalar = utils.randomScalar,
-    randomInRange = utils.randomInRange;
+var miscUtils = require("../utilities/misc"),
+    randUtils  = require("../utilities/random"),
+    square = miscUtils.square,
+    toRadians = miscUtils.toRadians,
+    randomAngle = randUtils.randomAngle,
+    randomOpacity = randUtils.randomOpacity,
+    randomScalar = randUtils.randomScalar,
+    randomInRange = randUtils.randomInRange;
 
 var heartIconFactory = require("../icon-factory");
-
 
 /*** Note ***/
 // assigning `null` out the gate speeds up future assignments.
