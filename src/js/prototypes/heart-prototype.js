@@ -24,6 +24,7 @@ module.exports = {
     "_SCALAR": null,
     "_THETA": null,
     angle: null,
+    blur: null,
     fan: null,
     floatingInSpace: null,
     geyser: null,
@@ -94,6 +95,7 @@ module.exports = {
         if (!this.imageSrc) {
             this.imageSrc = heartIconFactory({
                 fill: this.color,
+                blur: this.blur,
             });
         }
         return this.imageSrc;
