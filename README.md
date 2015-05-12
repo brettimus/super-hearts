@@ -233,13 +233,24 @@ Random noise added to the initial `x` coordinate of an image.
 Default is `0`.
 
 
+## Points of Pride
+* Use of `window.requestAnimationFrame` ([What's that?](http://www.paulirish.com/2011/requestanimationframe-for-smart-animating/))
+
+
 ## TODO
+* Change main default to be either incredibly basic or moar like Super's
+* `SuperHearts.registerDefault` method
+* `SuperHearts.registerPreset` method
+* Allow mass assignment (use `document.querySelectorAll` instead of `document.querySelector`)
+* Refactor presets to load from a directory
 * Refactor logic around `doNotRemove` option
 * Compose `heart-prototype` from several mixins (it's a behemoth right now)
+* Switch to using [jsdoc](http://usejsdoc.org/) after refactoring prototypes + factories
 * Refactor SVG manipulation
 * Add more SVG manipulation
-* Draw hidden SVG image on the page and use a relative URL as an image source (_close_)
-
+* Draw hidden SVG image on the page and use a relative URL as an image source (_getting close_)
+* Publish to NPM
+* PROFIT
 
 ## If you want to contribute
 I only accept pull requests in writing.

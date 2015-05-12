@@ -1,5 +1,3 @@
-// TODO
-// loop through all files in sub-dir and register them as presets
 var buttonDefaults  = require("./button"),
     circleDefaults  = require("./circle"),
     lineDefaults    = require("./line"),

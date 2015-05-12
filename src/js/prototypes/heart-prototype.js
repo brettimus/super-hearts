@@ -1,16 +1,11 @@
-// TODO
-// make this smaller! it does too much
-
-// TODO
-// switch to only using utils module...
-var miscUtils = require("../utilities/misc"),
-    randUtils = require("../utilities/random"),
-    toRadians = miscUtils.toRadians,
+var miscUtils      = require("../utilities/misc"),
+    randUtils      = require("../utilities/random"),
+    toRadians      = miscUtils.toRadians,
     normalizeAngle = miscUtils.normalizeAngle,
-    randomAngle = randUtils.randomAngle,
-    randomOpacity = randUtils.randomOpacity,
-    randomScalar = randUtils.randomScalar,
-    randomInRange = randUtils.randomInRange;
+    randomAngle    = randUtils.randomAngle,
+    randomOpacity  = randUtils.randomOpacity,
+    randomScalar   = randUtils.randomScalar,
+    randomInRange  = randUtils.randomInRange;
 
 var heartIconFactory = require("../icon-factory");
 
