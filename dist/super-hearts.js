@@ -141,13 +141,12 @@ var extend = require("./utilities").extend;
 
 module.exports = function loadPresets(SuperHearts) { // is this a confusing or consistent parameter name?
 
-    function presetHandler(originalArgs, presetDefaults) {
+    function presetHandler(presetDefaults, originalArgs) {
         var args         = argumentsHelper(originalArgs),
             selector     = args.selector,
             optionsArray = args.optionsArray;
 
-        // TODO - test this?
-        //        We are merging user options _after_ preset defaults so they can override at their leisure!
+        // Merge user options _after_ preset defaults so they can override at their leisure!
         optionsArray.forEach(function(options, index) {
             optionsArray[index] = extend({}, presetDefaults, options);
         });
@@ -156,11 +155,11 @@ module.exports = function loadPresets(SuperHearts) { // is this a confusing or c
     }
 
     SuperHearts.Line = function Line() {
-        return presetHandler(arguments, DEFAULTS.line);
+        return presetHandler(DEFAULTS.line, arguments);
     };
 
     SuperHearts.Geyser = function Geyser() {
-        return presetHandler(arguments, DEFAULTS.geyser);
+        return presetHandler(DEFAULTS.geyser, arguments);
     };
 };
 },{"./arguments-helper":1,"./defaults":2,"./utilities":11}],7:[function(require,module,exports){
@@ -209,17 +208,25 @@ var randomInRange = require("../utilities").randomInRange;
 
 module.exports = {
 
+    heartsCount: null, // should have this here...
     modHeartProto: null,
 
     onclick: function onclick(e) {
+        console.log(e);
         var x = e.pageX,
             y = e.pageY;
-        this.spewHearts(x, y);
+        console.log(x, y);
+        // this.spewHearts(x, y - e.clientY);
+        this.spewHearts(e.x, e.y);
+        // this.spewHearts(e.screenX, e.screenY);
+        // this.spewHearts(e.clientX, e.clientY);
     },
 
     ontouch: function ontouch(e) {
-        var x = e.changedTouches[0].pageX,
-            y = e.changedTouches[0].pageY;
+        // var x = e.changedTouches[0].pageX,
+        //     y = e.changedTouches[0].pageY;
+        var x = e.changedTouches[0].x,
+            y = e.changedTouches[0].y;
         this.spewHearts(x, y);
     },
 
@@ -447,6 +454,8 @@ var argumentsHelper = require("./arguments-helper");
 var loadPresets = require("./preset-loader");
 var animationCollectionFactory = require("./factories/animation-collection-factory");
 
+
+// TODO - provide interface for clicking an icon... we want to spew hearts from a consistent spot
 
 function SuperHearts() {
     var args         = argumentsHelper(arguments),

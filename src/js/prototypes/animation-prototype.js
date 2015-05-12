@@ -2,17 +2,25 @@ var randomInRange = require("../utilities").randomInRange;
 
 module.exports = {
 
+    heartsCount: null, // should have this here...
     modHeartProto: null,
 
     onclick: function onclick(e) {
+        console.log(e);
         var x = e.pageX,
             y = e.pageY;
-        this.spewHearts(x, y);
+        console.log(x, y);
+        // this.spewHearts(x, y - e.clientY);
+        this.spewHearts(e.x, e.y);
+        // this.spewHearts(e.screenX, e.screenY);
+        // this.spewHearts(e.clientX, e.clientY);
     },
 
     ontouch: function ontouch(e) {
-        var x = e.changedTouches[0].pageX,
-            y = e.changedTouches[0].pageY;
+        // var x = e.changedTouches[0].pageX,
+        //     y = e.changedTouches[0].pageY;
+        var x = e.changedTouches[0].x,
+            y = e.changedTouches[0].y;
         this.spewHearts(x, y);
     },
 

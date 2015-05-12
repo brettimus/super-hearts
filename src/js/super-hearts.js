@@ -10,6 +10,8 @@ var loadPresets = require("./preset-loader");
 var animationCollectionFactory = require("./factories/animation-collection-factory");
 
 
+// TODO - provide interface for clicking an icon... we want to spew hearts from a consistent spot
+
 function SuperHearts() {
     var args         = argumentsHelper(arguments),
         selector     = args.selector,
