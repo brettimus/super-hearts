@@ -1,13 +1,12 @@
-// TODO - move this to its own directory
-var DEFAULTS = require("./defaults"),
-    argumentsHelper = require("./arguments-helper");
-
-var extend = require("./utilities").extend;
+var lineDefaults    = require("./line"),
+    geyserDefaults  = require("./geyser"),
+    argumentsHelper = require("../arguments-helper"),
+    extend          = require("../utilities").extend;
 
 module.exports = function loadPresets(SuperHearts) { // is this a confusing or consistent parameter name?
 
     function presetHandler(presetDefaults, originalArgs) {
-        var args         = argumentsHelper(originalArgs),
+        var args         = argumentsHelper(arguments),
             selector     = args.selector,
             optionsArray = args.optionsArray;
 
@@ -16,14 +15,16 @@ module.exports = function loadPresets(SuperHearts) { // is this a confusing or c
             optionsArray[index] = extend({}, presetDefaults, options);
         });
 
-        return SuperHearts.apply(SuperHearts, [selector].concat(optionsArray));
+        var normalizedArgs = [selector].concat(optionsArray);
+        console.log("normalized args", normalizedArgs);
+        return SuperHearts.apply(SuperHearts, normalizedArgs);
     }
 
     SuperHearts.Line = function Line() {
-        return presetHandler(DEFAULTS.line, arguments);
+        return presetHandler(lineDefaults, arguments);
     };
 
     SuperHearts.Geyser = function Geyser() {
-        return presetHandler(DEFAULTS.geyser, arguments);
+        return presetHandler(geyserDefaults, arguments);
     };
 };

@@ -6,7 +6,7 @@
 // - rename configs
 
 var argumentsHelper = require("./arguments-helper");
-var loadPresets = require("./preset-loader");
+var loadPresets = require("./presets/preset-loader");
 var animationCollectionFactory = require("./factories/animation-collection-factory");
 
 

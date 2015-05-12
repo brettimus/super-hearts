@@ -20,7 +20,7 @@ Wait. Are you not into configuration? That's okay! All options have defaults.
 _Eff yeah defaults!_
 
 
-### angleRange
+### angle
 Default is `[0, 359]` (deg)
 
 Array of length 2
@@ -28,7 +28,7 @@ Array of length 2
 Determines the (inclusive) range of angles (measured in degrees) that is used to randomly rotate hearts. You may specify a range outside of `[0, 360]`.
 
 
-### fanHearts
+### fan
 Default is `false`.
 
 Bool
@@ -66,7 +66,7 @@ Number
 
 Sets how often hearts are spewed from the geyser. **`0` is ignored**
 
-### heartColor
+### color
 Default is `"#B91319"`.
 
 String
@@ -74,7 +74,7 @@ String
 Sets the fill for the default heart icon. (Should _hopefully_ do nothing if you configure your own image.)
 
 
-### heartsCount
+### count
 Default is `[6, 10]`
 
 Array of length 2
@@ -91,7 +91,7 @@ String
 Path to an image that you want to spew (preferably a heart). 
 
 
-### opacityRange
+### opacity
 Default is `[0.10, 0.75]`
 
 Array of length 2
@@ -99,7 +99,7 @@ Array of length 2
 Hearts are given random opacity from `opacityRange[0]` to `opacityRange[1]`. You may only specify scalars to a hundredth.
 
 
-### rotateHearts
+### rotate
 Default is `true`.
 
 Bool
@@ -107,7 +107,7 @@ Bool
 If `false`, hearts are not rotated, and the original click/touch point becomes a geyser of hearts.
 
 
-### scalarRange
+### scalar
 Default is `[0.10, 0.45]`
 
 Array of length 2

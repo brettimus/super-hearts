@@ -23,17 +23,17 @@ var heartIconFactory = require("../icon-factory");
 module.exports = {
     "_SCALAR": null,
     "_THETA": null,
-    angleRange: null,
-    fanHearts: null,
+    angle: null,
+    fan: null,
     floatingInSpace: null,
     geyser: null,
-    heartColor: null,
-    heartsCount: null,
+    color: null,
+    count: null,
     image: null,
     imageSrc: null,
-    opacityRange: null,
-    rotateHearts: null,
-    scalarRange: null,
+    opacity: null,
+    rotate: null,
+    scalar: null,
     transformOrigin: null,
     transitionDuration: null,
     transitionFunction: null,
@@ -59,12 +59,12 @@ module.exports = {
                 this.getScale(),
             ];
 
-        // TODO - clean this logick up. yuckie.
+        // TODO - clean this logick up. yucky.
         if (!this.fanHearts) {
             transforms.forEach(this.addTransform.bind(this));
         }
         window.requestAnimationFrame(function() {
-            if (this.fanHearts) {
+            if (this.fan) {
                 transforms.forEach(this.addTransform.bind(this));
             }
             this.addTransform(this.getTranslate()).fadeOut();
@@ -85,9 +85,9 @@ module.exports = {
     getAngle: function getAngle() {
         // normalize the angle for consistency
         var theta;
-        if (!this.rotateHearts) return 0;
+        if (!this.rotate) return 0;
         if (typeof this._THETA !== "number") {
-            theta = randomAngle(this.angleRange[0], this.angleRange[1]);
+            theta = randomAngle(this.angle[0], this.angle[1]);
             while (theta < 0) { theta += 360; }
             theta = theta % 360;
             this._THETA = theta;
@@ -97,7 +97,7 @@ module.exports = {
     getImageSrc: function getImageSrc() {
         if (!this.imageSrc) {
             this.imageSrc = heartIconFactory({
-                fill: this.heartColor,
+                fill: this.color,
             });
         }
         return this.imageSrc;
@@ -108,7 +108,7 @@ module.exports = {
     },
     getScalar: function getScalar() {
         if (typeof this._SCALAR !== "number") {
-            this._SCALAR = randomScalar(this.scalarRange[0], this.scalarRange[1]);
+            this._SCALAR = randomScalar(this.scalar[0], this.scalar[1]);
         }
         return this._SCALAR;
     },
@@ -119,7 +119,7 @@ module.exports = {
     getStyle: function getStyle() {
         var left       = (this.x - this.image.width/2),
             top        = (this.y - this.image.height/2),
-            opacity    = randomOpacity(this.opacityRange[0], this.opacityRange[1]);
+            opacity    = randomOpacity(this.opacity[0], this.opacity[1]);
         return [
             "left:"+left+"px",
             "opacity:"+opacity,

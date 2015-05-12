@@ -2,7 +2,7 @@ var randomInRange = require("../utilities").randomInRange;
 
 module.exports = {
 
-    heartsCount: null, // should have this here...
+    count: null, // TODO - should store this here...
     modHeartProto: null,
 
     onclick: function onclick(e) {
@@ -25,7 +25,7 @@ module.exports = {
     },
 
     spewHearts: function spewHearts(x,y) {
-        var count = randomInRange(this.modHeartProto.heartsCount);
+        var count = randomInRange(this.modHeartProto.count);
         for (var i = 0; i < count; i++) {
             window.requestAnimationFrame(this.heartSpewer(x, y).bind(this));
         }
