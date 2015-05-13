@@ -161,7 +161,8 @@ var SVG = '<?xml version="1.0" encoding="utf-8"?><svg version="1.1" id="Layer_1"
 module.exports = function(options) {
     var fill = options.fill,
         blur = options.blur || 0,
-        icon = SVG.replace("%FILL%", fill).replace("%BLUR%", blur).replace("%STYLES%", ""),
+        styles = option.styles || "",
+        icon = SVG.replace("%FILL%", fill).replace("%BLUR%", blur).replace("%STYLES%", styles),
         src = 'data:image/svg+xml;charset=utf-8,'+icon;
     return src;
 };
