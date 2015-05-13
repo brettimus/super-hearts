@@ -27,7 +27,7 @@ module.exports = require("./presets/circle");
 var animationCollectionProto = require("../prototypes/animation-collection-prototype");
 
 module.exports = function animationCollectionFactory(selector) {
-    var animationCollection = Object.create(animationCollectionProto).setSelector(selector);
+    var animationCollection = Object.create(animationCollectionProto).setSelector(selector).setElement(selector);
     animationCollection.animations = []; // NB - this is necessary to keep the collection's prototype from being modified by calls to `addAnimation`
     return animationCollection;
 };
@@ -157,7 +157,7 @@ module.exports = function animationFactory(selector, options) {
 // // mergeNode2.setAttributeNS("http://www.w3.org/2000/svg", "in", "SourceGraphic");
 
 
-var SVG = '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px" height="87.501px" viewBox="-12.058 0.441 100 87.501" enable-background="new -12.058 0.441 100 87.501" xml:space="preserve"><filter id="blur"><feGaussianBlur in="SourceGraphic" stdDeviation="%BLUR%" result="blurry" /><feMerge><feMergeNode in="SourceGraphic"></feMergeNode><feMergeNode in="blurry"></feMergeNode></feMerge></filter><g id="heart" style="filter:url(#blur); "><path style="fill: %FILL%; %STYLES%" d="M0.441,50.606c-8.714-8.552-12.499-17.927-12.499-26.316c0-14.308,9.541-23.849,24.011-23.849c13.484,0,18.096,6.252,25.989,15.297C45.836,6.693,50.44,0.441,63.925,0.441c14.477,0,24.018,9.541,24.018,23.849c0,8.389-3.784,17.765-12.498,26.316L37.942,87.942L0.441,50.606z"/></g></svg>';
+var SVG = '<?xml version="1.0" encoding="utf-8"?><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px" height="87.501px" viewBox="-12.058 0.441 100 87.501" enable-background="new -12.058 0.441 100 87.501" xml:space="preserve"><filter id="blur"><feGaussianBlur in="SourceGraphic" stdDeviation="%BLUR%" result="blurry" /><feMerge><feMergeNode in="SourceGraphic"></feMergeNode><feMergeNode in="blurry"></feMergeNode></feMerge></filter><g id="heart" style="filter:url(#blur); "><path style="fill: %FILL%; %STYLES%" d="M0.441,50.606c-8.714-8.552-12.499-17.927-12.499-26.316c0-14.308,9.541-23.849,24.011-23.849c13.484,0,18.096,6.252,25.989,15.297C45.836,6.693,50.44,0.441,63.925,0.441c14.477,0,24.018,9.541,24.018,23.849c0,8.389-3.784,17.765-12.498,26.316L37.942,87.942L0.441,50.606z"/></g></svg>';
 module.exports = function(options) {
     var fill = options.fill,
         blur = options.blur || 0,
@@ -216,8 +216,6 @@ module.exports = {
     translateX: [-60, 60]
 };
 },{}],10:[function(require,module,exports){
-// TODO
-// loop through all files in sub-dir and register them as presets
 var buttonDefaults  = require("./button"),
     circleDefaults  = require("./circle"),
     lineDefaults    = require("./line"),
@@ -263,6 +261,8 @@ var animationFactory = require("../factories/animation-factory");
 
 module.exports = {
     animations: null, // Array (assigned on instance creation in factory function).
+    element: null,    // will be frozen
+    selector: null,   // will be frozen
 
     addAnimation: function addAnimation(options) {
         var result = animationFactory(this.selector, options);
@@ -282,7 +282,6 @@ module.exports = {
 
     removeAll: function removeAll() {
         this.animations.forEach(function(animation, i, animations) {
-            console.log(this.animation);
             animation.remove(this.selector);
             animations[i] = null;
         }, this);
@@ -390,19 +389,14 @@ module.exports = {
 
 };
 },{"../utilities/random":17}],13:[function(require,module,exports){
-// TODO
-// make this smaller! it does too much
-
-// TODO
-// switch to only using utils module...
-var miscUtils = require("../utilities/misc"),
-    randUtils = require("../utilities/random"),
-    toRadians = miscUtils.toRadians,
+var miscUtils      = require("../utilities/misc"),
+    randUtils      = require("../utilities/random"),
+    toRadians      = miscUtils.toRadians,
     normalizeAngle = miscUtils.normalizeAngle,
-    randomAngle = randUtils.randomAngle,
-    randomOpacity = randUtils.randomOpacity,
-    randomScalar = randUtils.randomScalar,
-    randomInRange = randUtils.randomInRange;
+    randomAngle    = randUtils.randomAngle,
+    randomOpacity  = randUtils.randomOpacity,
+    randomScalar   = randUtils.randomScalar,
+    randomInRange  = randUtils.randomInRange;
 
 var heartIconFactory = require("../icon-factory");
 

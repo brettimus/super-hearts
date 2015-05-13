@@ -237,7 +237,12 @@ Default is `0`.
 * Use of `window.requestAnimationFrame` ([What's that?](http://www.paulirish.com/2011/requestanimationframe-for-smart-animating/))
 
 
+## BUGS
+* heart icon does not load in firefox
+
+
 ## TODO
+* inlined heart icon uses a `data:` URL for its source, **SO IT IS NOT CACHED**
 * Change main default to be either incredibly basic or moar like Super's
 * `SuperHearts.registerDefault` method
 * `SuperHearts.registerPreset` method
