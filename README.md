@@ -37,7 +37,8 @@ var line = SuperHearts.Geyser();
 
 ### Button
 **Evented**
-_Coming soon!_
+// Fixed starting point determined by `boundingRect` of `#myButton`
+var butt = SuperHearts.Button("#myButton");
 
 
 ## Options
@@ -227,10 +228,6 @@ Default is `0`.
 
 ## Points of Pride
 * Use of `window.requestAnimationFrame` ([What's that?](http://www.paulirish.com/2011/requestanimationframe-for-smart-animating/))
-
-
-## BUGS
-* heart icon does not load in firefox
 
 
 ## TODO
