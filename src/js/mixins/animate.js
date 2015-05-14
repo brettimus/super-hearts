@@ -1,5 +1,3 @@
-
-
 module.exports = {
     animate: animate,
 };
@@ -11,14 +9,15 @@ function animate() {
     if (this.fan) return console.log("Sorry! Fanning is temporarily out of order.");
 
     transforms.forEach(this.addTransform.bind(this));
+
     window.requestAnimationFrame(function() {
         this.addTransform(this.getTranslate()).fadeOut();
     }.bind(this));
 
-
-
     return this;
 }
+
+// *** NOT IN USE *** //
 
 function fanimate() {
     var translate,
@@ -28,7 +27,6 @@ function fanimate() {
         translate = this.getTranslate();
         transforms.push(translate);
         transforms.forEach(this.addTransform.bind(this));
-        // this.addTransform(this.getTranslate()).fadeOut();
         this.fadeOut();
     }.bind(this));
 

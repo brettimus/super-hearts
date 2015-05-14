@@ -1,22 +1,37 @@
-var miscUtils      = require("../utilities/misc"),
-    randUtils      = require("../utilities/random"),
-    toRadians      = miscUtils.toRadians,
-    normalizeAngle = miscUtils.normalizeAngle,
-    randomAngle    = randUtils.randomAngle,
+var randUtils      = require("../utilities/random"),
     randomOpacity  = randUtils.randomOpacity,
-    randomScalar   = randUtils.randomScalar,
-    randomInRange  = randUtils.randomInRange;
+    randomInRange  = randUtils.randomInRange,
+    extend = require("../utilities/extend");
 
 var heartIconFactory = require("../icon-factory");
 
-/*** Note ***/
-// assigning `null` out the gate speeds up future assignments.
-// the performance gain is probably neglible...
-// BUT I ONLY HAVE ONE SPEED 
-// AND IT IS OPTIMAL
-/*** End of Note ***/
-module.exports = {
-     angle: null,
+var positionMixin = {
+    x: null,
+    xNoise: null,
+    y: null,
+    yNoise: null,
+    
+    getX: function getX() {
+        return this.x + this.getXNoise();
+    },
+    getXNoise: function getXNoise() {
+        return randomInRange(this.xNoise||0);
+    },
+    getY: function getY() {
+        return this.y + this.getYNoise();
+    },
+    getYNoise: function getYNoise() {
+        return randomInRange(this.yNoise||0);
+    },
+    setCoordinates: function setCoordinates(x, y) {
+        this.x = x;
+        this.y = y;
+        return this;
+    },
+};
+
+heartProto = {
+    angle: null,
     blur: null,
     doNotRemove: null,
     fan: null,
@@ -28,23 +43,21 @@ module.exports = {
     image: null,
     imageSrc: null,
     opacity: null,
-    rotate: null,
     scalar: null,
     transformOrigin: null,
     transitionDuration: null,
     transitionFunction: null,
     translateX: null,
     translateY: null,
-    x: null,
-    xNoise: null,
-    y: null,
-    yNoise: null,
+
+
     /* TODO these bool configs aren't triggering mixins... */
     animate: true,
+    rotate: true,
     scale: true,
     transition: true,
     translate: true,
-    
+
     addTransform: function addTransform(operation) {
         this.image.style["-webkit-transform"] += operation;
         this.image.style["-ms-transform"]     += operation;
@@ -55,7 +68,6 @@ module.exports = {
         document.querySelector("body").appendChild(this.image);
         return this;
     },
-
     fadeOut: function fadeOut() {
         if (!this.doNotRemove) {
             var removeHeart = this.remove.bind(this);
@@ -97,38 +109,14 @@ module.exports = {
             "-webkit-transition: "+this.getTransition(),
         ].join(";");
     },
-    getTransition: function getTransition() {
-        return this.transitionDuration+"ms "+ this.transitionFunction;
-    },
-    getTransforms: function getTransforms() {
-        var translate,
-            transforms = [];
 
-        if (this.getRotate) {
-            transforms.push(this.getRotate());
-        }
-        if (this.getScale) {
-            transforms.push(this.getScale());
-        }
+    getTransforms: function getTransforms() {
+        var transforms = [];
+        if (this.getRotate) transforms.push(this.getRotate());
+        if (this.getScale) transforms.push(this.getScale());
         return transforms;
     },
-    getX: function getX() {
-        return this.x + this.getXNoise();
-    },
-    getXNoise: function getXNoise() {
-        return randomInRange(this.xNoise||0);
-    },
-    getY: function getY() {
-        return this.y + this.getYNoise();
-    },
-    getYNoise: function getYNoise() {
-        return randomInRange(this.yNoise||0);
-    },
-    setCoordinates: function setCoordinates(x, y) {
-        this.x = x;
-        this.y = y;
-        return this;
-    },
+
     setImage: function setImage() {
         this.image = document.createElement("img");
         this.image.src = this.getImageSrc();
@@ -139,5 +127,6 @@ module.exports = {
         this.appendToBody();
         return this;
     },
-
 };
+
+module.exports = extend(heartProto, positionMixin);

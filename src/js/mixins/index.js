@@ -1,5 +1,6 @@
 var rotate = require("./rotate"),
     scale = require("./scale"),
+    transition = require("./transition"),
     translate = require("./translate"),
     animate = require("./animate");
 
@@ -7,6 +8,7 @@ module.exports = {
     animate: animate,
     rotate: rotate,
     scale: scale,
+    transition: transition,
     translate: translate,
 };
 
