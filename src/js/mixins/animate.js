@@ -1,6 +1,11 @@
 module.exports = {
     animate: animate,
 };
+// TODO - check assumptions
+// * .getTransforms()
+// * .getTranslate()
+// * .addTransform()
+// * .fadeOut()
 
 function animate() {
     var translate,

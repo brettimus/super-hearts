@@ -596,12 +596,23 @@ var randUtils      = require("../utilities/random"),
 
 var heartIconFactory = require("../icon-factory");
 
+// code smell - this should not know about the image
 var positionMixin = {
     x: null,
     xNoise: null,
     y: null,
     yNoise: null,
-    
+
+    // TODO - abstract away the offset here
+    getInitialX: function getInitialX() {
+        var x = this.getX() - this.image.width/2;
+        return x;
+    },
+    getInitialY: function getInitialY() {
+        var y = this.getY() - this.image.height/2;
+        return y;
+    },
+
     getX: function getX() {
         return this.x + this.getXNoise();
     },
@@ -614,6 +625,7 @@ var positionMixin = {
     getYNoise: function getYNoise() {
         return randomInRange(this.yNoise||0);
     },
+
     setCoordinates: function setCoordinates(x, y) {
         this.x = x;
         this.y = y;
@@ -621,18 +633,35 @@ var positionMixin = {
     },
 };
 
+var imageMixin = {
+    blur: null,
+    color: null,
+    image: null,
+    imageSrc: null,
+    getImageSrc: function getImageSrc() {
+        if (!this.imageSrc) {
+            this.imageSrc = heartIconFactory({
+                fill: this.color,
+                blur: this.blur,
+            });
+        }
+        return this.imageSrc;
+    },
+    setImage: function setImage() {
+        this.image = document.createElement("img");
+        this.image.src = this.getImageSrc();
+        return this;
+    },
+};
+
 heartProto = {
     angle: null,
-    blur: null,
     doNotRemove: null,
     fan: null,
     floatingInSpace: null,
     geyser: null,
-    color: null,
     count: null,
     fixed: null,
-    image: null,
-    imageSrc: null,
     opacity: null,
     scalar: null,
     transformOrigin: null,
@@ -671,19 +700,13 @@ heartProto = {
         document.querySelector("body").removeChild(this.image);
         return this;
     },
-    getImageSrc: function getImageSrc() {
-        if (!this.imageSrc) {
-            this.imageSrc = heartIconFactory({
-                fill: this.color,
-                blur: this.blur,
-            });
-        }
-        return this.imageSrc;
-    },
+
     getStyle: function getStyle() {
-        var left       = (this.getX() - this.image.width/2),
-            top        = (this.getY() - this.image.height/2),
-            opacity    = randomOpacity(this.opacity);
+        var left       = this.getInitialX(),
+            top        = this.getInitialY(),
+            opacity    = randomOpacity(this.opacity),
+            transform  = "translate3d("+ left + "px," + top + "px,0)",
+            transition = this.getTransition();
         return [
             "left:"+0+"px",
             "opacity:"+opacity,
@@ -693,11 +716,11 @@ heartProto = {
             "transform-origin:"+this.transformOrigin,
             "-webkit-transform-origin:"+this.transformOrigin,
             "-ms-transform-origin:"+this.transformOrigin,
-            "transform:translate3d("+ left + "px," + top + "px,0)",
-            "-webkit-transform:translate3d("+ left + "px," + top + "px,0)",
-            "transition: "+this.getTransition(),
-            "-moz-transition: "+this.getTransition(),
-            "-webkit-transition: "+this.getTransition(),
+            "transform:" + transform,
+            "-webkit-transform:" + transform,
+            "transition:" + transition,
+            "-moz-transition:" + transition,
+            "-webkit-transition:" + transition,
         ].join(";");
     },
 
@@ -708,11 +731,7 @@ heartProto = {
         return transforms;
     },
 
-    setImage: function setImage() {
-        this.image = document.createElement("img");
-        this.image.src = this.getImageSrc();
-        return this;
-    },
+
     show: function show() {
         this.image.style.cssText += this.getStyle();
         this.appendToBody();
@@ -720,7 +739,7 @@ heartProto = {
     },
 };
 
-module.exports = extend(heartProto, positionMixin);
+module.exports = extend(heartProto, imageMixin, positionMixin);
 },{"../icon-factory":6,"../utilities/extend":22,"../utilities/random":24}],21:[function(require,module,exports){
 (function (global){
 // TODO
