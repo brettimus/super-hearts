@@ -32,7 +32,7 @@ var line = SuperHearts.Line();
 **Continuous**
 ```javascript
 // Hearts continuously spew from a fixed point
-var line = SuperHearts.Line();
+var line = SuperHearts.Geyser();
 ```
 
 ### Button
@@ -46,6 +46,9 @@ _Eff yeah configuration!_
 Wait. Are you not into configuration? That's okay! All options have defaults.
 
 _Eff yeah defaults!_
+
+Note that defaults depend on the preset configuration (duh). 
+For now, all of the defaults below refer to the `Circle` preset's default.
 
 
 ### angle
