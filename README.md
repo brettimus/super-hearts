@@ -86,17 +86,6 @@ If true, hearts are spewed in a circular, fanning pattern.
 Default is `false`.
 
 
-### floatingInSpace
-`Boolean`
-
-_This could use a lot of work if you want to help!_
-Affects how hearts are oriented when they are translated. 
-When `false`, all hearts appear to "shoot out" from the click/touch point. 
-When `true`, the hearts' orientation is a little more scattered, like they were thrown lazily by a small child.
-
-Default is `false`.
-
-
 ### geyser
 `Boolean`
 

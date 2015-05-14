@@ -23,7 +23,7 @@ module.exports = function argumentsHelper() {
 },{}],2:[function(require,module,exports){
 // The "main" default is the Circle preset
 module.exports = require("./presets/circle");
-},{"./presets/circle":7}],3:[function(require,module,exports){
+},{"./presets/circle":13}],3:[function(require,module,exports){
 var animationCollectionProto = require("../prototypes/animation-collection-prototype");
 
 module.exports = function animationCollectionFactory(selector) {
@@ -31,15 +31,17 @@ module.exports = function animationCollectionFactory(selector) {
     animationCollection.animations = []; // NB - this is necessary to keep the collection's prototype from being modified by calls to `addAnimation`
     return animationCollection;
 };
-},{"../prototypes/animation-collection-prototype":11}],4:[function(require,module,exports){
+},{"../prototypes/animation-collection-prototype":17}],4:[function(require,module,exports){
 // TODO - refactor dat factory
 // the factory function does stuff it shouldn't be responsible for
 
-var heartProto = require("../prototypes/heart-prototype"),
+var heartFactory = require("./heart-factory"),
     animationProto = require("../prototypes/animation-prototype");
 
 var mainDefault = require("../default"),
     extend = require("../utilities/extend");
+
+
 
 module.exports = function animationFactory(selector, options) {
     // TODO
@@ -48,7 +50,8 @@ module.exports = function animationFactory(selector, options) {
     //
     var animation     = Object.create(animationProto),
         elt           = document.querySelector(selector),
-        modHeartProto = extend({}, heartProto, mainDefault, options);
+        modOpts       = extend({}, mainDefault, options),
+        modHeartProto = heartFactory(modOpts);
 
     if (elt === null) {
         console.log("No element matched the given selector: \""+selector+"\"");
@@ -86,7 +89,33 @@ module.exports = function animationFactory(selector, options) {
 
     return animation;
 };
-},{"../default":2,"../prototypes/animation-prototype":12,"../prototypes/heart-prototype":13,"../utilities/extend":15}],5:[function(require,module,exports){
+},{"../default":2,"../prototypes/animation-prototype":18,"../utilities/extend":21,"./heart-factory":5}],5:[function(require,module,exports){
+var heartProto  = require("../prototypes/heart-prototype"),
+    extend      = require("../utilities/extend"),
+    mainDefault = require("../default"),
+    mixins      = require("../mixins");
+
+module.exports = function heartFactory(options) {
+    return extend.apply(null, [{}, heartProto, options].concat(getMixins(options)));
+};
+
+function getMixins(options) {
+    // this is kind of dumb but whatever
+    var result = Object.keys(mixins).filter(ifNeedsMixin(options)).map(getMixin);
+    return result;
+}
+
+function ifNeedsMixin(options) {
+    return function(mixinName) {
+        console.log(mixinName);
+        return !!options[mixinName];
+    };
+}
+
+function getMixin(name) {
+    return mixins[name];
+}
+},{"../default":2,"../mixins":8,"../prototypes/heart-prototype":19,"../utilities/extend":21}],6:[function(require,module,exports){
 // TODO - construct this from actual SVG file (close!)
 //      - look into using an SVG lib instead of xml2js
 //
@@ -166,7 +195,157 @@ module.exports = function(options) {
         src = 'data:image/svg+xml;charset=utf-8,'+icon;
     return src;
 };
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
+
+
+module.exports = {
+    animate: animate,
+};
+
+function animate() {
+    var translate,
+        transforms = this.getTransforms();
+
+    if (this.fan) return console.log("Sorry! Fanning is temporarily out of order.");
+
+    transforms.forEach(this.addTransform.bind(this));
+    window.requestAnimationFrame(function() {
+        this.addTransform(this.getTranslate()).fadeOut();
+    }.bind(this));
+
+
+
+    return this;
+}
+
+function fanimate() {
+    var translate,
+        transforms = this.getTransforms();
+
+    window.requestAnimationFrame(function() {
+        translate = this.getTranslate();
+        transforms.push(translate);
+        transforms.forEach(this.addTransform.bind(this));
+        // this.addTransform(this.getTranslate()).fadeOut();
+        this.fadeOut();
+    }.bind(this));
+
+    return this;
+}
+
+
+function weird() {
+    var translate,
+        transforms = this.getTransforms();
+
+    if (this.fan) return console.log("Sorry! Fanning is temporarily out of order.");
+
+    // transforms.forEach(this.addTransform.bind(this));
+
+    window.requestAnimationFrame(function() {
+        transforms.forEach(this.addTransform.bind(this));
+        window.requestAnimationFrame(function() {
+            this.addTransform(this.getTranslate()).fadeOut();
+        }.bind(this));
+    }.bind(this));
+
+    return this;
+}
+},{}],8:[function(require,module,exports){
+var rotate = require("./rotate"),
+    scale = require("./scale"),
+    translate = require("./translate"),
+    animate = require("./animate");
+
+module.exports = {
+    animate: animate,
+    rotate: rotate,
+    scale: scale,
+    translate: translate,
+};
+
+
+// var fs              = require("fs"),
+//     path            = require("path"),
+//     files           = ["rotate","scale"];
+
+// function normalizeFileName(name) {
+//     return path.basename(name, path.extname(name));
+// }
+
+// function isNotCurrentFile(file) {
+//     return file !== normalizeFileName(module.filename);
+// }
+
+// function exportMixin(name) {
+//     module.exports[name] = require(name);
+// }
+
+// module.exports = (function() {
+//     files.filter(isNotCurrentFile).forEach(exportMixin);
+// })();
+},{"./animate":7,"./rotate":9,"./scale":10,"./translate":11}],9:[function(require,module,exports){
+var randomAngle    = require("../utilities/random").randomAngle,
+    normalizeAngle = require("../utilities/misc").normalizeAngle;
+
+module.exports = {
+    "_THETA": null,
+    getAngle: function getAngle() {
+        if (!this.rotate) return 0;
+        if (typeof this._THETA !== "number") {
+            this._THETA = normalizeAngle(randomAngle(this.angle));
+        }
+        return this._THETA;
+    },
+    getRotate: function getRotate(theta) {
+        if (theta === undefined) theta = this.getAngle();
+        return "rotate("+theta+"deg)";
+    },
+};
+},{"../utilities/misc":22,"../utilities/random":23}],10:[function(require,module,exports){
+var randomScalar = require("../utilities/random").randomScalar;
+
+module.exports = {
+    "_SCALAR": null,
+    getScalar: function getScalar() {
+        if (typeof this._SCALAR !== "number") {
+            this._SCALAR = randomScalar(this.scalar);
+        }
+        return this._SCALAR;
+    },
+    getScale: function getScale(k) {
+        if (k === undefined) k = this.getScalar();
+        return "scale("+k+")";
+    },
+};
+},{"../utilities/random":23}],11:[function(require,module,exports){
+var randomInRange = require("../utilities/random").randomInRange,
+    toRadians     = require("../utilities/misc").toRadians;
+
+module.exports = {
+    // translateX: null,
+    // translateY: null,
+
+    getTranslateX: function getTranslateX() {
+        var tx = randomInRange(this.translateX);
+        if (this.getScalar) tx = tx / this.getScalar();
+        return tx;
+    },
+    getTranslateY: function getTranslateY() {
+        var ty = -randomInRange(this.translateY);
+        if (this.getScalar) ty = ty / this.getScalar();
+        return ty;
+    },
+
+    getTranslate: function getTranslate() {
+        // TODO: separate this into getTranslateX and getTranslateY
+        var tx = this.getTranslateX(),
+            ty = this.getTranslateY();
+
+        return "translate3d("+tx+"px,"+ty+"px, 0)";
+    },
+};
+},{"../utilities/misc":22,"../utilities/random":23}],12:[function(require,module,exports){
 module.exports = {
     angle: [0, 359],
     count: [6, 10],
@@ -176,9 +355,10 @@ module.exports = {
     transitionDuration: 600,
     translateY: [15, 45],
 };
-},{}],7:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 module.exports = {
     angle: [0, 359],
+    animate: true,
     blur: 0,
     doNotRemove: false,
     fan: false,
@@ -190,15 +370,17 @@ module.exports = {
     opacity: [0.10, 0.75],
     rotate: true,
     scalar: [0.15, 0.45],
+    scale: true,
     transformOrigin: "center center",
     transitionDuration: 400,
     transitionFunction: "ease-out",
+    translate: true,
     translateX: [0, 0],
     translateY: [15, 45],
     xNoise: 0,
     yNoise: 0,
 };
-},{}],8:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 module.exports = {
     angle: [-10, 10],
     geyser: true,
@@ -210,13 +392,13 @@ module.exports = {
     translateX: [-45, 45],
     translateY: [30, 60]
 };
-},{}],9:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 module.exports = {
     rotate: false,
     transitionDuration: 650,
     translateX: [-60, 60]
 };
-},{}],10:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 var buttonDefaults  = require("./button"),
     circleDefaults  = require("./circle"),
     lineDefaults    = require("./line"),
@@ -257,7 +439,7 @@ module.exports = function loadPresets(SuperHearts) { // is this a confusing or c
 };
 
 
-},{"../arguments-helper":1,"../utilities/extend":15,"./button":6,"./circle":7,"./geyser":8,"./line":9}],11:[function(require,module,exports){
+},{"../arguments-helper":1,"../utilities/extend":21,"./button":12,"./circle":13,"./geyser":14,"./line":15}],17:[function(require,module,exports){
 var animationFactory = require("../factories/animation-factory");
 
 module.exports = {
@@ -315,7 +497,7 @@ module.exports = {
     },
 
 };
-},{"../factories/animation-factory":4}],12:[function(require,module,exports){
+},{"../factories/animation-factory":4}],18:[function(require,module,exports){
 var randomInRange = require("../utilities/random").randomInRange;
 
 module.exports = {
@@ -389,7 +571,7 @@ module.exports = {
     }
 
 };
-},{"../utilities/random":17}],13:[function(require,module,exports){
+},{"../utilities/random":23}],19:[function(require,module,exports){
 var miscUtils      = require("../utilities/misc"),
     randUtils      = require("../utilities/random"),
     toRadians      = miscUtils.toRadians,
@@ -408,9 +590,7 @@ var heartIconFactory = require("../icon-factory");
 // AND IT IS OPTIMAL
 /*** End of Note ***/
 module.exports = {
-    "_SCALAR": null,
-    "_THETA": null,
-    angle: null,
+     angle: null,
     blur: null,
     doNotRemove: null,
     fan: null,
@@ -433,6 +613,12 @@ module.exports = {
     xNoise: null,
     y: null,
     yNoise: null,
+    /* TODO these bool configs aren't triggering mixins... */
+    animate: true,
+    scale: true,
+    transition: true,
+    translate: true,
+    
     addTransform: function addTransform(operation) {
         this.image.style["-webkit-transform"] += operation;
         this.image.style["-ms-transform"]     += operation;
@@ -443,27 +629,7 @@ module.exports = {
         document.querySelector("body").appendChild(this.image);
         return this;
     },
-    animate: function animate() {
-        var translate,
-            transforms = [
-                this.getScale(1), // apparently this helps for scaling on an iPad? haven't checked tbh
-                this.getRotate(),
-                this.getScale(),
-            ];
 
-        // TODO - clean this logick up. yucky.
-        if (!this.fanHearts) {
-            transforms.forEach(this.addTransform.bind(this));
-        }
-        window.requestAnimationFrame(function() {
-            if (this.fan) {
-                transforms.forEach(this.addTransform.bind(this));
-            }
-            this.addTransform(this.getTranslate()).fadeOut();
-        }.bind(this));
-
-        return this;
-    },
     fadeOut: function fadeOut() {
         if (!this.doNotRemove) {
             var removeHeart = this.remove.bind(this);
@@ -476,13 +642,6 @@ module.exports = {
         document.querySelector("body").removeChild(this.image);
         return this;
     },
-    getAngle: function getAngle() {
-        if (!this.rotate) return 0;
-        if (typeof this._THETA !== "number") {
-            this._THETA = normalizeAngle(randomAngle(this.angle));
-        }
-        return this._THETA;
-    },
     getImageSrc: function getImageSrc() {
         if (!this.imageSrc) {
             this.imageSrc = heartIconFactory({
@@ -492,33 +651,21 @@ module.exports = {
         }
         return this.imageSrc;
     },
-    getRotate: function getRotate(theta) {
-        if (theta === undefined) theta = this.getAngle();
-        return "rotate("+theta+"deg)";
-    },
-    getScalar: function getScalar() {
-        if (typeof this._SCALAR !== "number") {
-            this._SCALAR = randomScalar(this.scalar);
-        }
-        return this._SCALAR;
-    },
-    getScale: function getScale(k) {
-        if (k === undefined) k = this.getScalar();
-        return "scale("+k+")";
-    },
     getStyle: function getStyle() {
         var left       = (this.getX() - this.image.width/2),
             top        = (this.getY() - this.image.height/2),
             opacity    = randomOpacity(this.opacity);
         return [
-            "left:"+left+"px",
+            "left:"+0+"px",
             "opacity:"+opacity,
             "position:fixed",
             "pointer-events:none",
-            "top:"+top+"px",
+            "top:"+0+"px",
             "transform-origin:"+this.transformOrigin,
             "-webkit-transform-origin:"+this.transformOrigin,
             "-ms-transform-origin:"+this.transformOrigin,
+            "transform:translate3d("+ left + "px," + top + "px,0)",
+            "-webkit-transform:translate3d("+ left + "px," + top + "px,0)",
             "transition: "+this.getTransition(),
             "-moz-transition: "+this.getTransition(),
             "-webkit-transition: "+this.getTransition(),
@@ -527,14 +674,17 @@ module.exports = {
     getTransition: function getTransition() {
         return this.transitionDuration+"ms "+ this.transitionFunction;
     },
-    getTranslate: function getTranslate() {
-        // TODO: separate this into translateX and translateY
-        var tx = randomInRange(this.translateX),
-            ty = -randomInRange(this.translateY);
+    getTransforms: function getTransforms() {
+        var translate,
+            transforms = [];
 
-        if (this.floatingInSpace) return this.spaceyTranslate(tx, ty);
-
-        return "translate("+tx/this.getScalar()+"px,"+ty/this.getScalar()+"px)";
+        if (this.getRotate) {
+            transforms.push(this.getRotate());
+        }
+        if (this.getScale) {
+            transforms.push(this.getScale());
+        }
+        return transforms;
     },
     getX: function getX() {
         return this.x + this.getXNoise();
@@ -563,24 +713,9 @@ module.exports = {
         this.appendToBody();
         return this;
     },
-    // TODO
-    // this is a fixer-upper...
-    spaceyTranslate: function spaceyTranslate(tx, ty) {
-        var angle = this.getAngle(),
-            translateLength = Math.sqrt(tx*tx + ty*ty);
-        tx = translateLength * Math.sin(toRadians(angle));
-        ty = translateLength * Math.cos(toRadians(angle));
-
-        if      (angle >= 0   && angle < 90)  { ty *= -1;  }
-        else if (angle >= 90  && angle < 180) { /* pass */ }
-        else if (angle >= 180 && angle < 270) { tx *= -1;  }
-        else                                  { tx *= -1; ty *= -1;  }
-
-        return  "translate("+tx/this.getScalar()+"px,"+ty/this.getScalar()+"px)";
-    }
 
 };
-},{"../icon-factory":5,"../utilities/misc":16,"../utilities/random":17}],14:[function(require,module,exports){
+},{"../icon-factory":6,"../utilities/misc":22,"../utilities/random":23}],20:[function(require,module,exports){
 (function (global){
 // TODO
 // - cache existing animations
@@ -620,7 +755,7 @@ global.SuperHearts = SuperHearts;
 /* */
 /* aaaand SuperHearts.PRESET */
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./arguments-helper":1,"./factories/animation-collection-factory":3,"./presets/preset-loader":10}],15:[function(require,module,exports){
+},{"./arguments-helper":1,"./factories/animation-collection-factory":3,"./presets/preset-loader":16}],21:[function(require,module,exports){
 module.exports = function extend() {
     // extends an arbitrary number of objects
     var args   = [].slice.call(arguments, 0),
@@ -643,7 +778,7 @@ function extendHelper(destination, source) {
     }
     return destination;
 }
-},{}],16:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 module.exports = {
     toRadians: function toRadians(theta) {
         return normalizeAngle(theta)*(Math.PI / 180);
@@ -655,7 +790,7 @@ function normalizeAngle(theta) {
     while (theta < 0) { theta += 360; }
     return theta % 360;
 }
-},{}],17:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 module.exports = {
     randomAngle: function randomAngle() {
         return randomInRange.apply(null, arguments);
@@ -706,4 +841,4 @@ function normalizeArguments(args) {
 function noArgumentError() {
     throw new Error("You supplied no arguments to a function that needed arguments. Check the call stack!");
 }
-},{}]},{},[14]);
+},{}]},{},[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]);

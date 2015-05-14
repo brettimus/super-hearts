@@ -1,5 +1,6 @@
 module.exports = {
     angle: [0, 359],
+    animate: true,
     blur: 0,
     doNotRemove: false,
     fan: false,
@@ -11,9 +12,11 @@ module.exports = {
     opacity: [0.10, 0.75],
     rotate: true,
     scalar: [0.15, 0.45],
+    scale: true,
     transformOrigin: "center center",
     transitionDuration: 400,
     transitionFunction: "ease-out",
+    translate: true,
     translateX: [0, 0],
     translateY: [15, 45],
     xNoise: 0,

@@ -1,11 +1,13 @@
 // TODO - refactor dat factory
 // the factory function does stuff it shouldn't be responsible for
 
-var heartProto = require("../prototypes/heart-prototype"),
+var heartFactory = require("./heart-factory"),
     animationProto = require("../prototypes/animation-prototype");
 
 var mainDefault = require("../default"),
     extend = require("../utilities/extend");
+
+
 
 module.exports = function animationFactory(selector, options) {
     // TODO
@@ -14,7 +16,8 @@ module.exports = function animationFactory(selector, options) {
     //
     var animation     = Object.create(animationProto),
         elt           = document.querySelector(selector),
-        modHeartProto = extend({}, heartProto, mainDefault, options);
+        modOpts       = extend({}, mainDefault, options),
+        modHeartProto = heartFactory(modOpts);
 
     if (elt === null) {
         console.log("No element matched the given selector: \""+selector+"\"");

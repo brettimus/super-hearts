@@ -16,9 +16,7 @@ var heartIconFactory = require("../icon-factory");
 // AND IT IS OPTIMAL
 /*** End of Note ***/
 module.exports = {
-    "_SCALAR": null,
-    "_THETA": null,
-    angle: null,
+     angle: null,
     blur: null,
     doNotRemove: null,
     fan: null,
@@ -41,6 +39,12 @@ module.exports = {
     xNoise: null,
     y: null,
     yNoise: null,
+    /* TODO these bool configs aren't triggering mixins... */
+    animate: true,
+    scale: true,
+    transition: true,
+    translate: true,
+    
     addTransform: function addTransform(operation) {
         this.image.style["-webkit-transform"] += operation;
         this.image.style["-ms-transform"]     += operation;
@@ -51,27 +55,7 @@ module.exports = {
         document.querySelector("body").appendChild(this.image);
         return this;
     },
-    animate: function animate() {
-        var translate,
-            transforms = [
-                this.getScale(1), // apparently this helps for scaling on an iPad? haven't checked tbh
-                this.getRotate(),
-                this.getScale(),
-            ];
 
-        // TODO - clean this logick up. yucky.
-        if (!this.fanHearts) {
-            transforms.forEach(this.addTransform.bind(this));
-        }
-        window.requestAnimationFrame(function() {
-            if (this.fan) {
-                transforms.forEach(this.addTransform.bind(this));
-            }
-            this.addTransform(this.getTranslate()).fadeOut();
-        }.bind(this));
-
-        return this;
-    },
     fadeOut: function fadeOut() {
         if (!this.doNotRemove) {
             var removeHeart = this.remove.bind(this);
@@ -84,13 +68,6 @@ module.exports = {
         document.querySelector("body").removeChild(this.image);
         return this;
     },
-    getAngle: function getAngle() {
-        if (!this.rotate) return 0;
-        if (typeof this._THETA !== "number") {
-            this._THETA = normalizeAngle(randomAngle(this.angle));
-        }
-        return this._THETA;
-    },
     getImageSrc: function getImageSrc() {
         if (!this.imageSrc) {
             this.imageSrc = heartIconFactory({
@@ -100,33 +77,21 @@ module.exports = {
         }
         return this.imageSrc;
     },
-    getRotate: function getRotate(theta) {
-        if (theta === undefined) theta = this.getAngle();
-        return "rotate("+theta+"deg)";
-    },
-    getScalar: function getScalar() {
-        if (typeof this._SCALAR !== "number") {
-            this._SCALAR = randomScalar(this.scalar);
-        }
-        return this._SCALAR;
-    },
-    getScale: function getScale(k) {
-        if (k === undefined) k = this.getScalar();
-        return "scale("+k+")";
-    },
     getStyle: function getStyle() {
         var left       = (this.getX() - this.image.width/2),
             top        = (this.getY() - this.image.height/2),
             opacity    = randomOpacity(this.opacity);
         return [
-            "left:"+left+"px",
+            "left:"+0+"px",
             "opacity:"+opacity,
             "position:fixed",
             "pointer-events:none",
-            "top:"+top+"px",
+            "top:"+0+"px",
             "transform-origin:"+this.transformOrigin,
             "-webkit-transform-origin:"+this.transformOrigin,
             "-ms-transform-origin:"+this.transformOrigin,
+            "transform:translate3d("+ left + "px," + top + "px,0)",
+            "-webkit-transform:translate3d("+ left + "px," + top + "px,0)",
             "transition: "+this.getTransition(),
             "-moz-transition: "+this.getTransition(),
             "-webkit-transition: "+this.getTransition(),
@@ -135,14 +100,17 @@ module.exports = {
     getTransition: function getTransition() {
         return this.transitionDuration+"ms "+ this.transitionFunction;
     },
-    getTranslate: function getTranslate() {
-        // TODO: separate this into translateX and translateY
-        var tx = randomInRange(this.translateX),
-            ty = -randomInRange(this.translateY);
+    getTransforms: function getTransforms() {
+        var translate,
+            transforms = [];
 
-        if (this.floatingInSpace) return this.spaceyTranslate(tx, ty);
-
-        return "translate("+tx/this.getScalar()+"px,"+ty/this.getScalar()+"px)";
+        if (this.getRotate) {
+            transforms.push(this.getRotate());
+        }
+        if (this.getScale) {
+            transforms.push(this.getScale());
+        }
+        return transforms;
     },
     getX: function getX() {
         return this.x + this.getXNoise();
@@ -171,20 +139,5 @@ module.exports = {
         this.appendToBody();
         return this;
     },
-    // TODO
-    // this is a fixer-upper...
-    spaceyTranslate: function spaceyTranslate(tx, ty) {
-        var angle = this.getAngle(),
-            translateLength = Math.sqrt(tx*tx + ty*ty);
-        tx = translateLength * Math.sin(toRadians(angle));
-        ty = translateLength * Math.cos(toRadians(angle));
-
-        if      (angle >= 0   && angle < 90)  { ty *= -1;  }
-        else if (angle >= 90  && angle < 180) { /* pass */ }
-        else if (angle >= 180 && angle < 270) { tx *= -1;  }
-        else                                  { tx *= -1; ty *= -1;  }
-
-        return  "translate("+tx/this.getScalar()+"px,"+ty/this.getScalar()+"px)";
-    }
 
 };

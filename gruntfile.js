@@ -1,6 +1,26 @@
+var fs = require("fs");
+var path = require("path");
+
+var aliases = {};
+fs.readdirSync("src/js/mixins").forEach(function(file) {
+    aliases[aliasFileName(file)] = fileName(file);
+});
+console.log(aliases);
+function aliasFileName(name) {
+    return path.basename(name, path.extname(name));
+}
+function fileName(name) {
+    return "./" + path.basename(name, path.extname(name) + ".js"); // this is silly, i know
+}
+
+function forRequire() {
+    var result = fs.readdirSync("src/js/mixins").map(function(m) { return ["./"+m, {expose: aliasFileName(m),} ]; } );
+    console.log(result);
+    return result;
+}
+
 module.exports = function(grunt) {
     "use strict";
-
     // load all grunt npm modules
     require("matchdep").filterDev("grunt-*").forEach(grunt.loadNpmTasks);
     grunt.loadNpmTasks('assemble');
@@ -14,12 +34,20 @@ module.exports = function(grunt) {
             }
         },
 
+
         // lets us use npm-style modules in the browser
         browserify: {
-            'dist/super-hearts.js': ['src/js/super-hearts.js']
+            alias: aliases,
+            dist: {
+              files: {
+                'dist/super-hearts.js': ['src/js/**/*.js'],
+              },
+            },
+            // require: forRequire(),
+            plugin: ["brfs"],
         },
 
-        // for minification and compression
+        // for minification
         uglify: {
             build: {
                 files: {
@@ -28,7 +56,7 @@ module.exports = function(grunt) {
             }
         },
 
-        // Takes your scss files and compiles them to css
+        // compiles example styles
         sass: {
           dist: {
             options: {
@@ -40,7 +68,7 @@ module.exports = function(grunt) {
           }
         },
 
-        // assembles hbs templates
+        // compiles example markup
         assemble: {
           options: {
             data: 'src/examples/templates/data/*.json',
@@ -56,6 +84,6 @@ module.exports = function(grunt) {
     });
 
     // default task
-    // * this is what runs when we just type `grunt`
+    // * this is what runs when we just type `grunt` *
     grunt.registerTask('default', ['browserify', 'uglify', 'sass', 'assemble']);
 };
