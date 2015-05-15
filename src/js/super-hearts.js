@@ -1,7 +1,3 @@
-// TODO
-// - cache existing animations
-// - use querySelectorAll
-
 var argumentsHelper = require("./arguments-helper");
 var loadPresets = require("./presets/preset-loader");
 var animationCollectionFactory = require("./factories/animation-collection-factory");
@@ -42,13 +38,3 @@ SuperHearts.registerPreset = function registerPreset(name, presetDefaults) {
 
 loadPresets(SuperHearts);
 global.SuperHearts = SuperHearts;
-
-/* All the ways you can call SuperHearts */
-/* SuperHearts() */
-/* SuperHearts(options) */
-/* SuperHearts(options1, options2, ...) */
-/* SuperHearts(selector) */
-/* SuperHearts(selector, options) */
-/* SuperHearts(selector, options1, options2, ...) */
-/* */
-/* aaaand SuperHearts.PRESET */

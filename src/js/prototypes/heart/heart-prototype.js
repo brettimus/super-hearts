@@ -1,5 +1,4 @@
 var extend = require("../../utilities/extend"),
-    animate = require("./mixins/animate"),
     image = require("./mixins/image"),
     position = require("./mixins/position"),
     rotate = require("./mixins/rotate"),
@@ -16,19 +15,18 @@ heartProto = {
     count: null,
     fixed: null,
 
-
-    // TODO - where to put this defn?
-    // currently called in two different mixins 
-    addTransform: function addTransform(operation) {
-        // TODO this should be removed from the main proto 
-        throw new Error("addTransform unspecified");
-    },
-
-
-    // Ideal, minimal interface
-    // (everything that an animation collection expects to be on a heart) //
     animate: function animate() {
-        throw new Error("Must define an animate function.");
+        var translate,
+            transforms = this.getInitialTransforms();
+
+        transforms.forEach(this.addTransform.bind(this));
+        window.requestAnimationFrame(function() {
+            this.getAnimatedTransforms().forEach(function(transform) {
+                this.addTransform(transform).hide();
+            }, this);
+        }.bind(this));
+
+        return this;
     },
     hide: function hide() {
         throw new Error("Must specify a hide function");
@@ -37,8 +35,17 @@ heartProto = {
         throw new Error("Must specify a remove function");
     },
     show: function show() {
+        // should call window.requestAnimationFrame
+        // add initial transforms
+        // append to body
         throw new Error("Must define show function");
+    },
+    getInitialTransforms: function getInitialTransforms() {
+        throw new Error("Must define initial transforms getter");
+    },
+    getAnimatedTransforms: function getAnimatedTransforms() {
+        throw new Error("Must define animated transforms getter");
     },
 };
 
-module.exports = extend(heartProto, image, position, animate, rotate, scale, transition, translate);
+module.exports = extend(heartProto, position, image, rotate, scale, transition, translate);

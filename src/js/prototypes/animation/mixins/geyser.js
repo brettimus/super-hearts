@@ -1,5 +1,5 @@
 module.exports = {
-    initialize: function initialize(elt) {
+    start: function start(elt) {
         var eltRect = elt.getBoundingClientRect(),
             geyserX = eltRect.left + ((eltRect.width) / 2),
             geyserY = eltRect.top + (eltRect.height / 2);

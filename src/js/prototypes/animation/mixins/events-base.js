@@ -1,6 +1,6 @@
 module.exports = {
     events: null,
-    initialize: function initialize(elt) {
+    start: function start(elt) {
         this.events.click = this.onclick.bind(this);
         this.events.touchend = this.ontouch.bind(this);
         elt.addEventListener("click", this.events.click);

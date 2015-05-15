@@ -1,13 +1,5 @@
 var extend = require("../utilities/extend");
 
-var defaultMixins = {
-    // animate: true,  // ugh this makes error-town ... this needs rethinking
-    // rotate: true,
-    // scale: true,
-    // translate: true,
-    // transition: true,
-};
-
 var circle = {
     angle: [0, 359],
     blur: 0,
@@ -29,4 +21,4 @@ var circle = {
     yNoise: 0,
 };
 
-module.exports = extend(defaultMixins, circle);
+module.exports = circle;

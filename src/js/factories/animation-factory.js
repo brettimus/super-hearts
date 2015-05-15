@@ -1,7 +1,4 @@
-// TODO - refactor dat factory
-// the factory function does stuff it shouldn't be responsible for
-
-var heartFactory = require("./heart-factory"),
+var heartProtoFactory = require("./heart-prototype-factory"),
     animationProto = require("../prototypes/animation/animation-prototype"),
     fixed = require("../prototypes/animation/mixins/events-fixed"),
     unfixed = require("../prototypes/animation/mixins/events-unfixed"),
@@ -13,15 +10,10 @@ var mainDefault = require("../default"),
 
 
 module.exports = function animationFactory(selector, options) {
-    // TODO
-    // this shouldn't need to know `selector`
-    // have animationCollection inject an `elt` corresponding to original anim?
-    //
 
     var animation,
         elt           = document.querySelector(selector),
-        modOpts       = extend({}, mainDefault, options),
-        modHeartProto = heartFactory(modOpts);
+        modHeartProto = heartProtoFactory(extend({}, mainDefault, options));
 
     if (elt === null) {
         console.log("No element matched the given selector: \""+selector+"\"");
@@ -47,19 +39,13 @@ module.exports = function animationFactory(selector, options) {
         animation.modHeartProto = modHeartProto;
     }
 
-    animation.selector = selector;
+    animation.count = modHeartProto.count;
+    // animation.selector = selector; // where is this used?
+    animation.heartFactory = function heartFactory(x, y) {
+        return Object.create(modHeartProto).setCoordinates(x, y).setImage();
+    };
 
-    // TODO
-    // this is so wrong
-
-    // if (modHeartProto.geyser) {
-    //     animation.modHeartProto.geyserInterval = animation.modHeartProto.geyserInterval || animation.modHeartProto.transitionDuration/2;
-    //     animation.geyser(elt);
-    // }
-    // else {
-    //     animation.initialize(elt);
-    // }
-    animation.initialize(elt);
+    animation.start(elt);
 
     return animation;
 };

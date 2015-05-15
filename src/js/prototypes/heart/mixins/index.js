@@ -1,9 +1,10 @@
+// THIS IS NOT ACTUALLY BEING USED...
+
 var rotate = require("./rotate"),
     scale = require("./scale"),
     transition = require("./transition"),
     translate = require("./translate"),
-    animate = require("./animate");
-
+    animate = require("./animate-default");
 module.exports = {
     animate: animate,
     rotate: rotate,

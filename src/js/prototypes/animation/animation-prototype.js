@@ -3,7 +3,6 @@ var randomInRange = require("../../utilities/random").randomInRange;
 var animationProto = {
 
     count: null, // TODO - should store this here...
-    modHeartProto: null,
 
     remove: function remove(selector) {
         var elt = document.querySelector(selector);
@@ -13,14 +12,10 @@ var animationProto = {
     },
 
     spewHearts: function spewHearts(x,y) {
-        var count = randomInRange(this.modHeartProto.count);
+        var count = randomInRange(this.count);
         for (var i = 0; i < count; i++) {
             window.requestAnimationFrame(this.heartSpewer(x, y).bind(this));
         }
-    },
-
-    heartFactory: function heartFactory(x, y) {
-        return Object.create(this.modHeartProto).setCoordinates(x, y).setImage();
     },
 
     heartSpewer: function heartSpewer(x,y) {
@@ -29,8 +24,12 @@ var animationProto = {
         };
     },
 
-    initialize: function initialize() {
-        throw new Error("Must define initialize on an animation.");
+    heartFactory: function heartFactory(x, y) {
+        throw new Error("Must define heartFactory on an animation");
+    },
+
+    start: function start() {
+        throw new Error("Must define start method on an animation.");
     },
 
 };

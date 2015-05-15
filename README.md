@@ -257,12 +257,14 @@ Default is `0`.
 
 
 ## TODO
-* Fix caching issue -- inlined heart icon uses a `data:` URL for its source, **SO IT IS NOT CACHED**
+* Write Tests (ha)
+* Switch to using [jsdoc](http://usejsdoc.org/) after refactoring prototypes + factories
 * Change main default to be either incredibly basic or moar like Super's
 * `SuperHearts.registerDefault` method
+* Allow presets to be a composition of several configs
 * Allow mass assignment (use `document.querySelectorAll` instead of `document.querySelector`)
 * Refactor logic around `doNotRemove` option
-* Switch to using [jsdoc](http://usejsdoc.org/) after refactoring prototypes + factories
+* Fix caching issue -- inlined heart icon uses a `data:` URL for its source, **SO IT IS NOT CACHED**
 * Refactor SVG manipulation
 * Add more SVG manipulation
 * Draw hidden SVG image on the page and use a relative URL as an image source (_getting close_)

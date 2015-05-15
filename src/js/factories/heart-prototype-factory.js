@@ -1,11 +1,20 @@
 var heartProto  = require("../prototypes/heart/heart-prototype"),
+    animate     = require("../prototypes/heart/mixins/animate-default"),
+    fanimate    = require("../prototypes/heart/mixins/animate-fan"),
     extend      = require("../utilities/extend"),
     mainDefault = require("../default"),
     mixins      = require("../prototypes/heart/mixins");
 
 module.exports = function heartFactory(options) {
     // var toExtend = [{}, heartProto, options].concat(getMixins(options));  // TODO - figure out better sequencing here
-    var toExtend = [{}, heartProto, options];
+    var animater;
+    if (options.fan) {
+        animater = fanimate;
+    }
+    else {
+        animater = animate;
+    }
+    var toExtend = [{}, heartProto, animater, options];
     return extend.apply(null, toExtend);
 };
 
