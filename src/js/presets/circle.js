@@ -1,11 +1,11 @@
 var extend = require("../utilities/extend");
 
 var defaultMixins = {
-    animate: true,
-    rotate: true,
-    scale: true,
-    translate: true,
-    transition: true,
+    // animate: true,  // ugh this makes error-town ... this needs rethinking
+    // rotate: true,
+    // scale: true,
+    // translate: true,
+    // transition: true,
 };
 
 var circle = {

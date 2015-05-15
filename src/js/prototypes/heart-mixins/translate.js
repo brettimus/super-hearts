@@ -1,9 +1,8 @@
-var randomInRange = require("../utilities/random").randomInRange,
-    toRadians     = require("../utilities/misc").toRadians;
+var randomInRange = require("../../utilities/random").randomInRange;
 
 module.exports = {
-    // translateX: null,
-    // translateY: null,
+    translateX: null,
+    translateY: null,
 
     getTranslateX: function getTranslateX() {
         var tx = randomInRange(this.translateX);

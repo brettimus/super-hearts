@@ -2,7 +2,7 @@ var fs = require("fs");
 var path = require("path");
 
 var aliases = {};
-fs.readdirSync("src/js/mixins").forEach(function(file) {
+fs.readdirSync("src/js/prototypes/heart-mixins").forEach(function(file) {
     aliases[aliasFileName(file)] = fileName(file);
 });
 console.log(aliases);

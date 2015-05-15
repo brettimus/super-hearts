@@ -1,10 +1,17 @@
 module.exports = {
     animate: animate,
+    getTransforms: function getTransforms() {
+        var transforms = [];
+        if (this.getRotate) transforms.push(this.getRotate());
+        if (this.getScale) transforms.push(this.getScale());
+        return transforms;
+    },
 };
 // TODO - check assumptions
 // * .getTransforms()
 // * .getTranslate()
 // * .addTransform()
+//
 // * .hide() [okay]
 
 function animate() {
@@ -16,7 +23,7 @@ function animate() {
     transforms.forEach(this.addTransform.bind(this));
 
     window.requestAnimationFrame(function() {
-        this.addTransform(this.getTranslate()).hide() [okay];
+        this.addTransform(this.getTranslate()).hide();
     }.bind(this));
 
     return this;
@@ -50,7 +57,7 @@ function weird() {
     window.requestAnimationFrame(function() {
         transforms.forEach(this.addTransform.bind(this));
         window.requestAnimationFrame(function() {
-            this.addTransform(this.getTranslate()).hide() [okay];
+            this.addTransform(this.getTranslate()).hide();
         }.bind(this));
     }.bind(this));
 

@@ -1,7 +1,9 @@
-var randomScalar = require("../utilities/random").randomScalar;
+var randomScalar = require("../../utilities/random").randomScalar;
 
 module.exports = {
     "_SCALAR": null,
+    scalar: null,
+
     getScalar: function getScalar() {
         if (typeof this._SCALAR !== "number") {
             this._SCALAR = randomScalar(this.scalar);

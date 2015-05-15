@@ -1,10 +1,12 @@
 var heartProto  = require("../prototypes/heart-prototype"),
     extend      = require("../utilities/extend"),
     mainDefault = require("../default"),
-    mixins      = require("../mixins");
+    mixins      = require("../prototypes/heart-mixins");
 
 module.exports = function heartFactory(options) {
-    return extend.apply(null, [{}, heartProto, options].concat(getMixins(options)));
+    // var toExtend = [{}, heartProto, options].concat(getMixins(options));  // TODO - figure out better sequencing here
+    var toExtend = [{}, heartProto, options];
+    return extend.apply(null, toExtend);
 };
 
 function getMixins(options) {
