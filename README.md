@@ -13,12 +13,16 @@ var dawh = SuperHearts(); // now try clicking around
 ```
 
 ## Presets
-A `preset` is simply a set of default options for a given call to `SuperHearts`. 
+A `preset` is a helper function with a set of default options for a given call to `SuperHearts`. 
+You call a `preset` on the main `SuperHearts` object.
+
 `SuperHearts` comes with a few presets out of the box, 
 but you can also register your own (see below).
 
 
 ### Circle
+`Circle` is the primary default. 
+That is, calling `SuperHearts("#my-element")` is the same as `SuperHearts.Circle("#my-element")`.
 **Evented**
 ```javascript
 // Hearts radiate in a ring pattern around a user's click or touch
@@ -41,9 +45,10 @@ var line = SuperHearts.Geyser();
 
 ### Button
 **Evented**
-// Fixed starting point determined by `boundingRect` of `#myButton`
+// Fixed starting point determined by `boundingRect` of `#myButton`.
+```javascript
 var butt = SuperHearts.Button("#myButton");
-
+```
 
 ### Add your own
 To add your own preset to the `SuperHearts` object, 
@@ -97,6 +102,25 @@ Modifies the `stdDeviation` of an `<feGaussianBlur>` filter on the default SVG h
 Default is `0`
 
 
+### color
+`String`
+
+Sets the fill for the default heart icon. (Should _hopefully_ do nothing if you configure your own image.)
+
+Default is `"#B91319"`.
+
+
+### count
+`Array` of length 2 **or** `Number`.
+
+Default is `[6, 10]`
+
+
+The number of hearts that are spewed on a given touch/click is random.
+Determines the (inclusive) range from which said random number of hearts is chosen. 
+If you only supply a `Number` (call it `n`), it is implicitly converted to `[n,n]`.
+
+
 ### doNotRemove
 `Boolean`
 
@@ -108,7 +132,7 @@ Default is `false`
 ### fan
 `Boolean`
 
-If true, hearts are spewed in a circular, fanning pattern.
+If true, heart animations are staggered, which lends itself to a fanning pattern.
 
 Default is `false`.
 
@@ -133,23 +157,6 @@ Sets how often hearts are spewed from the geyser. **`0` is ignored**
 Default is `transitionDuration/2` (ms)
 
 
-### color
-`String`
-
-Sets the fill for the default heart icon. (Should _hopefully_ do nothing if you configure your own image.)
-
-Default is `"#B91319"`.
-
-
-### count
-`Array` of length 2 **or** `Number`.
-
-Default is `[6, 10]`
-
-
-The number of hearts that are spewed on a given touch/click is random.
-Determines the (inclusive) range from which said random number of hearts is chosen. 
-If you only supply a `Number` (call it `n`), it is implicitly converted to `[n,n]`.
 
 
 ### imageSrc
