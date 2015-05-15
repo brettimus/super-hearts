@@ -1,42 +1,13 @@
 var randomInRange = require("../../utilities/random").randomInRange;
 
-module.exports = {
+var animationProto = {
 
     count: null, // TODO - should store this here...
-    events: null,
     modHeartProto: null,
-
-    onclick: function onclick(e) {
-        var x = e.pageX,
-            y = e.pageY;
-        this.spewHearts(x, y);
-    },
-
-    ontouch: function ontouch(e) {
-        var x = e.changedTouches[0].pageX,
-            y = e.changedTouches[0].pageY;
-        this.spewHearts(x, y);
-    },
-
-    onclickFixed: function onclickFixed(e) {
-        var elt = e.target;
-        var eltRect = elt.getBoundingClientRect(),
-            x       = eltRect.left + ((eltRect.width) / 2),
-            y       = eltRect.top + (eltRect.height / 2);
-        this.spewHearts(x, y);
-    },
-
-    ontouchFixed: function ontouchFixed(e) {
-        var elt = e.target;
-        var eltRect = elt.getBoundingClientRect(),
-            x       = eltRect.left + ((eltRect.width) / 2),
-            y       = eltRect.top + (eltRect.height / 2);
-        this.spewHearts(x, y);
-    },
 
     remove: function remove(selector) {
         var elt = document.querySelector(selector);
-        Object.keys(this.events).forEach(function(eventName, i) {
+        Object.keys(this.events).forEach(function(eventName) {
             elt.removeEventListener(eventName, this.events[eventName]);
         }, this);
     },
@@ -58,16 +29,10 @@ module.exports = {
         };
     },
 
-    // TODO - make a `geyserAnimation` prototype
-    // * BUG - coordinates do not automagically correct on window resizing
-    geyser: function geyser(elt) {
-        var eltRect = elt.getBoundingClientRect(),
-            geyserX = eltRect.left + ((eltRect.width) / 2),
-            geyserY = eltRect.top + (eltRect.height / 2);
-
-        setInterval(function(){
-            this.spewHearts(geyserX, geyserY);
-        }.bind(this), this.modHeartProto.geyserInterval);
-    }
+    initialize: function initialize() {
+        throw new Error("Must define initialize on an animation.");
+    },
 
 };
+
+module.exports = animationProto;

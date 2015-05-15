@@ -36,7 +36,10 @@ module.exports = function animationCollectionFactory(selector) {
 // the factory function does stuff it shouldn't be responsible for
 
 var heartFactory = require("./heart-factory"),
-    animationProto = require("../prototypes/animation/animation-prototype");
+    animationProto = require("../prototypes/animation/animation-prototype"),
+    fixed = require("../prototypes/animation/mixins/events-fixed"),
+    unfixed = require("../prototypes/animation/mixins/events-unfixed"),
+    geyser = require("../prototypes/animation/mixins/geyser");
 
 var mainDefault = require("../default"),
     extend = require("../utilities/extend");
@@ -48,7 +51,8 @@ module.exports = function animationFactory(selector, options) {
     // this shouldn't need to know `selector`
     // have animationCollection inject an `elt` corresponding to original anim?
     //
-    var animation     = Object.create(animationProto),
+
+    var animation,
         elt           = document.querySelector(selector),
         modOpts       = extend({}, mainDefault, options),
         modHeartProto = heartFactory(modOpts);
@@ -59,37 +63,41 @@ module.exports = function animationFactory(selector, options) {
         return;
     }
 
-    animation.events = {
-        click: null,
-        touch: null,
-    };
-    animation.selector = selector;
-    animation.modHeartProto = modHeartProto;
+    if (modHeartProto.geyser) {
+        animation = Object.create(extend(animationProto, geyser));
+        animation.modHeartProto = modHeartProto;
+        animation.modHeartProto.geyserInterval = animation.modHeartProto.geyserInterval || animation.modHeartProto.transitionDuration/2;
+    }
+    else {
+        if (modHeartProto.fixed) {
+            animation = Object.create(extend(animationProto, fixed));
+        } else {
+            animation = Object.create(extend(animationProto, unfixed));
+        }
+        animation.events = {
+            click: null,
+            touch: null,
+        };
+        animation.modHeartProto = modHeartProto;
+    }
 
+    animation.selector = selector;
 
     // TODO
     // this is so wrong
 
-    if (modHeartProto.geyser) {
-        animation.modHeartProto.geyserInterval = animation.modHeartProto.geyserInterval || animation.modHeartProto.transitionDuration/2;
-        animation.geyser(elt);
-    }
-    else if (modHeartProto.fixed) {
-        animation.events.click = animation.onclickFixed.bind(animation);
-        elt.addEventListener("click", animation.events.click);
-        animation.events.touchend = animation.ontouchFixed.bind(animation);
-        elt.addEventListener("touchend", animation.events.touchend);
-    }
-    else {
-        animation.events.click = animation.onclick.bind(animation);
-        elt.addEventListener("click", animation.events.click);
-        animation.events.touchend = animation.ontouch.bind(animation);
-        elt.addEventListener("touchend", animation.events.touchend);
-    }
+    // if (modHeartProto.geyser) {
+    //     animation.modHeartProto.geyserInterval = animation.modHeartProto.geyserInterval || animation.modHeartProto.transitionDuration/2;
+    //     animation.geyser(elt);
+    // }
+    // else {
+    //     animation.initialize(elt);
+    // }
+    animation.initialize(elt);
 
     return animation;
 };
-},{"../default":2,"../prototypes/animation/animation-prototype":13,"../utilities/extend":24,"./heart-factory":5}],5:[function(require,module,exports){
+},{"../default":2,"../prototypes/animation/animation-prototype":13,"../prototypes/animation/mixins/events-fixed":15,"../prototypes/animation/mixins/events-unfixed":16,"../prototypes/animation/mixins/geyser":17,"../utilities/extend":28,"./heart-factory":5}],5:[function(require,module,exports){
 var heartProto  = require("../prototypes/heart/heart-prototype"),
     extend      = require("../utilities/extend"),
     mainDefault = require("../default"),
@@ -117,7 +125,7 @@ function ifNeedsMixin(options) {
 function getMixin(name) {
     return mixins[name];
 }
-},{"../default":2,"../prototypes/heart/heart-prototype":14,"../prototypes/heart/mixins":17,"../utilities/extend":24}],6:[function(require,module,exports){
+},{"../default":2,"../prototypes/heart/heart-prototype":18,"../prototypes/heart/mixins":21,"../utilities/extend":28}],6:[function(require,module,exports){
 // TODO - construct this from actual SVG file (close!)
 //      - look into using an SVG lib instead of xml2js
 //
@@ -240,7 +248,7 @@ var circle = {
 };
 
 module.exports = extend(defaultMixins, circle);
-},{"../utilities/extend":24}],9:[function(require,module,exports){
+},{"../utilities/extend":28}],9:[function(require,module,exports){
 module.exports = {
     angle: [-10, 10],
     geyser: true,
@@ -299,7 +307,7 @@ module.exports = function loadPresets(SuperHearts) { // is this a confusing or c
 };
 
 
-},{"../arguments-helper":1,"../utilities/extend":24,"./button":7,"./circle":8,"./geyser":9,"./line":10}],12:[function(require,module,exports){
+},{"../arguments-helper":1,"../utilities/extend":28,"./button":7,"./circle":8,"./geyser":9,"./line":10}],12:[function(require,module,exports){
 var animationFactory = require("../../factories/animation-factory");
 
 module.exports = {
@@ -360,43 +368,14 @@ module.exports = {
 },{"../../factories/animation-factory":4}],13:[function(require,module,exports){
 var randomInRange = require("../../utilities/random").randomInRange;
 
-module.exports = {
+var animationProto = {
 
     count: null, // TODO - should store this here...
-    events: null,
     modHeartProto: null,
-
-    onclick: function onclick(e) {
-        var x = e.pageX,
-            y = e.pageY;
-        this.spewHearts(x, y);
-    },
-
-    ontouch: function ontouch(e) {
-        var x = e.changedTouches[0].pageX,
-            y = e.changedTouches[0].pageY;
-        this.spewHearts(x, y);
-    },
-
-    onclickFixed: function onclickFixed(e) {
-        var elt = e.target;
-        var eltRect = elt.getBoundingClientRect(),
-            x       = eltRect.left + ((eltRect.width) / 2),
-            y       = eltRect.top + (eltRect.height / 2);
-        this.spewHearts(x, y);
-    },
-
-    ontouchFixed: function ontouchFixed(e) {
-        var elt = e.target;
-        var eltRect = elt.getBoundingClientRect(),
-            x       = eltRect.left + ((eltRect.width) / 2),
-            y       = eltRect.top + (eltRect.height / 2);
-        this.spewHearts(x, y);
-    },
 
     remove: function remove(selector) {
         var elt = document.querySelector(selector);
-        Object.keys(this.events).forEach(function(eventName, i) {
+        Object.keys(this.events).forEach(function(eventName) {
             elt.removeEventListener(eventName, this.events[eventName]);
         }, this);
     },
@@ -418,9 +397,80 @@ module.exports = {
         };
     },
 
-    // TODO - make a `geyserAnimation` prototype
-    // * BUG - coordinates do not automagically correct on window resizing
-    geyser: function geyser(elt) {
+    initialize: function initialize() {
+        throw new Error("Must define initialize on an animation.");
+    },
+
+};
+
+module.exports = animationProto;
+},{"../../utilities/random":30}],14:[function(require,module,exports){
+module.exports = {
+    events: null,
+    initialize: function initialize(elt) {
+        this.events.click = this.onclick.bind(this);
+        this.events.touchend = this.ontouch.bind(this);
+        elt.addEventListener("click", this.events.click);
+        elt.addEventListener("touchend", this.events.touchend);
+    },
+    onclick: function onclick(e) {
+        throw new Error("Must define onclick");
+    },
+    ontouch: function ontouch(e) {
+        throw new Error("Must define ontouch");
+    },
+    remove: function remove(selector) {
+        var elt = document.querySelector(selector);
+        Object.keys(this.events).forEach(function(eventName) {
+            elt.removeEventListener(eventName, this.events[eventName]);
+        }, this);
+    },
+};
+},{}],15:[function(require,module,exports){
+var base = require("./events-base");
+var extend = require("../../../utilities/extend");
+
+
+var proto = {
+    onclick: function onclick(e) {
+        var elt = e.target;
+        var eltRect = elt.getBoundingClientRect(),
+            x       = eltRect.left + ((eltRect.width) / 2),
+            y       = eltRect.top + (eltRect.height / 2);
+        this.spewHearts(x, y);
+    },
+
+    ontouch: function ontouch(e) {
+        var elt = e.target;
+        var eltRect = elt.getBoundingClientRect(),
+            x       = eltRect.left + ((eltRect.width) / 2),
+            y       = eltRect.top + (eltRect.height / 2);
+        this.spewHearts(x, y);
+    },
+};
+
+module.exports = extend(base, proto);
+},{"../../../utilities/extend":28,"./events-base":14}],16:[function(require,module,exports){
+var extend = require("../../../utilities/extend");
+var base = require("./events-base");
+
+var proto = {
+    onclick: function onclick(e) {
+        var x = e.pageX,
+            y = e.pageY;
+        this.spewHearts(x, y);
+    },
+    ontouch: function ontouch(e) {
+        var x = e.changedTouches[0].pageX,
+            y = e.changedTouches[0].pageY;
+        this.spewHearts(x, y);
+    },
+};
+
+module.exports = extend(base, proto);
+},{"../../../utilities/extend":28,"./events-base":14}],17:[function(require,module,exports){
+module.exports = {
+    initialize: function initialize(elt) {
         var eltRect = elt.getBoundingClientRect(),
             geyserX = eltRect.left + ((eltRect.width) / 2),
             geyserY = eltRect.top + (eltRect.height / 2);
@@ -428,10 +478,9 @@ module.exports = {
         setInterval(function(){
             this.spewHearts(geyserX, geyserY);
         }.bind(this), this.modHeartProto.geyserInterval);
-    }
-
+    },
 };
-},{"../../utilities/random":26}],14:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 var extend = require("../../utilities/extend"),
     animate = require("./mixins/animate"),
     image = require("./mixins/image"),
@@ -476,7 +525,7 @@ heartProto = {
 };
 
 module.exports = extend(heartProto, image, position, animate, rotate, scale, transition, translate);
-},{"../../utilities/extend":24,"./mixins/animate":15,"./mixins/image":16,"./mixins/position":18,"./mixins/rotate":19,"./mixins/scale":20,"./mixins/transition":21,"./mixins/translate":22}],15:[function(require,module,exports){
+},{"../../utilities/extend":28,"./mixins/animate":19,"./mixins/image":20,"./mixins/position":22,"./mixins/rotate":23,"./mixins/scale":24,"./mixins/transition":25,"./mixins/translate":26}],19:[function(require,module,exports){
 module.exports = {
     animate: animate,
     getTransforms: function getTransforms() {
@@ -542,7 +591,7 @@ function weird() {
 
     return this;
 }
-},{}],16:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 // TODO - refactor getStyle
 var heartIconFactory = require("../../../icon-factory");
 var randomInRange = require("../../../utilities/random").randomInRange;
@@ -625,7 +674,7 @@ module.exports = {
         ].join(";");
     },
 };
-},{"../../../icon-factory":6,"../../../utilities/random":26}],17:[function(require,module,exports){
+},{"../../../icon-factory":6,"../../../utilities/random":30}],21:[function(require,module,exports){
 var rotate = require("./rotate"),
     scale = require("./scale"),
     transition = require("./transition"),
@@ -660,7 +709,7 @@ module.exports = {
 // module.exports = (function() {
 //     files.filter(isNotCurrentFile).forEach(exportMixin);
 // })();
-},{"./animate":15,"./rotate":19,"./scale":20,"./transition":21,"./translate":22}],18:[function(require,module,exports){
+},{"./animate":19,"./rotate":23,"./scale":24,"./transition":25,"./translate":26}],22:[function(require,module,exports){
 // TODO - remove references to this.image
 var randomInRange = require("../../../utilities/random").randomInRange;
 
@@ -699,7 +748,7 @@ module.exports = {
         return this;
     },
 };
-},{"../../../utilities/random":26}],19:[function(require,module,exports){
+},{"../../../utilities/random":30}],23:[function(require,module,exports){
 var randomAngle    = require("../../../utilities/random").randomAngle,
     normalizeAngle = require("../../../utilities/misc").normalizeAngle;
 
@@ -719,7 +768,7 @@ module.exports = {
         return "rotate("+theta+"deg)";
     },
 };
-},{"../../../utilities/misc":25,"../../../utilities/random":26}],20:[function(require,module,exports){
+},{"../../../utilities/misc":29,"../../../utilities/random":30}],24:[function(require,module,exports){
 var randomScalar = require("../../../utilities/random").randomScalar;
 
 module.exports = {
@@ -737,7 +786,7 @@ module.exports = {
         return "scale("+k+")";
     },
 };
-},{"../../../utilities/random":26}],21:[function(require,module,exports){
+},{"../../../utilities/random":30}],25:[function(require,module,exports){
 module.exports = {
     transitionDuration: null,
     transitionFunction: null,
@@ -745,7 +794,7 @@ module.exports = {
         return this.transitionDuration+"ms "+ this.transitionFunction;
     },
 };
-},{}],22:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 var randomInRange = require("../../../utilities/random").randomInRange;
 
 module.exports = {
@@ -771,7 +820,7 @@ module.exports = {
         return "translate3d("+tx+"px,"+ty+"px, 0)";
     },
 };
-},{"../../../utilities/random":26}],23:[function(require,module,exports){
+},{"../../../utilities/random":30}],27:[function(require,module,exports){
 (function (global){
 // TODO
 // - cache existing animations
@@ -811,7 +860,7 @@ global.SuperHearts = SuperHearts;
 /* */
 /* aaaand SuperHearts.PRESET */
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./arguments-helper":1,"./factories/animation-collection-factory":3,"./presets/preset-loader":11}],24:[function(require,module,exports){
+},{"./arguments-helper":1,"./factories/animation-collection-factory":3,"./presets/preset-loader":11}],28:[function(require,module,exports){
 module.exports = function extend() {
     // extends an arbitrary number of objects
     var args   = [].slice.call(arguments, 0),
@@ -834,7 +883,7 @@ function extendHelper(destination, source) {
     }
     return destination;
 }
-},{}],25:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 module.exports = {
     toRadians: function toRadians(theta) {
         return normalizeAngle(theta)*(Math.PI / 180);
@@ -846,7 +895,7 @@ function normalizeAngle(theta) {
     while (theta < 0) { theta += 360; }
     return theta % 360;
 }
-},{}],26:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 module.exports = {
     randomAngle: function randomAngle() {
         return randomInRange.apply(null, arguments);
@@ -897,4 +946,4 @@ function normalizeArguments(args) {
 function noArgumentError() {
     throw new Error("You supplied no arguments to a function that needed arguments. Check the call stack!");
 }
-},{}]},{},[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26]);
+},{}]},{},[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30]);
