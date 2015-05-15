@@ -59,6 +59,15 @@ var imageMixin = {
         document.querySelector("body").appendChild(this.image);
         return this;
     },
+    fadeOut: function fadeOut() {
+        if (!this.doNotRemove) {
+            var removeHeart = this.remove.bind(this);
+            this.image.style.opacity = 0;
+            setTimeout(removeHeart, this.transitionDuration);
+            return this;
+        }
+    },
+
     getImageSrc: function getImageSrc() {
         if (!this.imageSrc) {
             this.imageSrc = heartIconFactory({
@@ -67,6 +76,9 @@ var imageMixin = {
             });
         }
         return this.imageSrc;
+    },
+    hide: function hide() {
+        return this.fadeOut();
     },
     setImage: function setImage() {
         this.image = document.createElement("img");
@@ -134,13 +146,8 @@ heartProto = {
     appendToBody: function appendToBody() {
         throw new Error("appendToBody unspecified");
     },
-    fadeOut: function fadeOut() {
-        if (!this.doNotRemove) {
-            var removeHeart = this.remove.bind(this);
-            this.image.style.opacity = 0;
-            setTimeout(removeHeart, this.transitionDuration);
-            return this;
-        }
+    hide: function hide() {
+        throw new Error("Must specify a hide function");
     },
     remove: function remove() {
         document.querySelector("body").removeChild(this.image);

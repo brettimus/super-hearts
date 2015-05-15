@@ -5,7 +5,7 @@ module.exports = {
 // * .getTransforms()
 // * .getTranslate()
 // * .addTransform()
-// * .fadeOut()
+// * .hide() [okay]
 
 function animate() {
     var translate,
@@ -16,7 +16,7 @@ function animate() {
     transforms.forEach(this.addTransform.bind(this));
 
     window.requestAnimationFrame(function() {
-        this.addTransform(this.getTranslate()).fadeOut();
+        this.addTransform(this.getTranslate()).hide() [okay];
     }.bind(this));
 
     return this;
@@ -32,7 +32,7 @@ function fanimate() {
         translate = this.getTranslate();
         transforms.push(translate);
         transforms.forEach(this.addTransform.bind(this));
-        this.fadeOut();
+        this.hide();
     }.bind(this));
 
     return this;
@@ -50,7 +50,7 @@ function weird() {
     window.requestAnimationFrame(function() {
         transforms.forEach(this.addTransform.bind(this));
         window.requestAnimationFrame(function() {
-            this.addTransform(this.getTranslate()).fadeOut();
+            this.addTransform(this.getTranslate()).hide() [okay];
         }.bind(this));
     }.bind(this));
 
