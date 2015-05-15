@@ -13,6 +13,10 @@ var dawh = SuperHearts(); // now try clicking around
 ```
 
 ## Presets
+A `preset` is simply a set of default options for a given call to `SuperHearts`. 
+`SuperHearts` comes with a few presets out of the box, 
+but you can also register your own (see below).
+
 
 ### Circle
 **Evented**
@@ -39,6 +43,28 @@ var line = SuperHearts.Geyser();
 **Evented**
 // Fixed starting point determined by `boundingRect` of `#myButton`
 var butt = SuperHearts.Button("#myButton");
+
+
+### Add your own
+To add your own preset to the `SuperHearts` object, 
+use the `SuperHearts.registerPreset` method. 
+This method takes a `name` parameter and an options hash.
+
+```javascript
+// Register a `preset` called `Foo`
+var fooConfig = { /* put your desired settings here */ }
+SuperHearts.registerPreset("Foo", fooConfig);
+// Now you can call
+SuperHearts.Foo("#my-element");
+```
+
+The defaults that you assign to a `preset` 
+can be easily overriden in subsequent calls to your `preset`, as follows:
+
+```javascript
+var newFooConfig = { /* Override some defaults that you previously set on Foo */ };
+SuperHearts.Foo("#my-element", newFooConfig);
+```
 
 
 ## Options
@@ -231,14 +257,11 @@ Default is `0`.
 
 
 ## TODO
-* inlined heart icon uses a `data:` URL for its source, **SO IT IS NOT CACHED**
+* Fix caching issue -- inlined heart icon uses a `data:` URL for its source, **SO IT IS NOT CACHED**
 * Change main default to be either incredibly basic or moar like Super's
 * `SuperHearts.registerDefault` method
-* `SuperHearts.registerPreset` method
 * Allow mass assignment (use `document.querySelectorAll` instead of `document.querySelector`)
-* Refactor presets to load from a directory
 * Refactor logic around `doNotRemove` option
-* Compose `heart-prototype` from several mixins (it's a behemoth right now)
 * Switch to using [jsdoc](http://usejsdoc.org/) after refactoring prototypes + factories
 * Refactor SVG manipulation
 * Add more SVG manipulation

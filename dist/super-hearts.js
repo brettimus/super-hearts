@@ -109,6 +109,8 @@ module.exports = function heartFactory(options) {
     return extend.apply(null, toExtend);
 };
 
+
+// This was tooooo clever. but keeping it for now just to look at it and appreciate its sentiment
 function getMixins(options) {
     // this is kind of dumb but whatever
     var result = Object.keys(mixins).filter(ifNeedsMixin(options)).map(getMixin);
@@ -270,44 +272,17 @@ module.exports = {
 var buttonDefaults  = require("./button"),
     circleDefaults  = require("./circle"),
     lineDefaults    = require("./line"),
-    geyserDefaults  = require("./geyser"),
-    argumentsHelper = require("../arguments-helper"),
-    extend          = require("../utilities/extend");
+    geyserDefaults  = require("./geyser");
 
 module.exports = function loadPresets(SuperHearts) { // is this a confusing or consistent parameter name?
-
-    function presetHandler(presetDefaults, originalArgs) {
-        var args         = argumentsHelper.apply(null, originalArgs),
-            selector     = args.selector,
-            optionsArray = args.optionsArray;
-
-        // Merge user options _after_ preset defaults so they can override at their leisure!
-        optionsArray.forEach(function(options, index) {
-            optionsArray[index] = extend({}, presetDefaults, options);
-        });
-
-        return SuperHearts.apply(SuperHearts, [selector].concat(optionsArray));
-    }
-
-    SuperHearts.Button = function Button() {
-        return presetHandler(buttonDefaults, arguments);
-    };
-
-    SuperHearts.Circle = function Circle() {
-        return presetHandler(circleDefaults, arguments);
-    };
-
-    SuperHearts.Line = function Line() {
-        return presetHandler(lineDefaults, arguments);
-    };
-
-    SuperHearts.Geyser = function Geyser() {
-        return presetHandler(geyserDefaults, arguments);
-    };
+    SuperHearts.registerPreset("Button", buttonDefaults);
+    SuperHearts.registerPreset("Circle", circleDefaults);
+    SuperHearts.registerPreset("Line", lineDefaults);
+    SuperHearts.registerPreset("Geyser", geyserDefaults);
 };
 
 
-},{"../arguments-helper":1,"../utilities/extend":28,"./button":7,"./circle":8,"./geyser":9,"./line":10}],12:[function(require,module,exports){
+},{"./button":7,"./circle":8,"./geyser":9,"./line":10}],12:[function(require,module,exports){
 var animationFactory = require("../../factories/animation-factory");
 
 module.exports = {
@@ -830,6 +805,9 @@ var argumentsHelper = require("./arguments-helper");
 var loadPresets = require("./presets/preset-loader");
 var animationCollectionFactory = require("./factories/animation-collection-factory");
 
+var argumentsHelper = require("./arguments-helper"),
+    extend          = require("./utilities/extend");
+
 function SuperHearts() {
     var args         = argumentsHelper.apply(null, arguments),
         selector     = args.selector,
@@ -846,6 +824,20 @@ function SuperHearts() {
 
     return result;
 }
+SuperHearts.registerPreset = function registerPreset(name, presetDefaults) {
+    SuperHearts[name] = function() {
+        var args         = argumentsHelper.apply(null, arguments),
+            selector     = args.selector,
+            optionsArray = args.optionsArray;
+
+        // Merge user options _after_ preset defaults so they can still override the defaults of a given preset
+        optionsArray.forEach(function(options, index) {
+            optionsArray[index] = extend({}, presetDefaults, options);
+        });
+
+        return SuperHearts.apply(SuperHearts, [selector].concat(optionsArray));
+    };
+};
 
 loadPresets(SuperHearts);
 global.SuperHearts = SuperHearts;
@@ -860,7 +852,7 @@ global.SuperHearts = SuperHearts;
 /* */
 /* aaaand SuperHearts.PRESET */
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./arguments-helper":1,"./factories/animation-collection-factory":3,"./presets/preset-loader":11}],28:[function(require,module,exports){
+},{"./arguments-helper":1,"./factories/animation-collection-factory":3,"./presets/preset-loader":11,"./utilities/extend":28}],28:[function(require,module,exports){
 module.exports = function extend() {
     // extends an arbitrary number of objects
     var args   = [].slice.call(arguments, 0),
