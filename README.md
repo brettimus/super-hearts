@@ -21,9 +21,10 @@ but you can also register your own (see below).
 
 
 ### Circle
+**Evented**
+
 `Circle` is the primary default. 
 That is, calling `SuperHearts("#my-element")` is the same as `SuperHearts.Circle("#my-element")`.
-**Evented**
 ```javascript
 // Hearts radiate in a ring pattern around a user's click or touch
 var circ = SuperHearts.Circle(); // note: this is equivalent to calling `SuperHearts()`
@@ -45,8 +46,13 @@ var line = SuperHearts.Geyser();
 
 ### Button
 **Evented**
-// Fixed starting point determined by `boundingRect` of `#myButton`.
+
+The `Button` preset is good for attaching an animation to an interactive element.
+Animations on the specified element will start from a fixed point, 
+which is calculated as the "center of mass" of the element's `boundingRect`.
+
 ```javascript
+// Fixed starting point determined by `boundingRect` of `#myButton`.
 var butt = SuperHearts.Button("#myButton");
 ```
 
