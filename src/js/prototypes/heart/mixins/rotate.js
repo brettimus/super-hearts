@@ -1,5 +1,5 @@
-var randomAngle    = require("../../utilities/random").randomAngle,
-    normalizeAngle = require("../../utilities/misc").normalizeAngle;
+var randomAngle    = require("../../../utilities/random").randomAngle,
+    normalizeAngle = require("../../../utilities/misc").normalizeAngle;
 
 module.exports = {
     "_THETA": null,

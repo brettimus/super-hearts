@@ -1,4 +1,4 @@
-var animationFactory = require("../factories/animation-factory");
+var animationFactory = require("../../factories/animation-factory");
 
 module.exports = {
     animations: null, // Array (assigned on instance creation in factory function).

@@ -24,19 +24,19 @@ module.exports = function argumentsHelper() {
 // The "main" default is the Circle preset
 module.exports = require("./presets/circle");
 },{"./presets/circle":8}],3:[function(require,module,exports){
-var animationCollectionProto = require("../prototypes/animation-collection-prototype");
+var animationCollectionProto = require("../prototypes/animation-collection/animation-collection-prototype");
 
 module.exports = function animationCollectionFactory(selector) {
     var animationCollection = Object.create(animationCollectionProto).setSelector(selector).setElement(selector);
     animationCollection.animations = []; // NB - this is necessary to keep the collection's prototype from being modified by calls to `addAnimation`
     return animationCollection;
 };
-},{"../prototypes/animation-collection-prototype":12}],4:[function(require,module,exports){
+},{"../prototypes/animation-collection/animation-collection-prototype":12}],4:[function(require,module,exports){
 // TODO - refactor dat factory
 // the factory function does stuff it shouldn't be responsible for
 
 var heartFactory = require("./heart-factory"),
-    animationProto = require("../prototypes/animation-prototype");
+    animationProto = require("../prototypes/animation/animation-prototype");
 
 var mainDefault = require("../default"),
     extend = require("../utilities/extend");
@@ -89,11 +89,11 @@ module.exports = function animationFactory(selector, options) {
 
     return animation;
 };
-},{"../default":2,"../prototypes/animation-prototype":13,"../utilities/extend":24,"./heart-factory":5}],5:[function(require,module,exports){
-var heartProto  = require("../prototypes/heart-prototype"),
+},{"../default":2,"../prototypes/animation/animation-prototype":13,"../utilities/extend":24,"./heart-factory":5}],5:[function(require,module,exports){
+var heartProto  = require("../prototypes/heart/heart-prototype"),
     extend      = require("../utilities/extend"),
     mainDefault = require("../default"),
-    mixins      = require("../prototypes/heart-mixins");
+    mixins      = require("../prototypes/heart/mixins");
 
 module.exports = function heartFactory(options) {
     // var toExtend = [{}, heartProto, options].concat(getMixins(options));  // TODO - figure out better sequencing here
@@ -117,7 +117,7 @@ function ifNeedsMixin(options) {
 function getMixin(name) {
     return mixins[name];
 }
-},{"../default":2,"../prototypes/heart-mixins":16,"../prototypes/heart-prototype":22,"../utilities/extend":24}],6:[function(require,module,exports){
+},{"../default":2,"../prototypes/heart/heart-prototype":14,"../prototypes/heart/mixins":17,"../utilities/extend":24}],6:[function(require,module,exports){
 // TODO - construct this from actual SVG file (close!)
 //      - look into using an SVG lib instead of xml2js
 //
@@ -300,7 +300,7 @@ module.exports = function loadPresets(SuperHearts) { // is this a confusing or c
 
 
 },{"../arguments-helper":1,"../utilities/extend":24,"./button":7,"./circle":8,"./geyser":9,"./line":10}],12:[function(require,module,exports){
-var animationFactory = require("../factories/animation-factory");
+var animationFactory = require("../../factories/animation-factory");
 
 module.exports = {
     animations: null, // Array (assigned on instance creation in factory function).
@@ -357,8 +357,8 @@ module.exports = {
     },
 
 };
-},{"../factories/animation-factory":4}],13:[function(require,module,exports){
-var randomInRange = require("../utilities/random").randomInRange;
+},{"../../factories/animation-factory":4}],13:[function(require,module,exports){
+var randomInRange = require("../../utilities/random").randomInRange;
 
 module.exports = {
 
@@ -431,7 +431,52 @@ module.exports = {
     }
 
 };
-},{"../utilities/random":26}],14:[function(require,module,exports){
+},{"../../utilities/random":26}],14:[function(require,module,exports){
+var extend = require("../../utilities/extend"),
+    animate = require("./mixins/animate"),
+    image = require("./mixins/image"),
+    position = require("./mixins/position"),
+    rotate = require("./mixins/rotate"),
+    scale = require("./mixins/scale"),
+    transition = require("./mixins/transition"),
+    translate = require("./mixins/translate");
+
+
+heartProto = {
+    doNotRemove: null,
+    fan: null,
+    floatingInSpace: null,
+    geyser: null,
+    count: null,
+    fixed: null,
+
+
+    // TODO - where to put this defn?
+    // currently called in two different mixins 
+    addTransform: function addTransform(operation) {
+        // TODO this should be removed from the main proto 
+        throw new Error("addTransform unspecified");
+    },
+
+
+    // Ideal, minimal interface
+    // (everything that an animation collection expects to be on a heart) //
+    animate: function animate() {
+        throw new Error("Must define an animate function.");
+    },
+    hide: function hide() {
+        throw new Error("Must specify a hide function");
+    },
+    remove: function remove() {
+        throw new Error("Must specify a remove function");
+    },
+    show: function show() {
+        throw new Error("Must define show function");
+    },
+};
+
+module.exports = extend(heartProto, image, position, animate, rotate, scale, transition, translate);
+},{"../../utilities/extend":24,"./mixins/animate":15,"./mixins/image":16,"./mixins/position":18,"./mixins/rotate":19,"./mixins/scale":20,"./mixins/transition":21,"./mixins/translate":22}],15:[function(require,module,exports){
 module.exports = {
     animate: animate,
     getTransforms: function getTransforms() {
@@ -497,11 +542,11 @@ function weird() {
 
     return this;
 }
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 // TODO - refactor getStyle
-var heartIconFactory = require("../../icon-factory");
-var randomInRange = require("../../utilities/random").randomInRange;
-var randomOpacity = require("../../utilities/random").randomOpacity;
+var heartIconFactory = require("../../../icon-factory");
+var randomInRange = require("../../../utilities/random").randomInRange;
+var randomOpacity = require("../../../utilities/random").randomOpacity;
 
 
 module.exports = {
@@ -580,7 +625,7 @@ module.exports = {
         ].join(";");
     },
 };
-},{"../../icon-factory":6,"../../utilities/random":26}],16:[function(require,module,exports){
+},{"../../../icon-factory":6,"../../../utilities/random":26}],17:[function(require,module,exports){
 var rotate = require("./rotate"),
     scale = require("./scale"),
     transition = require("./transition"),
@@ -615,9 +660,9 @@ module.exports = {
 // module.exports = (function() {
 //     files.filter(isNotCurrentFile).forEach(exportMixin);
 // })();
-},{"./animate":14,"./rotate":18,"./scale":19,"./transition":20,"./translate":21}],17:[function(require,module,exports){
+},{"./animate":15,"./rotate":19,"./scale":20,"./transition":21,"./translate":22}],18:[function(require,module,exports){
 // TODO - remove references to this.image
-var randomInRange = require("../../utilities/random").randomInRange;
+var randomInRange = require("../../../utilities/random").randomInRange;
 
 module.exports = {
     x: null,
@@ -654,9 +699,9 @@ module.exports = {
         return this;
     },
 };
-},{"../../utilities/random":26}],18:[function(require,module,exports){
-var randomAngle    = require("../../utilities/random").randomAngle,
-    normalizeAngle = require("../../utilities/misc").normalizeAngle;
+},{"../../../utilities/random":26}],19:[function(require,module,exports){
+var randomAngle    = require("../../../utilities/random").randomAngle,
+    normalizeAngle = require("../../../utilities/misc").normalizeAngle;
 
 module.exports = {
     "_THETA": null,
@@ -674,8 +719,8 @@ module.exports = {
         return "rotate("+theta+"deg)";
     },
 };
-},{"../../utilities/misc":25,"../../utilities/random":26}],19:[function(require,module,exports){
-var randomScalar = require("../../utilities/random").randomScalar;
+},{"../../../utilities/misc":25,"../../../utilities/random":26}],20:[function(require,module,exports){
+var randomScalar = require("../../../utilities/random").randomScalar;
 
 module.exports = {
     "_SCALAR": null,
@@ -692,7 +737,7 @@ module.exports = {
         return "scale("+k+")";
     },
 };
-},{"../../utilities/random":26}],20:[function(require,module,exports){
+},{"../../../utilities/random":26}],21:[function(require,module,exports){
 module.exports = {
     transitionDuration: null,
     transitionFunction: null,
@@ -700,8 +745,8 @@ module.exports = {
         return this.transitionDuration+"ms "+ this.transitionFunction;
     },
 };
-},{}],21:[function(require,module,exports){
-var randomInRange = require("../../utilities/random").randomInRange;
+},{}],22:[function(require,module,exports){
+var randomInRange = require("../../../utilities/random").randomInRange;
 
 module.exports = {
     translateX: null,
@@ -726,55 +771,7 @@ module.exports = {
         return "translate3d("+tx+"px,"+ty+"px, 0)";
     },
 };
-},{"../../utilities/random":26}],22:[function(require,module,exports){
-var randUtils      = require("../utilities/random"),
-    randomOpacity  = randUtils.randomOpacity,
-    randomInRange  = randUtils.randomInRange,
-    extend = require("../utilities/extend"),
-    animate = require("./heart-mixins/animate"),
-    image = require("./heart-mixins/image"),
-    position = require("./heart-mixins/position"),
-    rotate = require("./heart-mixins/rotate"),
-    scale = require("./heart-mixins/scale"),
-    transition = require("./heart-mixins/transition"),
-    translate = require("./heart-mixins/translate");
-
-
-heartProto = {
-    doNotRemove: null,
-    fan: null,
-    floatingInSpace: null,
-    geyser: null,
-    count: null,
-    fixed: null,
-
-
-    // TODO - where to put this defn?
-    // currently called in two different mixins 
-    addTransform: function addTransform(operation) {
-        // TODO this should be removed from the main proto 
-        throw new Error("addTransform unspecified");
-    },
-
-
-    // Ideal, minimal interface
-    // (everything that an animation collection expects to be on a heart) //
-    animate: function animate() {
-        throw new Error("Must define an animate function.");
-    },
-    hide: function hide() {
-        throw new Error("Must specify a hide function");
-    },
-    remove: function remove() {
-        throw new Error("Must specify a remove function");
-    },
-    show: function show() {
-        throw new Error("Must define show function");
-    },
-};
-
-module.exports = extend(heartProto, image, position, animate, rotate, scale, transition, translate);
-},{"../utilities/extend":24,"../utilities/random":26,"./heart-mixins/animate":14,"./heart-mixins/image":15,"./heart-mixins/position":17,"./heart-mixins/rotate":18,"./heart-mixins/scale":19,"./heart-mixins/transition":20,"./heart-mixins/translate":21}],23:[function(require,module,exports){
+},{"../../../utilities/random":26}],23:[function(require,module,exports){
 (function (global){
 // TODO
 // - cache existing animations

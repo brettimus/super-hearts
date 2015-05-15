@@ -1,14 +1,11 @@
-var randUtils      = require("../utilities/random"),
-    randomOpacity  = randUtils.randomOpacity,
-    randomInRange  = randUtils.randomInRange,
-    extend = require("../utilities/extend"),
-    animate = require("./heart-mixins/animate"),
-    image = require("./heart-mixins/image"),
-    position = require("./heart-mixins/position"),
-    rotate = require("./heart-mixins/rotate"),
-    scale = require("./heart-mixins/scale"),
-    transition = require("./heart-mixins/transition"),
-    translate = require("./heart-mixins/translate");
+var extend = require("../../utilities/extend"),
+    animate = require("./mixins/animate"),
+    image = require("./mixins/image"),
+    position = require("./mixins/position"),
+    rotate = require("./mixins/rotate"),
+    scale = require("./mixins/scale"),
+    transition = require("./mixins/transition"),
+    translate = require("./mixins/translate");
 
 
 heartProto = {

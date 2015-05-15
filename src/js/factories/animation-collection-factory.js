@@ -1,4 +1,4 @@
-var animationCollectionProto = require("../prototypes/animation-collection-prototype");
+var animationCollectionProto = require("../prototypes/animation-collection/animation-collection-prototype");
 
 module.exports = function animationCollectionFactory(selector) {
     var animationCollection = Object.create(animationCollectionProto).setSelector(selector).setElement(selector);

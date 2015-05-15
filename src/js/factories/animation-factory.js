@@ -2,7 +2,7 @@
 // the factory function does stuff it shouldn't be responsible for
 
 var heartFactory = require("./heart-factory"),
-    animationProto = require("../prototypes/animation-prototype");
+    animationProto = require("../prototypes/animation/animation-prototype");
 
 var mainDefault = require("../default"),
     extend = require("../utilities/extend");

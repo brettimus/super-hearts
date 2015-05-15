@@ -1,7 +1,7 @@
 // TODO - refactor getStyle
-var heartIconFactory = require("../../icon-factory");
-var randomInRange = require("../../utilities/random").randomInRange;
-var randomOpacity = require("../../utilities/random").randomOpacity;
+var heartIconFactory = require("../../../icon-factory");
+var randomInRange = require("../../../utilities/random").randomInRange;
+var randomOpacity = require("../../../utilities/random").randomOpacity;
 
 
 module.exports = {

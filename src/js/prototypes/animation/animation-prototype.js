@@ -1,4 +1,4 @@
-var randomInRange = require("../utilities/random").randomInRange;
+var randomInRange = require("../../utilities/random").randomInRange;
 
 module.exports = {
 
