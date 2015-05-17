@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SuperHearts</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <nav>
+     SuperHearts
+  </nav>
+  <header>
+    <p class="u-text-center u-no-padding u-no-margin">
+      <span id="heart-me">&nbsp;</span>
+    </p>
+    <h1>
+      all you need
+      <small>is SuperHearts</small>
+    </h1>
+    <pre>
+      var dawh = SuperHearts.Geyser("#heart-me")
+    </pre>
+  </header>
+  <article>
+    <section id="example-1">
+      <h2>
+        clickable
+        <small>
+          touch the page
+        </small>
+      </h2>
+      <pre>
+        var dawh1 = SuperHearts("#example-1");
+      </pre>
+    </section>
+    <section id="example-2">
+      <h2>
+        stickable
+        <small>
+          some love never fades
+        </small>
+      </h2>
+      <pre>
+        var dawh2 = SuperHearts("#example-2", { doNotRemove: true });
+      </pre>
+    </section>
+    <section id="example-3">
+      <h2>
+        button-friendly
+        <small>
+          oooooh
+        </small>
+      </h2>
+      <pre>
+        var dawh3 = SuperHearts.Button("#example-3");
+      </pre>
+    </section>
+    <section id="example-4">
+      <h2>
+        configurable
+        <small>
+          lots of options
+        </small>
+      </h2>
+      <pre>
+        var config = {  };
+        var dawh4 = SuperHearts("#example-4", config);
+      </pre>
+    </section>
+    <section id="example-5">
+      <h2>
+        composable
+        <small>
+          go wilde, oscar
+        </small>
+      </h2>
+      <pre>
+        var dawh5 = SuperHearts("#example-5");
+      </pre>
+    </section>
+  </article>
+  <script src="./super-hearts.min.js"></script>
+  <script>
+    // header example
+    var dawh = SuperHearts.Geyser("#heart-me")
+
+    // first example
+    var dawh1 = SuperHearts("#example-1");
+
+    // second example
+    var dawh2 = SuperHearts("#example-2", {
+      doNotRemove: true
+    });
+
+    // third example
+    var dawh3 = SuperHearts.Button("#example-3");
+
+    // fourth example
+    var config = {
+
+    };
+    var dawh4 = SuperHearts("#example-4", config);
+
+    // fifth example
+    var dawh5 = SuperHearts("#example-5");
+    dawh5.compose()
+    dawh5.compose()
+    dawh5.compose()
+  </script>
+</body>
+</html>

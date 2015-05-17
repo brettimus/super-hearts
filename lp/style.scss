@@ -1,0 +1,80 @@
+$black: #222;
+$black-light: #666;
+
+$cursive: cursive;
+$sans-serif: sans-serif;
+
+$nav-height: 60px;
+
+html, body {
+  color: $black;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  padding-top: $nav-height;
+}
+
+nav {
+  border-bottom: solid thin $black-light;
+  font-family: $sans-serif;
+  height: $nav-height;
+  left: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
+header,
+section {
+  min-height: 568px;
+  padding: 60px 60px 60px 80px;
+}
+
+h1,
+h2 {
+  color: $black;
+  text-align: center;
+
+  small {
+    color: $black-light;
+    display: block;
+  }
+}
+
+h1 {
+  font-family: $sans-serif;
+  font-size: 72px;
+
+  small {
+    font-size: 36px;
+  }
+}
+
+h2 {
+  font-family: $sans-serif;
+  font-size: 48px;
+
+  small {
+    font-size: 24px;
+  }
+}
+
+pre {
+  border: solid thin $black-light;
+  border-radius: 8px;
+  margin: 0 auto;
+  max-width: 300px;
+  padding: 20px 20px 30px 20px;
+}
+
+.u-text-center {
+  text-align: center;
+}
+.u-no-padding {
+  padding: 0;
+}
+.u-no-margin {
+  margin: 0;
+}
