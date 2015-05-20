@@ -1,7 +1,8 @@
 html, body {
   color: #222;
   margin: 0;
-  padding: 0; }
+  padding: 0;
+  -webkit-font-smoothing: anti-aliased; }
 
 body {
   padding-top: 60px; }
@@ -9,16 +10,43 @@ body {
 nav {
   border-bottom: solid thin #666;
   font-family: sans-serif;
+  font-size: 18px;
   height: 60px;
   left: 0;
+  line-height: 60px;
   position: fixed;
   top: 0;
   width: 100%; }
+  nav .heart-me {
+    padding-left: 45px; }
+  nav .back-to-top {
+    cursor: pointer; }
+  nav .github-icon {
+    height: 20px;
+    float: right;
+    padding-top: 20px; }
+
+header {
+  padding-top: 80px; }
 
 header,
 section {
-  min-height: 568px;
-  padding: 60px 60px 60px 80px; }
+  border-bottom: solid 4px #666;
+  padding: 0 60px;
+  margin: 0;
+  margin-bottom: -113.6px;
+  min-height: 568px; }
+  header:after,
+  section:after {
+    background: #fff;
+    content: " ";
+    display: block;
+    height: 80px;
+    margin: 113.6px auto 0 auto;
+    width: 80px;
+    transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -webkit-transform: rotate(45deg); }
 
 h1,
 h2 {
@@ -37,7 +65,8 @@ h1 {
 
 h2 {
   font-family: sans-serif;
-  font-size: 48px; }
+  font-size: 48px;
+  padding-top: 113.6px; }
   h2 small {
     font-size: 24px; }
 
@@ -45,8 +74,39 @@ pre {
   border: solid thin #666;
   border-radius: 8px;
   margin: 0 auto;
-  max-width: 300px;
-  padding: 20px 20px 30px 20px; }
+  max-width: 380px;
+  padding: 20px 20px 30px 20px;
+  text-align: center; }
+
+#example-1 {
+  background: #85FF9E;
+  color: #20172c; }
+  #example-1:after {
+    background: #85FF9E;
+    content: " ";
+    display: block;
+    height: 80px;
+    margin: 113.6px auto 0 auto;
+    width: 80px;
+    transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -webkit-transform: rotate(45deg); }
+
+#example-2 {
+  background: #A6F4DC;
+  color: #20172c; }
+
+#example-3 {
+  background: #AF90A9;
+  color: #20172c; }
+
+#example-4 {
+  background: #fff;
+  color: #20172c; }
+
+#example-5 {
+  background: #fff;
+  color: #20172c; }
 
 .u-text-center {
   text-align: center; }

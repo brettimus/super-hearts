@@ -51,7 +51,8 @@ module.exports = function(grunt) {
         uglify: {
             build: {
                 files: {
-                    'dist/super-hearts.min.js': ['dist/super-hearts.js']
+                    'dist/super-hearts.min.js': ['dist/super-hearts.js'],
+                    'lp/super-hearts.min.js': ['dist/super-hearts.js']
                 }
             }
         },

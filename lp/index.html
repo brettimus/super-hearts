@@ -8,18 +8,19 @@
 </head>
 <body>
   <nav>
-     SuperHearts
+    <span class="heart-me" id="heart-me">&nbsp;</span>
+    <span class="back-to-top">SuperHearts</span>
+    <a href="https://github.com/brettimus/super-hearts">
+      <img src="./github-small.svg" alt="fork it!" class="github-icon">      
+    </a>
   </nav>
   <header>
-    <p class="u-text-center u-no-padding u-no-margin">
-      <span id="heart-me">&nbsp;</span>
-    </p>
     <h1>
       all you need
       <small>is SuperHearts</small>
     </h1>
     <pre>
-      var dawh = SuperHearts.Geyser("#heart-me")
+      var dawh = SuperHearts.Geyser("#heart-me");
     </pre>
   </header>
   <article>
@@ -80,6 +81,7 @@
       </pre>
     </section>
   </article>
+  
   <script src="./super-hearts.min.js"></script>
   <script>
     // header example
@@ -107,6 +109,15 @@
     dawh5.compose()
     dawh5.compose()
     dawh5.compose()
+  </script>
+  <script>
+    var toTop = document.queryselector(".back-to-top");
+    function scrollToTop() {
+      window.scrollTo(0, 0);
+    }
+    toTop.addEventListener("touchend", toTop);
+    toTop.addEventListener("click", toTop);
+
   </script>
 </body>
 </html>

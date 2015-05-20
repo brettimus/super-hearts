@@ -4,12 +4,28 @@ $black-light: #666;
 $cursive: cursive;
 $sans-serif: sans-serif;
 
+$icon-height: 20px;
 $nav-height: 60px;
+
+$square-dim: 80px;
+
+$bg-1: #85FF9E;
+$txt-1: rgb(32, 23, 44); // possible alternative black
+$bg-2: #A6F4DC;
+$txt-2: rgb(32, 23, 44); // possible alternative black
+$bg-3: #AF90A9;
+$txt-3: rgb(32, 23, 44); // possible alternative black
+$bg-4: #fff;
+$txt-4: rgb(32, 23, 44); // possible alternative black
+$bg-5: #fff;
+$txt-5: rgb(32, 23, 44); // possible alternative black
+
 
 html, body {
   color: $black;
   margin: 0;
   padding: 0;
+  -webkit-font-smoothing: anti-aliased;
 }
 
 body {
@@ -19,17 +35,51 @@ body {
 nav {
   border-bottom: solid thin $black-light;
   font-family: $sans-serif;
+  font-size: 18px;
   height: $nav-height;
   left: 0;
+  line-height: $nav-height;
   position: fixed;
   top: 0;
   width: 100%;
+
+  .heart-me {
+    padding-left: 45px;
+  }
+
+  .back-to-top {
+    cursor: pointer;
+  }
+
+  .github-icon {
+    height: $icon-height;
+    float: right;
+    padding-top: ($nav-height - $icon-height)/2;
+  }
 }
 
-header,
+header {
+  padding-top: 80px;
+}
+
+header, 
 section {
+  border-bottom: solid 4px $black-light;
+  padding: 0 60px;
+  margin: 0;
+  margin-bottom: -$square-dim*1.42;
   min-height: 568px;
-  padding: 60px 60px 60px 80px;
+  &:after {
+    background: #fff;
+    content: " ";
+    display: block;
+    height: $square-dim;
+    margin: $square-dim*1.42 auto 0 auto;
+    width: $square-dim;
+    transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+  } 
 }
 
 h1,
@@ -46,7 +96,6 @@ h2 {
 h1 {
   font-family: $sans-serif;
   font-size: 72px;
-
   small {
     font-size: 36px;
   }
@@ -55,7 +104,7 @@ h1 {
 h2 {
   font-family: $sans-serif;
   font-size: 48px;
-
+  padding-top: $square-dim*1.42;
   small {
     font-size: 24px;
   }
@@ -65,9 +114,43 @@ pre {
   border: solid thin $black-light;
   border-radius: 8px;
   margin: 0 auto;
-  max-width: 300px;
+  max-width: 380px;
   padding: 20px 20px 30px 20px;
+  text-align: center;
 }
+
+#example-1 {
+  background: $bg-1;
+  color: $txt-1;
+  &:after {
+    background: $bg-1;
+    content: " ";
+    display: block;
+    height: $square-dim;
+    margin: $square-dim*1.42 auto 0 auto;
+    width: $square-dim;
+    transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+  } 
+}
+#example-2 {
+  background: $bg-2;
+  color: $txt-2;  
+}
+#example-3 {
+  background: $bg-3;
+  color: $txt-3;  
+}
+#example-4 {
+  background: $bg-4;
+  color: $txt-4;  
+}
+#example-5 {
+  background: $bg-5;
+  color: $txt-5;  
+}
+
 
 .u-text-center {
   text-align: center;
