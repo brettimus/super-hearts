@@ -20,4 +20,4 @@ var proto = {
     },
 };
 
-module.exports = extend(base, proto);
+module.exports = extend({}, base, proto);
