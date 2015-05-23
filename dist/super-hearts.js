@@ -615,12 +615,8 @@ module.exports = {
     setImage: function setImage() {
         this.image = document.createElement("img");
         this.image.src = this.getImageSrc();
-        if (this.imageHeight) {
-            this.image.height = this.imageHeight;
-        }
-        if (this.imageWidth) {
-            this.image.width = this.imageWidth;
-        }
+        if (this.imageHeight) this.image.height = this.imageHeight;
+        if (this.imageWidth) this.image.width = this.imageWidth;
         return this;
     },
     show: function show() {
@@ -634,6 +630,7 @@ module.exports = {
             opacity    = randomOpacity(this.opacity),
             transform  = "translate3d("+ left + "px, " + top + "px, 0)",
             transition = this.getTransition();
+
         return [
             "left:"+0+"px",
             "opacity:"+opacity,
