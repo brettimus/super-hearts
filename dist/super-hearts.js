@@ -43,106 +43,7 @@ module.exports = function argumentsHelper() {
 // };
 
 module.exports = require("./presets/circle");
-},{"./presets/circle":8}],3:[function(require,module,exports){
-var animationCollectionProto = require("../prototypes/animation-collection/animation-collection-prototype");
-
-module.exports = function animationCollectionFactory(selector) {
-    var animationCollection = Object.create(animationCollectionProto).setSelector(selector).setElement(selector);
-    animationCollection.animations = []; // NB - this is necessary to keep the collection's prototype from being modified by calls to `addAnimation`
-    return animationCollection;
-};
-},{"../prototypes/animation-collection/animation-collection-prototype":12}],4:[function(require,module,exports){
-var heartProtoFactory = require("./heart-prototype-factory"),
-    animationProto = require("../prototypes/animation/animation-prototype"),
-    fixed = require("../prototypes/animation/mixins/events-fixed"),
-    unfixed = require("../prototypes/animation/mixins/events-unfixed"),
-    geyser = require("../prototypes/animation/mixins/geyser");
-
-var mainDefault = require("../default"),
-    extend = require("../utilities/extend");
-
-
-
-module.exports = function animationFactory(selector, options) {
-
-    var animation,
-        elt           = document.querySelector(selector),
-        modHeartProto = heartProtoFactory(extend({}, mainDefault, options));
-
-    if (elt === null) {
-        console.log("No element matched the given selector: \""+selector+"\"");
-        console.log("~i shall fail silently~");
-        return;
-    }
-
-    if (modHeartProto.geyser) {
-        animation = Object.create(extend(animationProto, geyser));
-        animation.modHeartProto = modHeartProto;
-        animation.modHeartProto.geyserInterval = animation.modHeartProto.geyserInterval || animation.modHeartProto.transitionDuration/2;
-    }
-    else {
-        if (modHeartProto.fixed) {
-            animation = Object.create(extend(animationProto, fixed));
-        } else {
-            animation = Object.create(extend(animationProto, unfixed));
-        }
-        animation.events = {
-            click: null,
-            touch: null,
-        };
-        animation.modHeartProto = modHeartProto;
-    }
-
-    animation.count = modHeartProto.count;
-    // animation.selector = selector; // where is this used?
-    animation.heartFactory = function heartFactory(x, y) {
-        return Object.create(modHeartProto).setCoordinates(x, y).setImage();
-    };
-
-    animation.start(elt);
-
-    return animation;
-};
-},{"../default":2,"../prototypes/animation/animation-prototype":13,"../prototypes/animation/mixins/events-fixed":15,"../prototypes/animation/mixins/events-unfixed":16,"../prototypes/animation/mixins/geyser":17,"../utilities/extend":29,"./heart-prototype-factory":5}],5:[function(require,module,exports){
-var heartProto  = require("../prototypes/heart/heart-prototype"),
-    animate     = require("../prototypes/heart/mixins/animate-default"),
-    fanimate    = require("../prototypes/heart/mixins/animate-fan"),
-    extend      = require("../utilities/extend"),
-    mainDefault = require("../default"),
-    mixins      = require("../prototypes/heart/mixins");
-
-module.exports = function heartFactory(options) {
-    // var toExtend = [{}, heartProto, options].concat(getMixins(options));  // TODO - figure out better sequencing here
-    var animater;
-    if (options.fan) {
-        animater = fanimate;
-    }
-    else {
-        animater = animate;
-    }
-    var toExtend = [{}, heartProto, animater, options];
-    return extend.apply(null, toExtend);
-};
-
-
-// This was tooooo clever. but keeping it for now just to look at it and appreciate its sentiment
-function getMixins(options) {
-    // this is kind of dumb but whatever
-    var result = Object.keys(mixins).filter(ifNeedsMixin(options)).map(getMixin);
-    return result;
-}
-
-function ifNeedsMixin(options) {
-    return function(mixinName) {
-        console.log(mixinName);
-        return !!options[mixinName];
-    };
-}
-
-function getMixin(name) {
-    return mixins[name];
-}
-},{"../default":2,"../prototypes/heart/heart-prototype":18,"../prototypes/heart/mixins":22,"../prototypes/heart/mixins/animate-default":19,"../prototypes/heart/mixins/animate-fan":20,"../utilities/extend":29}],6:[function(require,module,exports){
+},{"./presets/circle":5}],3:[function(require,module,exports){
 // TODO - construct this from actual SVG file (close!)
 //      - look into using an SVG lib instead of xml2js
 //
@@ -222,7 +123,7 @@ module.exports = function(options) {
         src = 'data:image/svg+xml;charset=utf-8,'+icon;
     return src;
 };
-},{}],7:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 module.exports = {
     angle: [0, 359],
     count: [6, 10],
@@ -232,7 +133,7 @@ module.exports = {
     transitionDuration: 600,
     translateY: [15, 45],
 };
-},{}],8:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 var extend = require("../utilities/extend");
 
 var circle = {
@@ -257,7 +158,7 @@ var circle = {
 };
 
 module.exports = circle;
-},{"../utilities/extend":29}],9:[function(require,module,exports){
+},{"../utilities/extend":29}],6:[function(require,module,exports){
 module.exports = {
     angle: [-10, 10],
     geyser: true,
@@ -269,13 +170,13 @@ module.exports = {
     translateX: [-45, 45],
     translateY: [30, 60]
 };
-},{}],10:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 module.exports = {
     rotate: false,
     transitionDuration: 650,
     translateX: [-60, 60]
 };
-},{}],11:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 var buttonDefaults  = require("./button"),
     circleDefaults  = require("./circle"),
     lineDefaults    = require("./line"),
@@ -289,8 +190,16 @@ module.exports = function loadPresets(SuperHearts) {
 };
 
 
-},{"./button":7,"./circle":8,"./geyser":9,"./line":10}],12:[function(require,module,exports){
-var animationFactory = require("../../factories/animation-factory");
+},{"./button":4,"./circle":5,"./geyser":6,"./line":7}],9:[function(require,module,exports){
+var animationCollectionProto = require("./animation-collection-prototype");
+
+module.exports = function animationCollectionFactory(selector) {
+    var animationCollection = Object.create(animationCollectionProto).setSelector(selector).setElement(selector);
+    animationCollection.animations = []; // NB - this is necessary to keep the collection's prototype from being modified by calls to `addAnimation`
+    return animationCollection;
+};
+},{"./animation-collection-prototype":10}],10:[function(require,module,exports){
+var animationFactory = require("../animation/animation-factory");
 
 module.exports = {
     animations: null, // Array (assigned on instance creation in factory function).
@@ -347,7 +256,59 @@ module.exports = {
     },
 
 };
-},{"../../factories/animation-factory":4}],13:[function(require,module,exports){
+},{"../animation/animation-factory":11}],11:[function(require,module,exports){
+var heartProtoFactory = require("../heart/heart-prototype-factory"),
+    animationProto = require("./animation-prototype"),
+    fixed = require("./mixins/events-fixed"),
+    unfixed = require("./mixins/events-unfixed"),
+    geyser = require("./mixins/geyser");
+
+var mainDefault = require("../../default"),
+    extend = require("../../utilities/extend");
+
+
+
+module.exports = function animationFactory(selector, options) {
+
+    var animation,
+        elt           = document.querySelector(selector),
+        modHeartProto = heartProtoFactory(extend({}, mainDefault, options));
+
+    if (elt === null) {
+        console.log("No element matched the given selector: \""+selector+"\"");
+        console.log("~i shall fail silently~");
+        return;
+    }
+
+    if (modHeartProto.geyser) {
+        animation = Object.create(extend(animationProto, geyser));
+        animation.modHeartProto = modHeartProto;
+        animation.modHeartProto.geyserInterval = animation.modHeartProto.geyserInterval || animation.modHeartProto.transitionDuration/2;
+    }
+    else {
+        if (modHeartProto.fixed) {
+            animation = Object.create(extend(animationProto, fixed));
+        } else {
+            animation = Object.create(extend(animationProto, unfixed));
+        }
+        animation.events = {
+            click: null,
+            touch: null,
+        };
+        animation.modHeartProto = modHeartProto;
+    }
+
+    animation.count = modHeartProto.count;
+    // animation.selector = selector; // where is this used?
+    animation.heartFactory = function heartFactory(x, y) {
+        return Object.create(modHeartProto).setCoordinates(x, y).setImage();
+    };
+
+    animation.start(elt);
+
+    return animation;
+};
+},{"../../default":2,"../../utilities/extend":29,"../heart/heart-prototype-factory":17,"./animation-prototype":12,"./mixins/events-fixed":14,"./mixins/events-unfixed":15,"./mixins/geyser":16}],12:[function(require,module,exports){
 var randomInRange = require("../../utilities/random").randomInRange;
 
 var animationProto = {
@@ -385,7 +346,7 @@ var animationProto = {
 };
 
 module.exports = animationProto;
-},{"../../utilities/random":31}],14:[function(require,module,exports){
+},{"../../utilities/random":31}],13:[function(require,module,exports){
 module.exports = {
     events: null,
     start: function start(elt) {
@@ -407,7 +368,7 @@ module.exports = {
         }, this);
     },
 };
-},{}],15:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 var base = require("./events-base");
 var extend = require("../../../utilities/extend");
 
@@ -431,7 +392,7 @@ var proto = {
 };
 
 module.exports = extend({}, base, proto);
-},{"../../../utilities/extend":29,"./events-base":14}],16:[function(require,module,exports){
+},{"../../../utilities/extend":29,"./events-base":13}],15:[function(require,module,exports){
 var extend = require("../../../utilities/extend");
 var base = require("./events-base");
 
@@ -449,7 +410,7 @@ var proto = {
 };
 
 module.exports = extend({}, base, proto);
-},{"../../../utilities/extend":29,"./events-base":14}],17:[function(require,module,exports){
+},{"../../../utilities/extend":29,"./events-base":13}],16:[function(require,module,exports){
 module.exports = {
     start: function start(elt) {
         var eltRect = elt.getBoundingClientRect(),
@@ -461,7 +422,46 @@ module.exports = {
         }.bind(this), this.modHeartProto.geyserInterval);
     },
 };
-},{}],18:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
+var heartProto  = require("./heart-prototype"),
+    animate     = require("./mixins/animate-default"),
+    fanimate    = require("./mixins/animate-fan"),
+    extend      = require("../../utilities/extend"),
+    mainDefault = require("../../default"),
+    mixins      = require("./mixins");
+
+module.exports = function heartFactory(options) {
+    // var toExtend = [{}, heartProto, options].concat(getMixins(options));  // TODO - figure out better sequencing here
+    var animater;
+    if (options.fan) {
+        animater = fanimate;
+    }
+    else {
+        animater = animate;
+    }
+    var toExtend = [{}, heartProto, animater, options];
+    return extend.apply(null, toExtend);
+};
+
+
+// This was tooooo clever. but keeping it for now just to look at it and appreciate its sentiment
+function getMixins(options) {
+    // this is kind of dumb but whatever
+    var result = Object.keys(mixins).filter(ifNeedsMixin(options)).map(getMixin);
+    return result;
+}
+
+function ifNeedsMixin(options) {
+    return function(mixinName) {
+        console.log(mixinName);
+        return !!options[mixinName];
+    };
+}
+
+function getMixin(name) {
+    return mixins[name];
+}
+},{"../../default":2,"../../utilities/extend":29,"./heart-prototype":18,"./mixins":22,"./mixins/animate-default":19,"./mixins/animate-fan":20}],18:[function(require,module,exports){
 var extend = require("../../utilities/extend"),
     image = require("./mixins/image"),
     position = require("./mixins/position"),
@@ -648,7 +648,7 @@ module.exports = {
         ].join(";");
     },
 };
-},{"../../../icon-factory":6,"../../../utilities/random":31}],22:[function(require,module,exports){
+},{"../../../icon-factory":3,"../../../utilities/random":31}],22:[function(require,module,exports){
 // THIS IS NOT ACTUALLY BEING USED...
 
 var rotate = require("./rotate"),
@@ -799,7 +799,7 @@ module.exports = {
 (function (global){
 var argumentsHelper = require("./arguments-helper");
 var loadPresets = require("./presets/preset-loader");
-var animationCollectionFactory = require("./factories/animation-collection-factory");
+var animationCollectionFactory = require("./prototypes/animation-collection/animation-collection-factory");
 
 var argumentsHelper = require("./arguments-helper"),
     extend          = require("./utilities/extend");
@@ -838,7 +838,7 @@ SuperHearts.registerPreset = function registerPreset(name, presetDefaults) {
 loadPresets(SuperHearts);
 global.SuperHearts = SuperHearts;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./arguments-helper":1,"./factories/animation-collection-factory":3,"./presets/preset-loader":11,"./utilities/extend":29}],29:[function(require,module,exports){
+},{"./arguments-helper":1,"./presets/preset-loader":8,"./prototypes/animation-collection/animation-collection-factory":9,"./utilities/extend":29}],29:[function(require,module,exports){
 module.exports = function extend() {
     // extends an arbitrary number of objects
     var args   = [].slice.call(arguments, 0),

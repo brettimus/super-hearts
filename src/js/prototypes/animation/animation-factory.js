@@ -1,11 +1,11 @@
-var heartProtoFactory = require("./heart-prototype-factory"),
-    animationProto = require("../prototypes/animation/animation-prototype"),
-    fixed = require("../prototypes/animation/mixins/events-fixed"),
-    unfixed = require("../prototypes/animation/mixins/events-unfixed"),
-    geyser = require("../prototypes/animation/mixins/geyser");
+var heartProtoFactory = require("../heart/heart-prototype-factory"),
+    animationProto = require("./animation-prototype"),
+    fixed = require("./mixins/events-fixed"),
+    unfixed = require("./mixins/events-unfixed"),
+    geyser = require("./mixins/geyser");
 
-var mainDefault = require("../default"),
-    extend = require("../utilities/extend");
+var mainDefault = require("../../default"),
+    extend = require("../../utilities/extend");
 
 
 

@@ -1,6 +1,6 @@
 var argumentsHelper = require("./arguments-helper");
 var loadPresets = require("./presets/preset-loader");
-var animationCollectionFactory = require("./factories/animation-collection-factory");
+var animationCollectionFactory = require("./prototypes/animation-collection/animation-collection-factory");
 
 var argumentsHelper = require("./arguments-helper"),
     extend          = require("./utilities/extend");
