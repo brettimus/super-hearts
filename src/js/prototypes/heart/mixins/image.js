@@ -50,6 +50,12 @@ module.exports = {
     setImage: function setImage() {
         this.image = document.createElement("img");
         this.image.src = this.getImageSrc();
+        if (this.imageHeight) {
+            this.image.height = this.imageHeight;
+        }
+        if (this.imageWidth) {
+            this.image.width = this.imageWidth;
+        }
         return this;
     },
     show: function show() {

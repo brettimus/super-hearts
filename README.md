@@ -163,6 +163,12 @@ Sets how often hearts are spewed from the geyser. **`0` is ignored**
 Default is `transitionDuration/2` (ms)
 
 
+### imageHeight
+`Number`
+
+If truthy, this number will be set directly on the animated image elements as their height (in `px`).
+
+Default is `undefined`.
 
 
 ### imageSrc
@@ -171,6 +177,14 @@ Default is `transitionDuration/2` (ms)
 Path to an image that you want to spew (preferably a heart). 
 
 Defaults to an SVG heart icon that is stored as a string in the source code.
+
+
+### imageWidth
+`Number`
+
+If truthy, this number will be set directly on the animated image elements as their width (in `px`).
+
+Default is `undefined`.
 
 
 ### opacity
