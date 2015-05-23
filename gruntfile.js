@@ -6,12 +6,12 @@ fs.readdirSync("src/js/prototypes/heart/mixins").forEach(function(file) {
     aliases[aliasFileName(file)] = fileName(file);
 });
 // console.log(aliases);
-// function aliasFileName(name) {
-//     return path.basename(name, path.extname(name));
-// }
-// function fileName(name) {
-//     return "./" + path.basename(name, path.extname(name) + ".js"); // this is silly, i know
-// }
+function aliasFileName(name) {
+    return path.basename(name, path.extname(name));
+}
+function fileName(name) {
+    return "./" + path.basename(name, path.extname(name) + ".js"); // this is silly, i know
+}
 
 // function forRequire() {
 //     var result = fs.readdirSync("src/js/mixins").map(function(m) { return ["./"+m, {expose: aliasFileName(m),} ]; } );

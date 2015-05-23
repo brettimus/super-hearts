@@ -430,7 +430,7 @@ var proto = {
     },
 };
 
-module.exports = extend(base, proto);
+module.exports = extend({}, base, proto);
 },{"../../../utilities/extend":29,"./events-base":14}],16:[function(require,module,exports){
 var extend = require("../../../utilities/extend");
 var base = require("./events-base");
@@ -448,7 +448,7 @@ var proto = {
     },
 };
 
-module.exports = extend(base, proto);
+module.exports = extend({}, base, proto);
 },{"../../../utilities/extend":29,"./events-base":14}],17:[function(require,module,exports){
 module.exports = {
     start: function start(elt) {
@@ -615,6 +615,12 @@ module.exports = {
     setImage: function setImage() {
         this.image = document.createElement("img");
         this.image.src = this.getImageSrc();
+        if (this.imageHeight) {
+            this.image.height = this.imageHeight;
+        }
+        if (this.imageWidth) {
+            this.image.width = this.imageWidth;
+        }
         return this;
     },
     show: function show() {
