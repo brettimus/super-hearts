@@ -357,7 +357,7 @@ var animationProto = {
 };
 
 module.exports = animationProto;
-},{"../../utilities/random":32}],14:[function(require,module,exports){
+},{"../../utilities/random":33}],14:[function(require,module,exports){
 module.exports = {
     events: null,
     start: function start(elt) {
@@ -659,7 +659,7 @@ module.exports = {
         ].join(";");
     },
 };
-},{"../../../icon-factory":3,"../../../utilities/random":32}],23:[function(require,module,exports){
+},{"../../../icon-factory":3,"../../../utilities/random":33}],23:[function(require,module,exports){
 // THIS IS NOT ACTUALLY BEING USED...
 
 var rotate = require("./rotate"),
@@ -734,7 +734,7 @@ module.exports = {
         return this;
     },
 };
-},{"../../../utilities/random":32}],25:[function(require,module,exports){
+},{"../../../utilities/random":33}],25:[function(require,module,exports){
 var randomAngle    = require("../../../utilities/random").randomAngle,
     normalizeAngle = require("../../../utilities/misc").normalizeAngle;
 
@@ -754,7 +754,7 @@ module.exports = {
         return "rotate("+theta+"deg)";
     },
 };
-},{"../../../utilities/misc":31,"../../../utilities/random":32}],26:[function(require,module,exports){
+},{"../../../utilities/misc":32,"../../../utilities/random":33}],26:[function(require,module,exports){
 var randomScalar = require("../../../utilities/random").randomScalar;
 
 module.exports = {
@@ -772,7 +772,7 @@ module.exports = {
         return "scale("+k+")";
     },
 };
-},{"../../../utilities/random":32}],27:[function(require,module,exports){
+},{"../../../utilities/random":33}],27:[function(require,module,exports){
 module.exports = {
     transitionDuration: null,
     transitionFunction: null,
@@ -806,14 +806,15 @@ module.exports = {
         return "translate3d("+tx+"px,"+ty+"px, 0)";
     },
 };
-},{"../../../utilities/random":32}],29:[function(require,module,exports){
+},{"../../../utilities/random":33}],29:[function(require,module,exports){
 (function (global){
 var argumentsHelper = require("./arguments-helper");
 var loadPresets = require("./presets/preset-loader");
 var animationCollectionFactory = require("./prototypes/animation-collection/animation-collection-factory");
 
 var argumentsHelper = require("./arguments-helper"),
-    extend          = require("./utilities/extend");
+    extend          = require("./utilities/extend"),
+    isArray         = require("./utilities/is-array");
 
 function SuperHearts() {
     var args         = argumentsHelper.apply(null, arguments),
@@ -837,19 +838,19 @@ SuperHearts.registerPreset = function registerPreset(name, presetDefaults) {
             selector     = args.selector,
             optionsArray = args.optionsArray;
 
-        if (Object.prototype.toString.call(presetDefaults) !== '[object Array]') {
+        if (!isArray(presetDefaults)) {
             presetDefaults = [presetDefaults];
         }
 
         if (presetDefaults.length > optionsArray.length) {
             presetDefaults.forEach(function(preset, i) {
-                optionsArray[i] = extend({}, preset, optionsArray[i] || {});
+                optionsArray[i] = extend({}, preset, optionsArray[i]);
             });
         }
         else {
             // Merge user options _after_ preset defaults so they can still override the defaults of a given preset
             optionsArray.forEach(function(options, i) {
-                optionsArray[i] = extend({}, presetDefaults[i] || {}, options);
+                optionsArray[i] = extend({}, presetDefaults[i], options);
             });
         }
 
@@ -860,7 +861,7 @@ SuperHearts.registerPreset = function registerPreset(name, presetDefaults) {
 loadPresets(SuperHearts);
 global.SuperHearts = SuperHearts;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./arguments-helper":1,"./presets/preset-loader":9,"./prototypes/animation-collection/animation-collection-factory":10,"./utilities/extend":30}],30:[function(require,module,exports){
+},{"./arguments-helper":1,"./presets/preset-loader":9,"./prototypes/animation-collection/animation-collection-factory":10,"./utilities/extend":30,"./utilities/is-array":31}],30:[function(require,module,exports){
 module.exports = function extend() {
     // extends an arbitrary number of objects
     var args   = [].slice.call(arguments, 0),
@@ -884,6 +885,15 @@ function extendHelper(destination, source) {
     return destination;
 }
 },{}],31:[function(require,module,exports){
+module.exports = isArray;
+
+function isArray(o) {
+    if (Object.prototype.toString.call(o) === '[object Array]') {
+        return true;
+    }
+    return false;
+}
+},{}],32:[function(require,module,exports){
 module.exports = {
     toRadians: function toRadians(theta) {
         return normalizeAngle(theta)*(Math.PI / 180);
@@ -895,7 +905,7 @@ function normalizeAngle(theta) {
     while (theta < 0) { theta += 360; }
     return theta % 360;
 }
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 module.exports = {
     randomAngle: function randomAngle() {
         return randomInRange.apply(null, arguments);
@@ -946,4 +956,4 @@ function normalizeArguments(args) {
 function noArgumentError() {
     throw new Error("You supplied no arguments to a function that needed arguments. Check the call stack!");
 }
-},{}]},{},[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32]);
+},{}]},{},[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33]);
