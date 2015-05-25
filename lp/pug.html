@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SuperHearts</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <header>
+    <h1>
+      all you need
+      <small>is SuperPugs</small>
+    </h1>
+    <pre>
+      var config = {
+        imageHeight: 145,
+        imageWidth: 218,
+        imageSrc: "./img/sad-pug-sm.jpg",
+        transitionDuration: 10000,
+        scale: [.25, .55],
+      };
+      var pug = SuperHearts(config);
+    </pre>
+  </header>
+  </article>
+  
+  <script src="./object-assign-polyfill.js"></script>
+  <script src="./super-hearts.min.js"></script>
+  <script>
+    var config1 = {
+      angle: [0, 90],
+      count: [1,2],
+      imageHeight: 145,
+      imageWidth: 218,
+      imageSrc: "./img/icon-pug.svg",
+      opacity: [.22, .66],
+      transitionDuration: 1000,
+      translateY: [80, 120],
+      scale: [.08, .14],
+    };
+    var config2 = Object.assign({}, config1, { angle: [90, 180]});
+    var config3 = Object.assign({}, config1, { angle: [180, 270]});
+    var config4 = Object.assign({}, config1, { angle: [270, 359]});
+    var pug = SuperHearts(config1, config2, config3, config4);
+  </script>
+  <script>
+
+  </script>
+</body>
+</html>

@@ -65,7 +65,7 @@
         </small>
       </h2>
       <pre>
-        var config = {  };
+        var config = { imageSrc: "./img/icon-pug.svg"  };
         var dawh4 = SuperHearts("#example-4", config);
       </pre>
     </section>
@@ -85,7 +85,7 @@
   <script src="./super-hearts.min.js"></script>
   <script>
     // header example
-    var dawh = SuperHearts.Geyser("#heart-me")
+    // var dawh = SuperHearts.Geyser("#heart-me")
 
     // first example
     var dawh1 = SuperHearts("#example-1");
@@ -100,7 +100,11 @@
 
     // fourth example
     var config = {
-
+      imageHeight: 145,
+      imageWidth: 218,
+      imageSrc: "./img/sad-pug-sm.jpg",
+      transitionDuration: 10000,
+      scale: .05,
     };
     var dawh4 = SuperHearts("#example-4", config);
 
@@ -111,7 +115,7 @@
     dawh5.compose()
   </script>
   <script>
-    var toTop = document.queryselector(".back-to-top");
+    var toTop = document.querySelector(".back-to-top");
     function scrollToTop() {
       window.scrollTo(0, 0);
     }
