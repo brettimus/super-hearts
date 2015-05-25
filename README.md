@@ -30,6 +30,15 @@ That is, calling `SuperHearts("#my-element")` is the same as `SuperHearts.Circle
 var circ = SuperHearts.Circle(); // note: this is equivalent to calling `SuperHearts()`
 ```
 
+### Compass
+**Evented**
+
+`Compass` is a composition of four animations. The current implementation of a composed preset makes further composition a little difficult because I hacked it together without thinking much about it... So. For now, don't try to compose on top of this, mmkay?
+```javascript
+// Four hearts shoot out from the four compass direction of the click/touch point )North, East, South, and West).
+var compass = SuperHearts.Compass();
+```
+
 ### Line
 **Evented**
 ```javascript
