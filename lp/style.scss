@@ -1,3 +1,5 @@
+$white: #f4faff;
+
 $black: #222;
 $black-light: #666;
 
@@ -9,19 +11,37 @@ $nav-height: 60px;
 
 $square-dim: 80px;
 
-$bg-1: #85FF9E;
-$txt-1: rgb(32, 23, 44); // possible alternative black
-$bg-2: #A6F4DC;
-$txt-2: rgb(32, 23, 44); // possible alternative black
-$bg-3: #AF90A9;
-$txt-3: rgb(32, 23, 44); // possible alternative black
-$bg-4: #fff;
-$txt-4: rgb(32, 23, 44); // possible alternative black
-$bg-5: #fff;
-$txt-5: rgb(32, 23, 44); // possible alternative black
+$bg-1: #843B62;
 
+$bg-map:  (bg-1: $bg-1,
+            txt-1: $white, // possible alternative black
+            bg-2: #F6E4F6,
+            txt-2: rgb(32, 23, 44), // possible alternative black
+            bg-3: #AF90A9,
+            txt-3: rgb(32, 23, 44), // possible alternative black
+            bg-4: #EB4B98,
+            txt-4: rgb(32, 23, 44), // possible alternative black
+            bg-5: #EFC3E6,
+            txt-5: rgb(32, 23, 44),); // possible alternative black
+
+
+@mixin examplar($bg, $txt) {
+  background: $bg;
+  color: $txt;
+  h1, h2 {
+    color: $txt;
+
+    small {
+      color: $txt;
+    }
+  }
+  &:after {
+    background: $bg;
+  } 
+}
 
 html, body {
+  background: #e08dac;
   color: $black;
   margin: 0;
   padding: 0;
@@ -33,7 +53,7 @@ body {
 }
 
 nav {
-  border-bottom: solid thin $black-light;
+  // border-bottom: solid thin $black-light;
   font-family: $sans-serif;
   font-size: 18px;
   height: $nav-height;
@@ -44,10 +64,16 @@ nav {
   width: 100%;
 
   .heart-me {
-    padding-left: 45px;
+    padding: 0;
+    position: fixed;
+    text-align: 0;
+    top: 0;
+    width: 100%;
+    z-index: -10;
   }
 
   .back-to-top {
+    font-size: 14px;
     cursor: pointer;
   }
 
@@ -59,7 +85,11 @@ nav {
 }
 
 header {
+  background: #e08dac;
   padding-top: 80px;
+  &:after {
+    background: #e08dac;
+  } 
 }
 
 header, 
@@ -70,7 +100,6 @@ section {
   margin-bottom: -$square-dim*1.42;
   min-height: 568px;
   &:after {
-    background: #fff;
     content: " ";
     display: block;
     height: $square-dim;
@@ -90,6 +119,7 @@ h2 {
   small {
     color: $black-light;
     display: block;
+    padding: 16px 0 8px 0;
   }
 }
 
@@ -107,6 +137,7 @@ h2 {
   padding-top: $square-dim*1.42;
   small {
     font-size: 24px;
+    padding: 12px;
   }
 }
 
@@ -116,41 +147,36 @@ pre {
   margin: 0 auto;
   max-width: 380px;
   padding: 20px 20px 30px 20px;
+  visibility: hidden;
   text-align: center;
 }
 
-#example-1 {
-  background: $bg-1;
-  color: $txt-1;
-  &:after {
-    background: $bg-1;
-    content: " ";
-    display: block;
-    height: $square-dim;
-    margin: $square-dim*1.42 auto 0 auto;
-    width: $square-dim;
-    transform: rotate(45deg);
-    -ms-transform: rotate(45deg);
-    -webkit-transform: rotate(45deg);
-  } 
-}
-#example-2 {
-  background: $bg-2;
-  color: $txt-2;  
-}
-#example-3 {
-  background: $bg-3;
-  color: $txt-3;  
-}
-#example-4 {
-  background: $bg-4;
-  color: $txt-4;  
-}
-#example-5 {
-  background: $bg-5;
-  color: $txt-5;  
+
+@for $i from 1 through 5 {
+  #example-#{$i} {
+    @include examplar(map-get($bg-map, bg-#{$i}), map-get($bg-map, txt-#{$i}));
+  }
 }
 
+#example-3 button {
+  background: #fff;
+  border: 0;
+  border-bottom: solid 6px $bg-1;
+  border-radius: 12px;
+  color: $black-light;
+  box-shadow: 1px 1px 1px $bg-1;
+  display: block;
+  font-size: 18px;
+  height: 65px;
+  margin: 0 auto;
+  width: 225px;
+
+  &:focus {
+    outline: none;
+      box-shadow: 3px 3px 12px $bg-1;
+
+  }
+}
 
 .u-text-center {
   text-align: center;

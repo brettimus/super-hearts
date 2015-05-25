@@ -3,13 +3,13 @@ var base = require("./events-base");
 
 var proto = {
     onclick: function onclick(e) {
-        var x = e.pageX,
-            y = e.pageY;
+        var x = e.clientX,
+            y = e.clientY;
         this.spewHearts(x, y);
     },
     ontouch: function ontouch(e) {
-        var x = e.changedTouches[0].pageX,
-            y = e.changedTouches[0].pageY;
+        var x = e.changedTouches[0].clientX,
+            y = e.changedTouches[0].clientY;
         this.spewHearts(x, y);
     },
 };

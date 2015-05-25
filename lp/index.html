@@ -8,8 +8,8 @@
 </head>
 <body>
   <nav>
-    <span class="heart-me" id="heart-me">&nbsp;</span>
     <span class="back-to-top">SuperHearts</span>
+    <p class="heart-me" id="heart-me">&nbsp;</p>
     <a href="https://github.com/brettimus/super-hearts">
       <img src="./github-small.svg" alt="fork it!" class="github-icon">      
     </a>
@@ -20,6 +20,9 @@
       <small>is SuperHearts</small>
     </h1>
     <pre>
+      // work that geyser yeahhhh
+      // its the best like this
+      // filler text
       var dawh = SuperHearts.Geyser("#heart-me");
     </pre>
   </header>
@@ -53,9 +56,8 @@
           oooooh
         </small>
       </h2>
-      <pre>
-        var dawh3 = SuperHearts.Button("#example-3");
-      </pre>
+      <button> I am a Friendly Button! </button>
+
     </section>
     <section id="example-4">
       <h2>
@@ -65,15 +67,14 @@
         </small>
       </h2>
       <pre>
-        var config = { imageSrc: "./img/icon-pug.svg"  };
-        var dawh4 = SuperHearts("#example-4", config);
+        var dawh4 = SuperHearts("#example-4", {/* config */});
       </pre>
     </section>
     <section id="example-5">
       <h2>
         composable
         <small>
-          go wilde, oscar
+          so go wilde, oscar
         </small>
       </h2>
       <pre>
@@ -85,7 +86,7 @@
   <script src="./super-hearts.min.js"></script>
   <script>
     // header example
-    // var dawh = SuperHearts.Geyser("#heart-me")
+    var dawh = SuperHearts.Geyser("#heart-me")
 
     // first example
     var dawh1 = SuperHearts("#example-1");
@@ -96,31 +97,31 @@
     });
 
     // third example
-    var dawh3 = SuperHearts.Button("#example-3");
+    var dawh3 = SuperHearts.Button("#example-3 button");
 
     // fourth example
     var config = {
-      imageHeight: 145,
-      imageWidth: 218,
-      imageSrc: "./img/sad-pug-sm.jpg",
-      transitionDuration: 10000,
-      scale: .05,
+      count: [2, 4],
+      imageHeight: 77,
+      imageSrc: "./img/icon-pug-alt.svg",
+      imageWidth: 100,
+      opacity: [.5, ,7],
+      transitionDuration: 1100,
+      scale: [.08, .22],
+      translateY: [120, 175]
     };
     var dawh4 = SuperHearts("#example-4", config);
 
     // fifth example
-    var dawh5 = SuperHearts("#example-5");
-    dawh5.compose()
-    dawh5.compose()
-    dawh5.compose()
+    var dawh5 = SuperHearts.Compass("#example-5");
   </script>
   <script>
     var toTop = document.querySelector(".back-to-top");
     function scrollToTop() {
       window.scrollTo(0, 0);
     }
-    toTop.addEventListener("touchend", toTop);
-    toTop.addEventListener("click", toTop);
+    toTop.addEventListener("touchend", scrollToTop);
+    toTop.addEventListener("click", scrollToTop);
 
   </script>
 </body>
