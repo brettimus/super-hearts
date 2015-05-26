@@ -25,15 +25,20 @@
   <script src="./lp/super-hearts.min.js"></script>
   <script src="./lp/utilities.js"></script>
   <script>
+    var meh = 360/20;
+    var names = [];
+    var className = { imageClass: "firework", transitionDuration: 1200 };
+    while (meh--) names.push(className)
+
     var myBody = document.querySelector("body"),
         boundingRect = myBody.getBoundingClientRect();
 
-
-    SuperHearts.BigRing('body');
+    SuperHearts.BigRing();
+    // SuperHearts.BigRing.apply(SuperHearts, ['body'].concat(names));
     setInterval(randomlyClickBody(), 2000);
     
     function randomlyClickBody() {
-        var i = Math.ceil(Math.random() * 3),
+        var i = Math.ceil(Math.random() * 3), // randomize number of fireworks
             c = 0,
             r;
         while (c < i) {
@@ -42,7 +47,7 @@
               window.requestAnimationFrame(function() {
                   eventFire(myBody, "click", {clientX: randomX(), clientY: randomY(),})               
               })
-          }, (c+1)*r)
+          }, (c+1)*r) // stagger the fireworks
           c++;
         }
         return randomlyClickBody;

@@ -311,6 +311,16 @@ _Not affected by `scalar`._
 Default is `[65, 90]`.
 
 
+### :warning: translateZ
+`Array` of length 2 **or** `Number`.
+
+How far (in px) a heart is translated along the z-axis from the original click. 
+
+_Not affected by `scalar`._
+
+Default is `[0, 0]`.
+
+
 ### xNoise
 `Array` of length 2 **or** `Number`.
 

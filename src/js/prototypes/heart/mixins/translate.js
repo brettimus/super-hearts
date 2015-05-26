@@ -14,12 +14,18 @@ module.exports = {
         if (this.getScalar) ty = ty / this.getScalar();
         return ty;
     },
+    getTranslateZ: function getTranslateZ() {
+        var tz = -randomInRange(this.translateZ || 0);
+        if (this.getScalar) tz = tz / this.getScalar();
+        return tz;
+    },
 
     getTranslate: function getTranslate() {
         // TODO: separate this into getTranslateX and getTranslateY
         var tx = this.getTranslateX(),
-            ty = this.getTranslateY();
+            ty = this.getTranslateY(),
+            tz = this.getTranslateZ();
 
-        return "translate3d("+tx+"px,"+ty+"px, 0)";
+        return "translate3d("+tx+"px,"+ty+"px,"+tz+"px)";
     },
 };

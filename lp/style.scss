@@ -1,15 +1,9 @@
 $white: #f4faff;
-
 $black: rgb(32, 23, 44);
-$black-light: lighten($black, 20%);
-
-$serif: "Bree Serif", serif;
-$sans-serif: sans-serif;
 
 $bg-color: #e08dac;
-$bg-1: #843B62;
 
-$txt-header: $white;
+$serif: "Bree Serif", serif;
 
 
 html, body {
@@ -42,6 +36,7 @@ h1 {
   opacity: 1;
   text-shadow: 0 -1px 0 #888,
                0 -1px 0 $white;
+  z-index: 1;
 
   small {
     display: block;
@@ -89,6 +84,10 @@ a {
 .bottom-right {
   bottom: 0;
   right: 0
+}
+
+.firework {
+  z-index: 0;
 }
 
 
