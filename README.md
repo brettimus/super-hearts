@@ -112,14 +112,12 @@ Wait. Are you not into configuration? That's okay! All options have defaults.
 
 _:confetti_ball: yeah defaults!_
 
+Note that defaults depend on the preset configuration (duh, right?), meaning 
+**all of the defaults below refer to the `Circle` preset's default**.
 
 :broken_heart: means an option is a little **off-beat**. :joy_cat:
 
 :warning: means an option's name will probably change. Or it might become a :ghost:. Or a :bug:.
-
-Note that defaults depend on the preset configuration (duh, right?), meaning 
-**all of the defaults below refer to the `Circle` preset's default**.
-
 
 
 ### angle
