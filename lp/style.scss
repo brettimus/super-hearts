@@ -34,8 +34,7 @@ h1 {
   font-size: 72px;
   text-align: center;
   opacity: 1;
-  text-shadow: 0 -1px 0 #888,
-               0 -1px 0 $white;
+  text-shadow: 0 1px 0 $white;
   z-index: 1;
 
   small {
