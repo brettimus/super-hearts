@@ -37,24 +37,21 @@ header {
 h1 {
   color: $white;
   font-family: $serif;
+  font-size: 72px;
   text-align: center;
   opacity: 1;
+  text-shadow: 0 -1px 0 #888,
+               0 -1px 0 $white;
 
   small {
     display: block;
+    font-size: 36px;
+
     opacity: .6;
     padding: 16px 0 8px 0;
     text-shadow: 0 -1px 0 #888,
                  0  1px 0 $white;
 
-  }
-}
-
-
-h1 {
-  font-size: 72px;
-  small {
-    font-size: 36px;
   }
 }
 
@@ -109,10 +106,25 @@ a {
 @media only screen 
   and (max-width: 480px) {
 
+    header {
+      padding-top: 65px;
+    }
+
   h1 {
+    letter-spacing: -.02em;
     font-size: 42px;
     small {
       font-size: 26px;
     }
+  }
+
+  .icon {
+    height: 30px;
+    margin: 10px 5px 0 10px;
+  }
+  .icon.icon-boots {
+      height: 20px;
+      opacity: .25;
+      transform: scale(-1,1);
   }
 }

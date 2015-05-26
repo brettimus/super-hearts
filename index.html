@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SuperHearts</title>
+  <link href='http://fonts.googleapis.com/css?family=Bree+Serif' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="./lp/style.css">
+</head>
+<body>
+  <header>
+    <h1>
+      all you need is
+      <small>SuperHearts.js</small>
+      <p class="icon-group">
+        <a href="https://github.com/brettimus/super-hearts">
+          <img src="./lp/img/icon-github-sm.svg" alt="fork it!" class="icon">      
+        </a>
+      </p>
+    </h1>
+    <a href="https://brettim.us" class="fixed bottom-right">
+      <img src="./lp/img/icon-boots.svg" alt="fork me!" class="icon icon-boots">      
+    </a>
+  </header>  
+  <script src="./lp/super-hearts.min.js"></script>
+  <script src="./lp/utilities.js"></script>
+  <script>
+    var myBody = document.querySelector("body"),
+        boundingRect = myBody.getBoundingClientRect();
+
+
+    SuperHearts.BigRing('body');
+    setInterval(randomlyClickBody(), 2000);
+    
+    function randomlyClickBody() {
+        var i = Math.ceil(Math.random() * 3),
+            c = 0,
+            r;
+        while (c < i) {
+          r = Math.floor(Math.random()*600) + 100;
+          setTimeout(function() {
+              window.requestAnimationFrame(function() {
+                  eventFire(myBody, "click", {clientX: randomX(), clientY: randomY(),})               
+              })
+          }, (c+1)*r)
+          c++;
+        }
+        return randomlyClickBody;
+    }
+
+    function randomX() {
+        var range = [];
+        range[0] = boundingRect.width*.1;
+        range[1] = boundingRect.width*.9;
+        return randomInRange(range);    
+    }
+    function randomY() {
+        var range = [];
+        range[0] = boundingRect.height*.1;
+        range[1] = boundingRect.height*.9;
+        return randomInRange(range);    
+    }
+  </script>
+  <script>
+    var toTop = document.querySelector(".back-to-top");
+    if (toTop) {
+        toTop.addEventListener("touchend", scrollToTop);
+        toTop.addEventListener("click", scrollToTop);
+    }
+    function scrollToTop() {
+        window.scrollTo(0, 0);
+    }
+  </script>
+</body>
+</html>
