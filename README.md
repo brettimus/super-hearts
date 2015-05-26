@@ -1,16 +1,22 @@
-# super-hearts
-_Inspired by `super.me`_
+# hello today!
 
-**Question: Do you want to spew hearts everywhere?**
+what a fine day today is.
 
-Well, fine person, you are in luck! 
+**question for you now!** 
 
-## Quick Start (a.k.a The Defibrillator)
-Give us a selector, and we'll make sure your `click` and `touchend` events are full of happy, happy joy.
+do you want to spew hearts or other images of your choosing everywhere all over the place on your internet website?
+
+you are in luck, lucky person! 
+
+## quick start (a.k.a the defibrillator HA!)
+give me selector, and i make sure your `click` and `touchend` events are full of happy happy joy.
 
 ```javascript
-var dawh = SuperHearts(); // now try clicking around
+var dawh = SuperHearts(); // now click!!!
 ```
+
+# Here is Some More Involved Documentation
+sorry, lucky person, but these docs are not so great now! you still hopefully use my hearts though.
 
 ## Presets
 A `preset` is a helper function with a set of default options for a given call to `SuperHearts`. 
@@ -20,13 +26,25 @@ You call a `preset` on the main `SuperHearts` object.
 but you can also register your own (see below).
 
 
+### BigRing
+**Evented**
+
+`BigRing` shoots out a large concentric band of hearts. Yay! 
+It is a composition of 18 different option configurations, 
+but we'll get to that whole song and dance (configuration) in two shakes... 
+Just sit tight, buddy.
+```javascript
+  // Hearts radiate in a large concentric band from the click or touch point.
+  var biggie = SuperHearts.BigRing();
+```
+
 ### Circle
 **Evented**
 
 `Circle` is the primary default. 
 That is, calling `SuperHearts("#my-element")` is the same as `SuperHearts.Circle("#my-element")`.
 ```javascript
-// Hearts radiate in a ring pattern around a user's click or touch
+// Hearts radiate in a lackadaisical ring pattern around a user's click or touch
 var circ = SuperHearts.Circle(); // note: this is equivalent to calling `SuperHearts()`
 ```
 
@@ -170,6 +188,18 @@ _This could use a lot of work if you want to help!_
 Sets how often hearts are spewed from the geyser. **`0` is ignored**
 
 Default is `transitionDuration/2` (ms)
+
+
+### imageAppendedTo
+`String`
+
+Selector of element to which we should append `img`s.
+
+
+### imageClass
+`String`
+
+If provided, the given class name is added to each image element.
 
 
 ### imageHeight

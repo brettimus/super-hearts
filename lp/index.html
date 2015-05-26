@@ -4,125 +4,72 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SuperHearts</title>
+  <link href='http://fonts.googleapis.com/css?family=Bree+Serif' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-  <nav>
-    <span class="back-to-top">SuperHearts</span>
-    <p class="heart-me" id="heart-me">&nbsp;</p>
-    <a href="https://github.com/brettimus/super-hearts">
-      <img src="./github-small.svg" alt="fork it!" class="github-icon">      
-    </a>
-  </nav>
   <header>
     <h1>
-      all you need
-      <small>is SuperHearts</small>
+      all you need is
+      <small>SuperHearts.js</small>
+      <p class="icon-group">
+        <a href="https://github.com/brettimus/super-hearts">
+          <img src="./img/icon-github-sm.svg" alt="fork it!" class="icon">      
+        </a>
+      </p>
     </h1>
-    <pre>
-      // work that geyser yeahhhh
-      // its the best like this
-      // filler text
-      var dawh = SuperHearts.Geyser("#heart-me");
-    </pre>
-  </header>
-  <article>
-    <section id="example-1">
-      <h2>
-        clickable
-        <small>
-          touch the page
-        </small>
-      </h2>
-      <pre>
-        var dawh1 = SuperHearts("#example-1");
-      </pre>
-    </section>
-    <section id="example-2">
-      <h2>
-        stickable
-        <small>
-          some love never fades
-        </small>
-      </h2>
-      <pre>
-        var dawh2 = SuperHearts("#example-2", { doNotRemove: true });
-      </pre>
-    </section>
-    <section id="example-3">
-      <h2>
-        button-friendly
-        <small>
-          oooooh
-        </small>
-      </h2>
-      <button> I am a Friendly Button! </button>
-
-    </section>
-    <section id="example-4">
-      <h2>
-        configurable
-        <small>
-          lots of options
-        </small>
-      </h2>
-      <pre>
-        var dawh4 = SuperHearts("#example-4", {/* config */});
-      </pre>
-    </section>
-    <section id="example-5">
-      <h2>
-        composable
-        <small>
-          so go wilde, oscar
-        </small>
-      </h2>
-      <pre>
-        var dawh5 = SuperHearts("#example-5");
-      </pre>
-    </section>
-  </article>
-  
+    <a href="https://brettim.us" class="fixed bottom-right">
+      <img src="./img/icon-boots.svg" alt="fork me!" class="icon icon-boots">      
+    </a>
+  </header>  
   <script src="./super-hearts.min.js"></script>
+  <script src="./utilities.js"></script>
   <script>
-    // header example
-    var dawh = SuperHearts.Geyser("#heart-me")
+    var myBody = document.querySelector("body"),
+        boundingRect = myBody.getBoundingClientRect();
 
-    // first example
-    var dawh1 = SuperHearts("#example-1");
 
-    // second example
-    var dawh2 = SuperHearts("#example-2", {
-      doNotRemove: true
-    });
+    SuperHearts.BigRing('body');
+    setInterval(randomlyClickBody(), 2000);
+    
+    function randomlyClickBody() {
+        var i = Math.ceil(Math.random() * 3),
+            c = 0,
+            r;
+        while (c < i) {
+          r = Math.floor(Math.random()*600) + 100;
+          setTimeout(function() {
+              window.requestAnimationFrame(function() {
+                  eventFire(myBody, "click", {clientX: randomX(), clientY: randomY(),})               
+              })
+          }, (c+1)*r)
+          c++;
+        }
+        return randomlyClickBody;
+    }
 
-    // third example
-    var dawh3 = SuperHearts.Button("#example-3 button");
-
-    // fourth example
-    var config = {
-      count: [2, 4],
-      imageHeight: 77,
-      imageSrc: "./img/icon-pug-alt.svg",
-      imageWidth: 100,
-      opacity: [.5, ,7],
-      transitionDuration: 1100,
-      scale: [.08, .22],
-      translateY: [120, 175]
-    };
-    var dawh4 = SuperHearts("#example-4", config);
-
-    // fifth example
-    var dawh5 = SuperHearts.Compass("#example-5");
+    function randomX() {
+        var range = [];
+        range[0] = boundingRect.width*.1;
+        range[1] = boundingRect.width*.9;
+        return randomInRange(range);    
+    }
+    function randomY() {
+        var range = [];
+        range[0] = boundingRect.height*.1;
+        range[1] = boundingRect.height*.9;
+        return randomInRange(range);    
+    }
   </script>
   <script>
     var toTop = document.querySelector(".back-to-top");
-    function scrollToTop() {
-      window.scrollTo(0, 0);
+    if (toTop) {
+        toTop.addEventListener("touchend", scrollToTop);
+        toTop.addEventListener("click", scrollToTop);
     }
-    toTop.addEventListener("touchend", scrollToTop);
-    toTop.addEventListener("click", scrollToTop);
-
+    function scrollToTop() {
+        window.scrollTo(0, 0);
+    }
   </script>
 </body>
 </html>

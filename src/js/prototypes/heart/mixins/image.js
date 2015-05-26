@@ -18,8 +18,9 @@ module.exports = {
         this.image.style.transform            += operation;
         return this;
     },
-    appendToBody: function appendToBody() {
-        document.querySelector("body").appendChild(this.image);
+    appendToDOM: function appendToDOM() {
+        var selector = this.getContainerSelector();
+        document.querySelector(selector).appendChild(this.image);
         return this;
     },
     fadeOut: function fadeOut() {
@@ -30,7 +31,11 @@ module.exports = {
             return this;
         }
     },
-
+    getContainerSelector: function getContainerSelector() {
+        var selector = "body";
+        if (this.imageAppendedTo) selector = this.imageAppendedTo;
+        return selector;
+    },
     getImageSrc: function getImageSrc() {
         if (!this.imageSrc) {
             this.imageSrc = heartIconFactory({
@@ -44,32 +49,35 @@ module.exports = {
         return this.fadeOut();
     },
     remove: function remove() {
-        document.querySelector("body").removeChild(this.image);
+        var selector = this.getContainerSelector();
+        document.querySelector(selector).removeChild(this.image);
         return this;
     },
     setImage: function setImage() {
         this.image = document.createElement("img");
         this.image.src = this.getImageSrc();
+        if (this.imageClass) this.image.className += " " + this.imageClass;
         if (this.imageHeight) this.image.height = this.imageHeight;
         if (this.imageWidth) this.image.width = this.imageWidth;
         return this;
     },
     show: function show() {
         this.image.style.cssText += this.getStyle();
-        this.appendToBody();
+        this.appendToDOM();
         return this;
     },
     getStyle: function getStyle() {
         var left       = this.getInitialX(),
             top        = this.getInitialY(),
             opacity    = randomOpacity(this.opacity),
+            position   = this.position ? this.position : "fixed",
             transform  = "translate3d("+ left + "px, " + top + "px, 0)",
             transition = this.getTransition();
 
         return [
             "left:"+0+"px",
             "opacity:"+opacity,
-            "position:fixed",
+            "position:"+position,
             "pointer-events:none",
             "top:"+0+"px",
             "transform-origin:"+this.transformOrigin,
