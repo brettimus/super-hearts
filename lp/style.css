@@ -21,7 +21,7 @@ h1 {
   font-size: 72px;
   text-align: center;
   opacity: 1;
-  text-shadow: 0 1px 0 #888, 0 -1px 0 #f4faff; }
+  text-shadow: 0 -1px 0 #888, 0 -1px 0 #f4faff; }
   h1 small {
     display: block;
     font-size: 36px;
@@ -67,6 +67,15 @@ a:hover .icon {
     letter-spacing: -.02em;
     font-size: 42px; }
     h1 small {
-      font-size: 26px; } }
+      font-size: 26px; }
+
+  .icon {
+    height: 30px;
+    margin: 10px 5px 0 10px; }
+
+  .icon.icon-boots {
+    height: 20px;
+    opacity: .25;
+    transform: scale(-1, 1); } }
 
 /*# sourceMappingURL=style.css.map */

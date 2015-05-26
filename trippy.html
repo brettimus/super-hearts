@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SuperHearts</title>
+  <link href='http://fonts.googleapis.com/css?family=Bree+Serif' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="./lp/style.css">
+  <style>
+    header {
+      padding-top: 25%;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>
+      whoaaaaaa.
+      <small>SuperHearts.js</small>
+      <p class="icon-group">
+        <a href="https://github.com/brettimus/super-hearts">
+          <img src="./lp/img/icon-github-sm.svg" alt="fork it!" class="icon">      
+        </a>
+      </p>
+    </h1>
+    <a href="https://brettim.us" class="fixed bottom-right">
+      <img src="./lp/img/icon-boots.svg" alt="fork me!" class="icon icon-boots">      
+    </a>
+  </header>  
+  <script src="./lp/super-hearts.min.js"></script>
+  <script src="./lp/utilities.js"></script>
+  <script>
+    var myBody = document.querySelector("body"),
+        boundingRect = myBody.getBoundingClientRect();
+
+
+    SuperHearts.BigRing('body');
+    setInterval(function() {
+        eventFire(myBody, "click", {clientX: .5 * boundingRect.width, clientY: .14* boundingRect.height})
+    }, 270)
+  </script>
+</body>
+</html>

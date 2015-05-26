@@ -40,7 +40,7 @@ h1 {
   font-size: 72px;
   text-align: center;
   opacity: 1;
-  text-shadow: 0 1px 0 #888,
+  text-shadow: 0 -1px 0 #888,
                0 -1px 0 $white;
 
   small {
@@ -116,5 +116,15 @@ a {
     small {
       font-size: 26px;
     }
+  }
+
+  .icon {
+    height: 30px;
+    margin: 10px 5px 0 10px;
+  }
+  .icon.icon-boots {
+      height: 20px;
+      opacity: .25;
+      transform: scale(-1,1);
   }
 }
