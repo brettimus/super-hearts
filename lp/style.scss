@@ -39,14 +39,17 @@ h1 {
   z-index: 1;
 
   small {
+    border-top: solid 2px rgba(255,255,255, .2);
     display: block;
     font-size: 36px;
-
+    margin: 22px auto 0 auto;
     opacity: .6;
     padding: 16px 0 8px 0;
+    text-align: center;
     text-shadow: 0 -1px 0 #888,
                  0  1px 0 $white;
 
+    width: 340px;
   }
 }
 
@@ -102,8 +105,7 @@ a {
 
 }
 
-@media only screen 
-  and (max-width: 480px) {
+@media only screen and (max-width: 480px) {
 
     header {
       padding-top: 65px;
@@ -113,7 +115,16 @@ a {
     letter-spacing: -.02em;
     font-size: 42px;
     small {
+    }
+    small {
+      border-top: none;
       font-size: 26px;
+      display: block;
+      font-size: 36px;
+      margin: 12px auto 0 auto;
+      opacity: .6;
+      padding: 8px 0 8px 0;
+      width: 320px;
     }
   }
 

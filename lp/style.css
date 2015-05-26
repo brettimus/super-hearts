@@ -24,11 +24,15 @@ h1 {
   text-shadow: 0 -1px 0 #888, 0 -1px 0 #f4faff;
   z-index: 1; }
   h1 small {
+    border-top: solid 2px rgba(255, 255, 255, 0.2);
     display: block;
     font-size: 36px;
+    margin: 22px auto 0 auto;
     opacity: .6;
     padding: 16px 0 8px 0;
-    text-shadow: 0 -1px 0 #888, 0 1px 0 #f4faff; }
+    text-align: center;
+    text-shadow: 0 -1px 0 #888, 0 1px 0 #f4faff;
+    width: 340px; }
 
 .icon-group {
   margin: 0;
@@ -71,7 +75,14 @@ a:hover .icon {
     letter-spacing: -.02em;
     font-size: 42px; }
     h1 small {
-      font-size: 26px; }
+      border-top: none;
+      font-size: 26px;
+      display: block;
+      font-size: 36px;
+      margin: 12px auto 0 auto;
+      opacity: .6;
+      padding: 8px 0 8px 0;
+      width: 320px; }
 
   .icon {
     height: 30px;
