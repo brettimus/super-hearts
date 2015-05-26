@@ -18,18 +18,16 @@ header {
 h1 {
   color: #f4faff;
   font-family: "Bree Serif", serif;
+  font-size: 72px;
   text-align: center;
-  opacity: 1; }
+  opacity: 1;
+  text-shadow: 0 1px 0 #888, 0 -1px 0 #f4faff; }
   h1 small {
     display: block;
+    font-size: 36px;
     opacity: .6;
     padding: 16px 0 8px 0;
     text-shadow: 0 -1px 0 #888, 0 1px 0 #f4faff; }
-
-h1 {
-  font-size: 72px; }
-  h1 small {
-    font-size: 36px; }
 
 .icon-group {
   margin: 0;
@@ -62,7 +60,11 @@ a:hover .icon {
     h1 small {
       font-size: 34px; } }
 @media only screen and (max-width: 480px) {
+  header {
+    padding-top: 65px; }
+
   h1 {
+    letter-spacing: -.02em;
     font-size: 42px; }
     h1 small {
       font-size: 26px; } }
