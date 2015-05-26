@@ -51,7 +51,7 @@ var circ = SuperHearts.Circle(); // note: this is equivalent to calling `SuperHe
 ### Compass
 **Evented**
 
-`Compass` is a composition of four animations. The current implementation of a composed preset makes further composition a little difficult because I hacked it together without thinking much about it... So. For now, don't try to compose on top of this, mmkay?
+`Compass` is a composition of four animations. The current implementation of a composed preset (a preset that combines multple separate animation configurations on the same event) makes further composition a little difficult because I hacked it together without thinking much about how you'... Ah. I just realized how to fix this! Apply every new call's new options to _all_ of the preset animation configs individually. If you find this note I forgot to delete it. Please submit an issue.
 ```javascript
 // Four hearts shoot out from the four compass direction of the click/touch point )North, East, South, and West).
 var compass = SuperHearts.Compass();
@@ -106,14 +106,20 @@ SuperHearts.Foo("#my-element", newFooConfig);
 
 
 ## Options
-_Eff yeah configuration!_
+_:tada: configuration!_
 
 Wait. Are you not into configuration? That's okay! All options have defaults.
 
-_Eff yeah defaults!_
+_:confetti_ball: yeah defaults!_
 
-Note that defaults depend on the preset configuration (duh). 
-For now, all of the defaults below refer to the `Circle` preset's default.
+
+:broken_heart: means an option is a little **off-beat**. :joy_cat:
+
+:warning: means an option's name will probably change. Or it might become a :ghost:. Or a :bug:.
+
+Note that defaults depend on the preset configuration (duh, right?), meaning 
+**all of the defaults below refer to the `Circle` preset's default**.
+
 
 
 ### angle
@@ -121,16 +127,16 @@ For now, all of the defaults below refer to the `Circle` preset's default.
 
 Determines the (inclusive) range of angles (measured in degrees) that is used to randomly rotate hearts. You may specify a range outside of `[0, 360]`. 
 
-If you only supply a `Number` (call it `n`), it is implicitly converted to `[n,n]`.
+If you only supply a `Number` (call it `n`), it is treated as `[n,n]`. It will always be `n`. Forever.
 
 Default is `[0, 359]` (deg)
 
 
-### blur
+### :broken_heart: blur
 `Number`
 
 _Work in progress._ 
-Modifies the `stdDeviation` of an `<feGaussianBlur>` filter on the default SVG heart.
+Modifies the `stdDeviation` of an `<feGaussianBlur>` filter on the **default** SVG heart icon.
 
 Default is `0`
 
@@ -154,7 +160,7 @@ Determines the (inclusive) range from which said random number of hearts is chos
 If you only supply a `Number` (call it `n`), it is implicitly converted to `[n,n]`.
 
 
-### doNotRemove
+### :warning: doNotRemove
 `Boolean`
 
 If true, image elemnts will stay on the page indefinitely;
@@ -162,7 +168,7 @@ If true, image elemnts will stay on the page indefinitely;
 Default is `false`
 
 
-### fan
+### :broken_heart: fan
 `Boolean`
 
 If true, heart animations are staggered, which lends itself to a fanning pattern.
@@ -170,7 +176,8 @@ If true, heart animations are staggered, which lends itself to a fanning pattern
 Default is `false`.
 
 
-### geyser
+### :warning: geyser
+_If you're going to use a geyser, just `compose` on top of the Geyser preset._
 `Boolean`
 
 When `true`, creates a continuous stream of hearts. 
@@ -179,7 +186,7 @@ Starting coordinates are calculated based off of the targeted element's `boundin
 Default is `false`
 
 **Note:** turning on `geyser` means that `click` and `touch` events are not attached to the target element.
-_This could use a lot of work if you want to help!_
+_This whole geyser thing could use a lot of work if you want to help!_
 
 
 ### geyserInterval
@@ -202,7 +209,8 @@ Selector of element to which we should append `img`s.
 If provided, the given class name is added to each image element.
 
 
-### imageHeight
+### :warning: imageHeight
+I just threw this on to patch a bug. It might disappear.
 `Number`
 
 If truthy, this number will be set directly on the animated image elements as their height (in `px`).
@@ -218,7 +226,8 @@ Path to an image that you want to spew (preferably a heart).
 Defaults to an SVG heart icon that is stored as a string in the source code.
 
 
-### imageWidth
+### :warning: imageWidth
+This was an ad-hoc bug fix. Might change in the future.
 `Number`
 
 If truthy, this number will be set directly on the animated image elements as their width (in `px`).
@@ -318,22 +327,18 @@ Random noise added to the initial `x` coordinate of an image.
 Default is `0`.
 
 
-## Points of Pride
-* Use of `window.requestAnimationFrame` ([What's that?](http://www.paulirish.com/2011/requestanimationframe-for-smart-animating/))
-
-
 ## TODO
-* Write Tests (ha)
-* Switch to using [jsdoc](http://usejsdoc.org/) after refactoring prototypes + factories
-* Change main default to be either incredibly basic or moar like Super's
-* `SuperHearts.registerDefault` method
-* Allow presets to be a composition of several configs
-* Allow mass assignment (use `document.querySelectorAll` instead of `document.querySelector`)
+* Write Tests 
+* Switch to using [jsdoc](http://usejsdoc.org/) after refactoring prototypes + factories 
+* Change main default to be for attaching to buttons
+* ~~`SuperHearts.registerDefault` method~~
+* ~~Allow presets to be a composition of several configs~~
+* Allow mass assignment of target elements (use `document.querySelectorAll` instead of `document.querySelector`)
 * Refactor logic around `doNotRemove` option
 * Fix caching issue -- inlined heart icon uses a `data:` URL for its source, **SO IT IS NOT CACHED**
 * Refactor SVG manipulation
 * Add more SVG manipulation
-* Draw hidden SVG image on the page and use a relative URL as an image source (_getting close_)
+* Try to draw hidden SVG image on the page and use a relative URL as an image source
 * Publish to NPM
 * PROFIT
 
