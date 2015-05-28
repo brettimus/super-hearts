@@ -9,7 +9,7 @@ do you want to spew hearts or other images of your choosing everywhere all over 
 you are in luck, lucky person! 
 
 ## quick start (a.k.a the defibrillator HA!)
-give me selector, and i make sure your `click` and `touchend` events are full of happy happy joy.
+give me selector (or not!!!), and i make sure your `click` and `touchend` events are full of happy happy joy.
 
 ```javascript
 var dawh = SuperHearts(); // now click!!!
