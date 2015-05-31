@@ -28,7 +28,7 @@
     var configCount = 360/20 + 1;  // this ensures our defaults get merged with all 18 configs that make up a big ring (eventually this will be handled internally)
     var names = [];
     // var className = { imageClass: "firework", transitionDuration: 1200 }; produces a cool effect when used with configCount = 360/20;
-    var className = {imageClass: "firework", imageSrc: "/img/heart-icon-1.svg"};
+    var className = {imageClass: "firework", imageSrc: "./lp/img/heart-icon-1.svg"};
     while (configCount--) names.push(className)
 
     var myBody = document.querySelector("body");
