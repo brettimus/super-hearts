@@ -25,20 +25,20 @@
   <script src="./lp/super-hearts.min.js"></script>
   <script src="./lp/utilities.js"></script>
   <script>
-    var meh = 360/20;
+    var configCount = 360/20 + 1;  // this ensures our defaults get merged with all 18 configs that make up a big ring (eventually this will be handled internally)
     var names = [];
-    var className = { imageClass: "firework", transitionDuration: 1200 };
-    while (meh--) names.push(className)
+    // var className = { imageClass: "firework", transitionDuration: 1200 }; produces a cool effect when used with configCount = 360/20;
+    var className = {imageClass: "firework", imageSrc: "/img/heart-icon-1.svg"};
+    while (configCount--) names.push(className)
 
-    var myBody = document.querySelector("body"),
-        boundingRect = myBody.getBoundingClientRect();
+    var myBody = document.querySelector("body");
 
-    SuperHearts.BigRing();
-    // SuperHearts.BigRing.apply(SuperHearts, ['body'].concat(names));
+    // SuperHearts.BigRing();
+    SuperHearts.BigRing.apply(SuperHearts, ['body'].concat(names));
     setInterval(randomlyClickBody(), 2000);
     
     function randomlyClickBody() {
-        var i = Math.ceil(Math.random() * 3), // randomize number of fireworks
+        var i = Math.ceil(Math.random() * 3), // randomize number of fireworks [1,3]
             c = 0,
             r;
         while (c < i) {
@@ -47,7 +47,7 @@
               window.requestAnimationFrame(function() {
                   eventFire(myBody, "click", {clientX: randomX(), clientY: randomY(),})               
               })
-          }, (c+1)*r) // stagger the fireworks
+          }, (c+1)*r) // stagger the fireworks by a random time interval [100ms, 600ms]
           c++;
         }
         return randomlyClickBody;
@@ -55,18 +55,19 @@
 
     function randomX() {
         var range = [];
-        range[0] = boundingRect.width*.1;
-        range[1] = boundingRect.width*.9;
+        range[0] = myBody.getBoundingClientRect().width*.1;
+        range[1] = myBody.getBoundingClientRect().width*.9;
         return randomInRange(range);    
     }
     function randomY() {
         var range = [];
-        range[0] = boundingRect.height*.1;
-        range[1] = boundingRect.height*.9;
+        range[0] = myBody.getBoundingClientRect().height*.1;
+        range[1] = myBody.getBoundingClientRect().height*.9;
         return randomInRange(range);    
     }
   </script>
   <script>
+  // not in use -- todo is to implement smooth scrolling in vanilla js
     var toTop = document.querySelector(".back-to-top");
     if (toTop) {
         toTop.addEventListener("touchend", scrollToTop);
@@ -75,6 +76,14 @@
     function scrollToTop() {
         window.scrollTo(0, 0);
     }
+  </script>
+  <script>
+      (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
+      function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;
+      e=o.createElement(i);r=o.getElementsByTagName(i)[0];
+      e.src='https://www.google-analytics.com/analytics.js';
+      r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));
+      ga('create','UA-63598506-1','auto');ga('send','pageview');
   </script>
 </body>
 </html>
