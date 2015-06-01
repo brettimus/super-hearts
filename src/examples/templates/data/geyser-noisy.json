@@ -1,4 +1,0 @@
-{
-  "heading": "ooh look at that noisy geyser!",
-  "example": "SuperHearts.Geyser({xNoise:[-20,20], yNoise:[-20, 20]})"
-}
