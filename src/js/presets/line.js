@@ -1,5 +1,5 @@
 module.exports = {
-    angle: 0,
+    rotate: 0,
     blur: 0,
     count: [5, 8],
     color: "#B91319",
@@ -18,5 +18,4 @@ module.exports = {
     translateY: [15, 45],
     xNoise: 0,
     yNoise: 0,
-    rotate: false,
 };

@@ -1,5 +1,5 @@
 module.exports = {
-    angle: [0, 359],
+    rotate: [0, 359],
     count: [6, 10],
     fixed: true,
     opacity: [0.10, 0.75],

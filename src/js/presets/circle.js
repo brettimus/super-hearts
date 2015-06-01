@@ -1,5 +1,5 @@
 var circle = {
-    angle: [0, 359],
+    rotate: [0, 359],
     blur: 0,
     doNotRemove: false,
     fan: false,

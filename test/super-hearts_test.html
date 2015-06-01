@@ -34,8 +34,71 @@
     //   transitionDuration: 1000,
     //   transitionFunction: "ease-in",
     // });
-    SuperHearts.Compass();
     // SuperHearts.Line();
+
+    SuperHearts.Compass();
+    SuperHearts.CompassAlt();
+    wallpaper();
+
+    function wallpaper() {
+      var h = window.innerHeight,
+          w = window.innerWidth;
+
+      var myBody = document.querySelector("body");
+
+      var i = 0,
+          j,
+          to;
+
+      for (;i*200 + 100 < h; i++) {
+        for (j = 0;j*200 + 100 < w; j++) {
+
+
+          to = (function(h,i,j) {
+              window.requestAnimationFrame(function() {
+                eventFire(myBody, "click", {
+                  clientX: j*200 + 100,
+                  clientY: i*200 + 100,
+                });              
+              })
+          })(h,i,j);
+
+          // to = (function(h,i,j) {
+          //   return function() {
+          //     window.requestAnimationFrame(function() {
+          //       eventFire(myBody, "click", {
+          //         clientX: j*200 + 100,
+          //         clientY: i*200 + 100,
+          //       });              
+          //     })
+          //   };
+          // })(h,i,j);
+
+          // setTimeout(to, i*j*150) // alt: i*(j+200)
+        }
+      }
+    }
+
+    function eventFire(el, etype, options){
+        if (el.fireEvent) {
+            el.fireEvent('on' + etype);
+        } else {
+            var evObj = document.createEvent('Events');
+            extend2(evObj, options);
+            evObj.initEvent(etype, true, false);
+            el.dispatchEvent(evObj);
+        }
+    }
+    function extend2(destination, source) {
+        // thanks be to angus kroll
+        // https://javascriptweblog.wordpress.com/2011/05/31/a-fresh-look-at-javascript-mixins/
+        for (var k in source) {
+            if (source.hasOwnProperty(k)) {
+              destination[k] = source[k];
+            }
+        }
+        return destination;
+    }
   </script>
 </body>
 </html>

@@ -293,7 +293,7 @@ AnimationCollection.prototype._animate = function(a, elt, x, y, starter) {
         .transformOrigin("center center")
         .translate(startX, startY)
         .opacity(o.opacity)
-        .rotate(o.angle)
+        .rotate(o.rotate)
         .scale(o.scalar);
 
     nTimes(times, function() {
@@ -311,7 +311,7 @@ AnimationCollection.prototype._animate = function(a, elt, x, y, starter) {
 
     });
 };
-},{"./animator":9,"./icon":12,"./image":13,"./range":22,"boots-utils":6}],8:[function(require,module,exports){
+},{"./animator":9,"./icon":12,"./image":13,"./range":23,"boots-utils":6}],8:[function(require,module,exports){
 var Range = require("./range");
 
 module.exports = Animation;
@@ -328,7 +328,7 @@ function Animation(animationSteps, options) {
         animationSteps[i].next = animationSteps[i+1];
     }
 }
-},{"./range":22}],9:[function(require,module,exports){
+},{"./range":23}],9:[function(require,module,exports){
 var isNully = require("boots-utils").nully,
     BooTemplate = require("boo-templates");
 var Range = require("./range");
@@ -593,7 +593,7 @@ Animator.prototype._addStyle = function(property, range, units) {
     });
     return this;
 };
-},{"./range":22,"boo-templates":2,"boots-utils":6}],10:[function(require,module,exports){
+},{"./range":23,"boo-templates":2,"boots-utils":6}],10:[function(require,module,exports){
 module.exports = function argumentsHelper() {
     var args = [].slice.call(arguments),
         result = {
@@ -717,7 +717,7 @@ var extend = require("boots-utils").extend,
     result = [];
 
 angles.forEach(function(a) {
-    result.push(extend({}, base, {angle: a}));
+    result.push(extend({}, base, {rotate: a}));
 });
 
 module.exports = result;
@@ -736,14 +736,14 @@ var extend = require("boots-utils").extend,
     result = [];
 
 angles.forEach(function(a) {
-    result.push(extend({}, base, {angle: a}));
+    result.push(extend({}, base, {rotate: a}));
 });
 
 module.exports = result;
 
 },{"boots-utils":6}],16:[function(require,module,exports){
 module.exports = {
-    angle: [0, 359],
+    rotate: [0, 359],
     count: [6, 10],
     fixed: true,
     opacity: [0.10, 0.75],
@@ -753,7 +753,7 @@ module.exports = {
 };
 },{}],17:[function(require,module,exports){
 var circle = {
-    angle: [0, 359],
+    rotate: [0, 359],
     blur: 0,
     doNotRemove: false,
     fan: false,
@@ -783,13 +783,29 @@ var extend = require("boots-utils").extend,
         scalar: 0.4,
         translateY: 100,
     },
-    n = extend({}, base, {angle: 0}),
-    e = extend({}, base, {angle: 90, color: "darkgreen"}),
-    s = extend({}, base, {angle: 180, color: "blue"}),
-    w = extend({}, base, {angle: 270, color: "purple"});
+    n = extend({}, base, {rotate: 0}),
+    e = extend({}, base, {rotate: 90, color: "darkgreen"}),
+    s = extend({}, base, {rotate: 180, color: "blue"}),
+    w = extend({}, base, {rotate: 270, color: "purple"});
 
 module.exports = [n, e, s, w];
 },{"boots-utils":6}],19:[function(require,module,exports){
+var extend = require("boots-utils").extend,
+    base = {
+        count: 1,
+        imageHeight: 88,
+        imageWidth: 100,
+        scalar: 0.4,
+        translateY: -100,
+        translateX: 0,
+    },
+    n = extend({}, base, {rotate: 0, color: "#A30015"}),
+    e = extend({}, base, {rotate: 90, color: "#73BA9B"}),
+    s = extend({}, base, {rotate: 180, color: "#258EA6"}),
+    w = extend({}, base, {rotate: 270, color: "#493548"});
+
+module.exports = [n, e, s, w];
+},{"boots-utils":6}],20:[function(require,module,exports){
 module.exports = {
     angle: [-10, 10],
     geyser: true,
@@ -801,9 +817,9 @@ module.exports = {
     translateX: [-45, 45],
     translateY: [30, 60]
 };
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 module.exports = {
-    angle: 0,
+    rotate: 0,
     blur: 0,
     count: [5, 8],
     color: "#B91319",
@@ -822,29 +838,30 @@ module.exports = {
     translateY: [15, 45],
     xNoise: 0,
     yNoise: 0,
-    rotate: false,
 };
-},{}],21:[function(require,module,exports){
-var bigRingDefaults = require("./big-ring"),
-    buttonDefaults  = require("./button"),
+},{}],22:[function(require,module,exports){
+var bigRingDefaults       = require("./big-ring"),
+    buttonDefaults        = require("./button"),
     buttonBigRingDefaults = require("./button-big-ring"),
-    circleDefaults  = require("./circle"),
-    compassDefaults = require("./compass"),
-    lineDefaults    = require("./line"),
-    geyserDefaults  = require("./geyser");
+    circleDefaults        = require("./circle"),
+    compassDefaults       = require("./compass"),
+    compassAltDefaults    = require("./compass-alt"),
+    lineDefaults          = require("./line"),
+    geyserDefaults        = require("./geyser");
 
 module.exports = function loadPresets(SuperHearts) {
     SuperHearts.registerPreset("BigRing", bigRingDefaults);
     SuperHearts.registerPreset("Button", buttonDefaults);
     SuperHearts.registerPreset("ButtonBigRing", buttonBigRingDefaults);
     SuperHearts.registerPreset("Compass", compassDefaults);
+    SuperHearts.registerPreset("CompassAlt", compassAltDefaults);
     SuperHearts.registerPreset("Circle", circleDefaults);
     SuperHearts.registerPreset("Line", lineDefaults);
     SuperHearts.registerPreset("Geyser", geyserDefaults);
 };
 
 
-},{"./big-ring":14,"./button":16,"./button-big-ring":15,"./circle":17,"./compass":18,"./geyser":19,"./line":20}],22:[function(require,module,exports){
+},{"./big-ring":14,"./button":16,"./button-big-ring":15,"./circle":17,"./compass":19,"./compass-alt":18,"./geyser":20,"./line":21}],23:[function(require,module,exports){
 var B = require("boots-utils");
 
 Range.RangeHundredths = RangeHundredths;
@@ -910,7 +927,7 @@ RangeHundredths.prototype._array = function(ary) {
 function newGet() {
     return Range.prototype.get.call(this) / 100;
 }
-},{"boots-utils":6}],23:[function(require,module,exports){
+},{"boots-utils":6}],24:[function(require,module,exports){
 (function (global){
 var B = require("boots-utils");
 
@@ -1065,4 +1082,4 @@ loadPresets(SuperHearts);
 global.SuperHearts = SuperHearts;
 module.exports = SuperHearts;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./animation":8,"./animation-collection":7,"./animator":9,"./arguments-helper":10,"./default":11,"./image":13,"./presets/preset-loader":21,"boots-utils":6}]},{},[23]);
+},{"./animation":8,"./animation-collection":7,"./animator":9,"./arguments-helper":10,"./default":11,"./image":13,"./presets/preset-loader":22,"boots-utils":6}]},{},[24]);

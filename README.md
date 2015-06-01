@@ -254,7 +254,7 @@ Default is `[0,0]`.
 ### translateY
 Range
 
-How far (in px) a heart is translated along the y-axis from the original click. I think in cartesian coordinates, so treat this as a cartesian translation.
+How far (in px) a heart is translated along the y-axis from the original click.
 
 _Not affected by `scalar`._
 

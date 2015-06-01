@@ -11,7 +11,7 @@ var extend = require("boots-utils").extend,
     result = [];
 
 angles.forEach(function(a) {
-    result.push(extend({}, base, {angle: a}));
+    result.push(extend({}, base, {rotate: a}));
 });
 
 module.exports = result;

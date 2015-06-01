@@ -61,7 +61,7 @@ AnimationCollection.prototype._animate = function(a, elt, x, y, starter) {
         .transformOrigin("center center")
         .translate(startX, startY)
         .opacity(o.opacity)
-        .rotate(o.angle)
+        .rotate(o.rotate)
         .scale(o.scalar);
 
     nTimes(times, function() {
