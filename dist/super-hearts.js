@@ -257,46 +257,58 @@ AnimationCollection.prototype.add = function add(animation) {
     return this;
 };
 
-AnimationCollection.prototype.animate = function animate(elt, x, y) {
+/**
+ * Todo - make this pass off some responsibilities... It's a monster!
+ */
+AnimationCollection.prototype.animate = function animate(elt, x, y, starter) {
     this.animations.forEach(function(a) {
-        var o = a.options;
-        var times = a.count.get();
-        var current = a.start;
-        var startX = x - (o.imageWidth/2),
-            startY = y - (o.imageHeight/2);
-
-        var icon;
-        if (!o.imageSrc) {
-            icon = new Icon(o.color, o.blur);
-            o.imageSrc = icon.src;
-        }
+        this._animate(a, elt, x ,y ,starter);
+    }, this);
+};
 
 
-        current
-            .clear()  // Resets queues
-            .position("fixed")
-            .x(0)
-            .y(0)
-            .transformOrigin("center center")
-            .translate(startX, startY)
-            .opacity(o.opacity)
-            .rotate(o.angle)
-            .scale(o.scalar);
+AnimationCollection.prototype._animate = function(a, elt, x, y, starter) {
+    var o = a.options;
+    var times = a.count.get();
+    var current = a.start;
 
-        nTimes(times, function() {
+    var startX = x,
+        startY = y;
+    if (o.imageWidth)
+        startX -= o.imageWidth/2;
+    if (o.imageHeight)
+        startY -= o.imageHeight/2;
 
-            var img = new Image(elt, "", o);
-            img.style(current.print())
-                .show();
+    var icon;
+    if (!o.imageSrc) {
+        icon = new Icon(o.color, o.blur);
+        o.imageSrc = icon.src;
+    }
 
-            window.requestAnimationFrame(function() {
-                var styles     = current.next.printNonTransforms(),
-                    transforms = current.next._compileTransforms();
+    current
+        .clear()  // Resets queues
+        .position("fixed")
+        .x(0)
+        .y(0)
+        .transformOrigin("center center")
+        .translate(startX, startY)
+        .opacity(o.opacity)
+        .rotate(o.angle)
+        .scale(o.scalar);
 
-                img.style(styles).transform(transforms);
-            });
+    nTimes(times, function() {
 
+        var img = new Image(elt, "", o);
+        img.style(current.print())
+            .show();
+
+        window.requestAnimationFrame(function() {
+            var styles     = current.next.printNonTransforms(),
+                transforms = current.next._compileTransforms();
+
+            img.style(styles).transform(transforms);
         });
+
     });
 };
 },{"./animator":9,"./icon":12,"./image":13,"./range":22,"boots-utils":6}],8:[function(require,module,exports){
@@ -939,11 +951,16 @@ function SuperHearts() {
         result.add(new Animation([start, end], o));
     });
 
+    // Add Event Listeners
     forEach.call(document.querySelectorAll(selector), function(elt) {
         elt.addEventListener("click", function(e) {
             var x = e.clientX,
                 y = e.clientY;
-            console.log(x, y);
+            result.animate(elt, x, y);
+        });
+        elt.addEventListener("touchend", function(e) {
+            var x = e.changedTouches[0].clientX,
+                y = e.changedTouches[0].clientY;
             result.animate(elt, x, y);
         });
     });
@@ -975,6 +992,69 @@ SuperHearts.registerPreset = function(name, presetDefaults) {
     };
     return this;
 };
+
+
+SuperHearts.select = function(selector) {
+    return {
+        count: function(n) {
+            var selection = document.querySelector(selector);
+            count.bind(SuperHearts);
+            SuperHearts._selection = function() {
+                return selection;
+            };
+            return count(n, selection);
+        },
+    };
+};
+
+
+
+function count(n, selection) {
+    var a = new Animation([], {count: n});
+    a.start = new Animator();
+
+    a.then = function then() {
+        if (!this._cache)
+            this._cache = a.start;
+
+        var result = new Animator();
+
+        var curr = this._cache;
+        while (curr.next) curr = curr.next;
+
+        curr.next = result;
+        result.then = then;
+        result.done = done;
+        result.cancel = cancel;
+        return result;
+    }.bind(this);
+
+    a.done = function done() {
+        var elt = this._selection,
+            a = this._cache;
+
+        nTimes(a.count.get(), function() {
+            var img = new Image(elt, "", {});
+            img.style(a.start.print())
+                .show();
+            window.requestAnimationFrame(function() {
+                var styles = a.next.printNonTransforms(),
+                    transforms = a.next._compileTransforms();
+
+                img.style(styles).transform(transforms);
+            });
+        });
+    }.bind(this);
+
+    a.cancel = function cancel() {
+        a = null;
+        this._cache = null;
+        return this;
+    }.bind(this);
+
+    return a;
+}
+
 
 
 loadPresets(SuperHearts);

@@ -1,4 +1,5 @@
-var B = require("boots-utils");
+var B = require("boots-utils"),
+    Icon = require("./icon");
 
 module.exports = Image;
 
@@ -6,7 +7,7 @@ function Image(container, initStyle, options) {
     this.container = container;
     this.initStyle = initStyle;
     this.image = document.createElement("img");
-    this.image.src = options.imageSrc; // icon should be default;
+    this.image.src = options.imageSrc || (new Icon()).src; // icon should be default;
     this.imageHeight = options.imageHeight;
     this.imageWidth = options.imageWidth;
     // TODO - height and width
