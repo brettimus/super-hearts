@@ -7,6 +7,7 @@ var extend = require("boots-utils").extend,
         scalar: [0.18, 0.22],
         transitionDuration: 2400,
         translateY: 140,
+        translateX: 0,
     },
     result = [];
 

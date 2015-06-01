@@ -272,6 +272,14 @@ AnimationCollection.prototype._animate = function(a, elt, x, y, starter) {
     var times = a.count.get();
     var current = a.start;
 
+    var icon;
+    if (!o.imageSrc) {
+        icon = new Icon(o.color, o.blur);
+        o.imageSrc = icon.src;
+        o.imageHeight = icon.height;
+        o.imageWidth = icon.width;
+    }
+
     var startX = x,
         startY = y;
     if (o.imageWidth)
@@ -279,11 +287,7 @@ AnimationCollection.prototype._animate = function(a, elt, x, y, starter) {
     if (o.imageHeight)
         startY -= o.imageHeight/2;
 
-    var icon;
-    if (!o.imageSrc) {
-        icon = new Icon(o.color, o.blur);
-        o.imageSrc = icon.src;
-    }
+
 
     current
         .clear()  // Resets queues
@@ -648,6 +652,9 @@ function Icon(fill, blur, styles) {
     this.blur = blur || 0;
     this.styles = styles || "";
     this.src = src(this.fill, this.blur, this.styles);
+
+    this.height = 88;
+    this.width = 100;
 }
 
 function src(fill, blur, styles) {
@@ -712,7 +719,7 @@ var extend = require("boots-utils").extend,
         count: 1,
         scalar: [0.18, 0.22],
         transitionDuration: 2400,
-        translateY: 140,
+        translateY: -140,
     },
     result = [];
 
@@ -732,6 +739,7 @@ var extend = require("boots-utils").extend,
         scalar: [0.18, 0.22],
         transitionDuration: 2400,
         translateY: 140,
+        translateX: 0,
     },
     result = [];
 
@@ -753,16 +761,14 @@ module.exports = {
 };
 },{}],17:[function(require,module,exports){
 var circle = {
-    rotate: [0, 359],
     blur: 0,
     doNotRemove: false,
-    fan: false,
-    floatingInSpace: false,
-    geyser: false,
-    count: [5, 8],
+    count: [2, 5],
     color: "#B91319",
-    imageSrc: undefined,
+    imageHeight: 88,
+    imageWidth: 100,
     opacity: [0.10, 0.65],
+    rotate: [0, 359],
     scalar: [0.10, 0.35],
     transformOrigin: "center center",
     transitionDuration: 600,
@@ -783,10 +789,10 @@ var extend = require("boots-utils").extend,
         scalar: 0.4,
         translateY: 100,
     },
-    n = extend({}, base, {rotate: 0}),
-    e = extend({}, base, {rotate: 90, color: "darkgreen"}),
-    s = extend({}, base, {rotate: 180, color: "blue"}),
-    w = extend({}, base, {rotate: 270, color: "purple"});
+    n = extend({}, base, {rotate: 0, color: "#A30015"}),
+    e = extend({}, base, {rotate: 90, color: "#73BA9B"}),
+    s = extend({}, base, {rotate: 180, color: "#258EA6"}),
+    w = extend({}, base, {rotate: 270, color: "#493548"});
 
 module.exports = [n, e, s, w];
 },{"boots-utils":6}],19:[function(require,module,exports){

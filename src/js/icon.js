@@ -7,6 +7,9 @@ function Icon(fill, blur, styles) {
     this.blur = blur || 0;
     this.styles = styles || "";
     this.src = src(this.fill, this.blur, this.styles);
+
+    this.height = 88;
+    this.width = 100;
 }
 
 function src(fill, blur, styles) {

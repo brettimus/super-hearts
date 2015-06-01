@@ -40,6 +40,14 @@ AnimationCollection.prototype._animate = function(a, elt, x, y, starter) {
     var times = a.count.get();
     var current = a.start;
 
+    var icon;
+    if (!o.imageSrc) {
+        icon = new Icon(o.color, o.blur);
+        o.imageSrc = icon.src;
+        o.imageHeight = icon.height;
+        o.imageWidth = icon.width;
+    }
+
     var startX = x,
         startY = y;
     if (o.imageWidth)
@@ -47,11 +55,7 @@ AnimationCollection.prototype._animate = function(a, elt, x, y, starter) {
     if (o.imageHeight)
         startY -= o.imageHeight/2;
 
-    var icon;
-    if (!o.imageSrc) {
-        icon = new Icon(o.color, o.blur);
-        o.imageSrc = icon.src;
-    }
+
 
     current
         .clear()  // Resets queues

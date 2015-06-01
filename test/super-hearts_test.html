@@ -36,8 +36,17 @@
     // });
     // SuperHearts.Line();
 
-    SuperHearts.Compass();
-    SuperHearts.CompassAlt();
+    // *** COOL PATTERNS *** //
+    // 1. { imageSrc: "../lp/img/heart-icon-2.svg" }, dim = 70
+    // 1. { imageSrc: "../lp/img/icon-pug.svg" }, dim = 140
+
+
+    var lp_path = "../lp/img/"
+
+    // SuperHearts.CompassAlt();
+    SuperHearts.Compass({
+      imageSrc: lp_path+"icon-pug.svg",
+    });
     wallpaper();
 
     function wallpaper() {
@@ -46,19 +55,20 @@
 
       var myBody = document.querySelector("body");
 
-      var i = 0,
+      var dim = 140,
+          i = 0,
           j,
           to;
 
-      for (;i*200 + 100 < h; i++) {
-        for (j = 0;j*200 + 100 < w; j++) {
+      for (;i*dim + 100 < h; i++) {
+        for (j = 0;j*dim + 100 < w; j++) {
 
 
           to = (function(h,i,j) {
               window.requestAnimationFrame(function() {
                 eventFire(myBody, "click", {
-                  clientX: j*200 + 100,
-                  clientY: i*200 + 100,
+                  clientX: j*dim + 100,
+                  clientY: i*dim + 100,
                 });              
               })
           })(h,i,j);
@@ -67,14 +77,14 @@
           //   return function() {
           //     window.requestAnimationFrame(function() {
           //       eventFire(myBody, "click", {
-          //         clientX: j*200 + 100,
-          //         clientY: i*200 + 100,
+          //         clientX: j*dim + 100,
+          //         clientY: i*dim + 100,
           //       });              
           //     })
           //   };
           // })(h,i,j);
 
-          // setTimeout(to, i*j*150) // alt: i*(j+200)
+          // setTimeout(to, i*j*dim) // alt: i*(j+dim)
         }
       }
     }
