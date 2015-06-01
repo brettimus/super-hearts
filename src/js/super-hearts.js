@@ -50,6 +50,7 @@ function SuperHearts() {
     return result;
 }
 
+
 SuperHearts.registerPreset = function(name, presetDefaults) {
 
     SuperHearts[name] = function() {
@@ -62,38 +63,17 @@ SuperHearts.registerPreset = function(name, presetDefaults) {
 
         var copy = presetDefaults.map(function(p) { return extend({}, p); });
 
+        optionsArray.forEach(function(o) {
+            copy.forEach(function(c) {
+                extend(c, o);
+            });
+        });
+
         SuperHearts.apply(this, [selector].concat(copy));
 
     };
     return this;
 };
-
-
-// SuperHearts.registerPreset = function registerPreset(name, presetDefaults) {
-
-//     SuperHearts[name] = function() {
-
-//         var args         = argumentsHelper.apply(null, arguments),
-//             selector     = args.selector,
-//             optionsArray = args.optionsArray,
-//             toCall; // return copy presetDefaults
-
-//         if (!isArray(presetDefaults)) {
-//             presetDefaults = [presetDefaults];
-//         }
-
-//         toCall = presetDefaults.map(function(defaults) { console.log("PRESET: ", defaults); return extend({}, defaults); });
-
-//         optionsArray.forEach(function(options) {
-
-//             toCall = toCall.forEach(function(defaults) {
-//                 extend(defaults, options);
-//             });
-//         });
-
-//         return SuperHearts.apply(SuperHearts, [selector].concat(toCall));
-//     };
-// };
 
 
 loadPresets(SuperHearts);

@@ -65,11 +65,7 @@ var line = SuperHearts.Line();
 ```
 
 ### Geyser
-**Continuous**
-```javascript
-// Hearts continuously spew from a fixed point
-var line = SuperHearts.Geyser();
-```
+// Removed. Should be written as a plugin.
 
 ### Button
 **Evented**
@@ -86,7 +82,8 @@ var butt = SuperHearts.Button("#myButton");
 ### Add your own
 To add your own preset to the `SuperHearts` object, 
 use the `SuperHearts.registerPreset` method. 
-This method takes a `name` parameter and an options hash.
+This method takes a `name` parameter && ( an options hash || an array of options hashes ).
+Passing an array of options hashes to registerPreset means they will be treated as a single configuration in any future operations. Long sentence, sorry.
 
 ```javascript
 // Register a `preset` called `Foo`
@@ -120,16 +117,6 @@ Note that defaults depend on the preset configuration (duh, right?), meaning
 :warning: means an option's name will probably change. Or it might become a :ghost:. Or a :bug:.
 
 
-### angle
-`Array` of length 2 **or** `Number`
-
-Determines the (inclusive) range of angles (measured in degrees) that is used to randomly rotate hearts. You may specify a range outside of `[0, 360]`. 
-
-If you only supply a `Number` (call it `n`), it is treated as `[n,n]`. It will always be `n`. Forever.
-
-Default is `[0, 359]` (deg)
-
-
 ### :broken_heart: blur
 `Number`
 
@@ -148,7 +135,7 @@ Default is `"#B91319"`.
 
 
 ### count
-`Array` of length 2 **or** `Number`.
+Range
 
 Default is `[6, 10]`
 
@@ -166,49 +153,19 @@ If true, image elemnts will stay on the page indefinitely;
 Default is `false`
 
 
-### :broken_heart: fan
-`Boolean`
-
-If true, heart animations are staggered, which lends itself to a fanning pattern.
-
-Default is `false`.
-
-
-### :warning: geyser
-_If you're going to use a geyser, just `compose` on top of the Geyser preset._
-`Boolean`
-
-When `true`, creates a continuous stream of hearts. 
-Starting coordinates are calculated based off of the targeted element's `boundingRect`.
-
-Default is `false`
-
-**Note:** turning on `geyser` means that `click` and `touch` events are not attached to the target element.
-_This whole geyser thing could use a lot of work if you want to help!_
-
-
-### geyserInterval
-`Number`
-
-Sets how often hearts are spewed from the geyser. **`0` is ignored**
-
-Default is `transitionDuration/2` (ms)
-
-
-### imageAppendedTo
+### :skull: imageAppendedTo
 `String`
 
 Selector of element to which we should append `img`s.
 
 
-### imageClass
+### :skull: imageClass
 `String`
 
 If provided, the given class name is added to each image element.
 
 
-### :warning: imageHeight
-I just threw this on to patch a bug. It might disappear.
+### imageHeight :skull: (not set on image currently)
 `Number`
 
 If truthy, this number will be set directly on the animated image elements as their height (in `px`).
@@ -224,8 +181,7 @@ Path to an image that you want to spew (preferably a heart).
 Defaults to an SVG heart icon that is stored as a string in the source code.
 
 
-### :warning: imageWidth
-This was an ad-hoc bug fix. Might change in the future.
+### imageWidth :skull: (not set on image currently)
 `Number`
 
 If truthy, this number will be set directly on the animated image elements as their width (in `px`).
@@ -234,7 +190,7 @@ Default is `undefined`.
 
 
 ### opacity
-`Array` of length 2 **or** `Number`.
+Range
 
 Hearts are given random opacity from `opacityRange[0]` to `opacityRange[1]`. You may only specify scalars to a hundredth. 
 If you only supply a `Number` (call it `n`), it is implicitly converted to `[n,n]`.
@@ -243,19 +199,19 @@ Default is `[0.10, 0.75]`
 
 
 ### rotate
-`Boolean`
+Range
 
-If `false`, hearts are not rotated, and the original click/touch point becomes a geyser of hearts.
+Determines the (inclusive) range of angles (measured in degrees) that is used to randomly rotate hearts. You may specify a range outside of `[0, 360]`. 
 
-Default is `true`.
+If you only supply a `Number` (call it `n`), it is treated as `[n,n]`. It will always be `n`. Forever.
+
+Default is `[0, 359]` (deg)
 
 
 ### scalar
-`Array` of length 2 **or** `Number`.
+RangeHundredth
 
-Hearts are randomly scaled in size from `scalarRange[0]` to `scalarRange[1]`. 
 You may only specify scalars to a hundredth. 
-If you only supply a `Number` (call it `n`), it is implicitly converted to `[n,n]`.
 
 Default is `[0.10, 0.45]`
 
@@ -269,11 +225,9 @@ Default is `"center center"`
 
 
 ### transitionDuration
-`Number`
+Range
 
 `SuperHearts` only supports milliseconds for now. 
-**Make sure to pass a number**, as this parameter is also used in a call to `setTimeout`. 
-(I know. I'm sorry.)
 
 Default is `400` (ms).
 
@@ -287,11 +241,9 @@ Default is `"ease-out"`.
 
 
 ### translateX
-`Array` of length 2 **or** `Number`.
-
+Range
 
 How far (in px) a heart is translated along the x-axis from the original click. 
-I think in cartesian coordinates, so treat this as a cartesian translation (not that it makes a difference in this case).
 If you only supply a `Number` (call it `n`), it is implicitly converted to `[n,n]`.
 
 _Not affected by `scalar`._
@@ -300,7 +252,7 @@ Default is `[0,0]`.
 
 
 ### translateY
-`Array` of length 2 **or** `Number`.
+Range
 
 How far (in px) a heart is translated along the y-axis from the original click. I think in cartesian coordinates, so treat this as a cartesian translation.
 
@@ -309,8 +261,8 @@ _Not affected by `scalar`._
 Default is `[65, 90]`.
 
 
-### :warning: translateZ
-`Array` of length 2 **or** `Number`.
+### translateZ
+Range
 
 How far (in px) a heart is translated along the z-axis from the original click. 
 
@@ -320,7 +272,7 @@ Default is `[0, 0]`.
 
 
 ### xNoise
-`Array` of length 2 **or** `Number`.
+Range
 
 Random noise added to the initial `x` coordinate of an image.
 
@@ -328,7 +280,7 @@ Default is `0`.
 
 
 ### yNoise
-`Array` of length 2 **or** `Number`.
+Range
 
 Random noise added to the initial `x` coordinate of an image.
 
@@ -360,15 +312,10 @@ hehe.count()
 * Write Tests 
 * Switch to using [jsdoc](http://usejsdoc.org/) after refactoring prototypes + factories 
 * Change main default to be for attaching to buttons
-* ~~`SuperHearts.registerDefault` method~~
-* ~~Allow presets to be a composition of several configs~~
-* Allow mass assignment of target elements (use `document.querySelectorAll` instead of `document.querySelector`)
-* Refactor logic around `doNotRemove` option
+* Fix `SuperHearts.registerDefault` method
 * Fix caching issue -- inlined heart icon uses a `data:` URL for its source, **SO IT IS NOT CACHED**
-* Refactor SVG manipulation
 * Add more SVG manipulation
 * Try to draw hidden SVG image on the page and use a relative URL as an image source
-* Publish to NPM
 * PROFIT
 
 ## If you want to contribute

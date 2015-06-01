@@ -1,5 +1,5 @@
-var extend = require("../utilities/extend"),
-    range = require("../utilities/range"),
+var extend = require("boots-utils").extend,
+    range = require("boots-utils").array.range,
     angles = range(0, 360, 20),
     base = {
         count: 1,

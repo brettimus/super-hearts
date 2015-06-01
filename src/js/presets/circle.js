@@ -1,5 +1,3 @@
-var extend = require("../utilities/extend");
-
 var circle = {
     angle: [0, 359],
     blur: 0,

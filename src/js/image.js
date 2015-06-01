@@ -2,9 +2,9 @@ var B = require("boots-utils");
 
 module.exports = Image;
 
-function Image(container, style, options) {
+function Image(container, initStyle, options) {
     this.container = container;
-    this.style = style;
+    this.initStyle = initStyle;
     this.image = document.createElement("img");
     this.image.src = options.imageSrc; // icon should be default;
     this.imageHeight = options.imageHeight;
@@ -12,20 +12,19 @@ function Image(container, style, options) {
     // TODO - height and width
 }
 
-Image.prototype.addStyle = function(style) {
+Image.prototype.style = function(style) {
     this.image.style.cssText += style;
     return this;
 };
 
-Image.prototype.addTransform = function(transform) {
-    this.style.transform = 0;
+Image.prototype.transform = function(transform) {
     this.image.style.transform += " " + transform;
     this.image.style.webkitTransform += " " + transform;
     return this;
 };
 
 Image.prototype.show = function(next) {
-    this.image.style.cssText += this.style;
+    this.image.style.cssText = this.initStyle + this.image.style.cssText;
     this.container.appendChild(this.image);
     if (next) next();
     return this;
@@ -34,6 +33,7 @@ Image.prototype.show = function(next) {
 Image.prototype.hide = function(next) {
     console.log("Image#hide NYI");
     // if (next) next();
+    return this;
 };
 
 Image.prototype.remove = function(next) {

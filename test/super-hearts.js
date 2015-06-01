@@ -230,13 +230,13 @@ function extendHelper(destination, source) {
     return destination;
 }
 },{"./ajax":4,"./array":5}],7:[function(require,module,exports){
-var B = require("boots-utils");
+var B = require("boots-utils"),
+    nTimes = B.nTimes;
 
-
-var Range = require("./range"),
-    Animator = require("./animator"),
+var Animator = require("./animator"),
+    Icon = require("./icon"),
     Image = require("./image"),
-    Icon = require("./icon");
+    Range = require("./range");
 
 module.exports = AnimationCollection;
 
@@ -272,8 +272,8 @@ AnimationCollection.prototype.animate = function animate(elt, x, y) {
         }
 
 
-        current.clear();
         current
+            .clear()  // Resets queues
             .position("fixed")
             .x(0)
             .y(0)
@@ -283,29 +283,18 @@ AnimationCollection.prototype.animate = function animate(elt, x, y) {
             .rotate(o.angle)
             .scale(o.scalar);
 
-        B.nTimes(times, function() {
+        nTimes(times, function() {
 
             var img = new Image(elt, "", o);
-            img.addStyle(current.print());
-            img.show();
+            img.style(current.print())
+                .show();
 
             window.requestAnimationFrame(function() {
-                var styles = current.next.printNonTransforms(),
+                var styles     = current.next.printNonTransforms(),
                     transforms = current.next._compileTransforms();
 
-                img.addStyle(styles)
-                    .addTransform(transforms);
+                img.style(styles).transform(transforms);
             });
-
-            function _animate(current) {
-                return function() {
-                    var styles = current.printNonTransforms(),
-                        transforms = current._compileTransforms();
-
-                    img.addStyle(styles)
-                        .addTransform(transforms);
-                };
-            }
 
         });
     });
@@ -638,74 +627,6 @@ module.exports = function argumentsHelper() {
 
 module.exports = require("./presets/circle");
 },{"./presets/circle":17}],12:[function(require,module,exports){
-// TODO - construct this from actual SVG file (close!)
-//      - look into using an SVG lib instead of xml2js
-//
-// var fs = require('fs'),
-//     xml2js = require('xml2js'),
-//     parser = new xml2js.Parser(),
-//     builder = new xml2js.Builder();
-
-// fs.readFile(__dirname + '/../icons/heart.svg', function(err, data) {
-//     parser.parseString(data, function (err, result) {
-//         console.dir(result);
-//         console.dir(result.svg.path);
-//         // inspect entire object
-//         // console.log(util.inspect(result, false, null))
-//         console.log('Done');
-//         // TODO manipulate object's style...
-//         // ...
-//         // build object
-//         var xml = builder.buildObject(obj);
-//     });
-// });
-
-// original
-// var SVG = '<?xml version="1.0" encoding="utf-8"?><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px" height="87.501px" viewBox="-12.058 0.441 100 87.501" enable-background="new -12.058 0.441 100 87.501" xml:space="preserve"><path style="fill: %FILL%;" d="M0.441,50.606c-8.714-8.552-12.499-17.927-12.499-26.316c0-14.308,9.541-23.849,24.011-23.849c13.484,0,18.096,6.252,25.989,15.297C45.836,6.693,50.44,0.441,63.925,0.441c14.477,0,24.018,9.541,24.018,23.849c0,8.389-3.784,17.765-12.498,26.316L37.942,87.942L0.441,50.606z"/></svg>';
-// module.exports = function(options) {
-//     var fill = options.fill,
-//         icon = SVG.replace("%FILL%", fill),
-//         src = 'data:image/svg+xml;charset=utf-8,'+icon;
-//     return src;
-// };
-
-// var heartString = '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px" height="87.501px" viewBox="-12.058 0.441 100 87.501" enable-background="new -12.058 0.441 100 87.501" xml:space="preserve"><path style="fill: %FILL%;" d="M0.441,50.606c-8.714-8.552-12.499-17.927-12.499-26.316c0-14.308,9.541-23.849,24.011-23.849c13.484,0,18.096,6.252,25.989,15.297C45.836,6.693,50.44,0.441,63.925,0.441c14.477,0,24.018,9.541,24.018,23.849c0,8.389-3.784,17.765-12.498,26.316L37.942,87.942L0.441,50.606z"/></svg>';
-
-// var container = document.createElement("div");
-// // container.style.visibility = "hidden";
-// container.innerHTML = heartString;
-// document.body.appendChild(container);
-
-// var svg = document.querySelector("svg");
-// var heart = document.querySelector("svg path");
-
-// // `element` is the element you want to wrap
-// var heartParent = heart.parentNode;
-// var heartGroup = document.createElementNS("http://www.w3.org/2000/svg", 'g');
-// heartGroup.setAttributeNS("http://www.w3.org/2000/svg", "filter", "url(#blur)");
-// // set the wrapper as child (instead of the element)
-// heartParent.replaceChild(heartGroup, heart);
-// // set element as child of wrapper
-// heartGroup.appendChild(heart);
-
-// var filter = document.createElementNS("http://www.w3.org/2000/svg", "filter");
-// svg.appendChild(filter);
-// filter.setAttributeNS("http://www.w3.org/2000/svg", "id", "blur");
-
-// var gBlur = document.createElementNS("http://www.w3.org/2000/svg", "feGaussianBlur");
-// filter.appendChild(gBlur);
-// gBlur.setAttributeNS("http://www.w3.org/2000/svg", "in", "SourceGraphic");
-// gBlur.setAttributeNS("http://www.w3.org/2000/svg", "stdDeviation", "2");
-// gBlur.setAttributeNS("http://www.w3.org/2000/svg", "result", "blurry");
-
-// var merge = document.createElementNS("http://www.w3.org/2000/svg", "feMerge");
-// filter.appendChild(merge);
-// var mergeNode1 = document.createElementNS("http://www.w3.org/2000/svg", "feMergeNode");
-// // var mergeNode2 = document.createElementNS("http://www.w3.org/2000/svg", "feMergeNode");
-// // merge.appendChild(mergeNode2);
-// merge.appendChild(mergeNode1);
-// mergeNode1.setAttributeNS("http://www.w3.org/2000/svg", "in", "blurry");
-// // mergeNode2.setAttributeNS("http://www.w3.org/2000/svg", "in", "SourceGraphic");
 var SVG = '<?xml version="1.0" encoding="utf-8"?><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px" height="87.501px" viewBox="-12.058 0.441 100 87.501" enable-background="new -12.058 0.441 100 87.501" xml:space="preserve"><filter id="blur"><feGaussianBlur in="SourceGraphic" stdDeviation="%BLUR%" result="blurry" /><feMerge><feMergeNode in="SourceGraphic"></feMergeNode><feMergeNode in="blurry"></feMergeNode></feMerge></filter><g id="heart" style="filter:url(#blur); "><path style="fill: %FILL%; %STYLES%" d="M0.441,50.606c-8.714-8.552-12.499-17.927-12.499-26.316c0-14.308,9.541-23.849,24.011-23.849c13.484,0,18.096,6.252,25.989,15.297C45.836,6.693,50.44,0.441,63.925,0.441c14.477,0,24.018,9.541,24.018,23.849c0,8.389-3.784,17.765-12.498,26.316L37.942,87.942L0.441,50.606z"/></g></svg>';
 
 module.exports = Icon;
@@ -727,9 +648,9 @@ var B = require("boots-utils");
 
 module.exports = Image;
 
-function Image(container, style, options) {
+function Image(container, initStyle, options) {
     this.container = container;
-    this.style = style;
+    this.initStyle = initStyle;
     this.image = document.createElement("img");
     this.image.src = options.imageSrc; // icon should be default;
     this.imageHeight = options.imageHeight;
@@ -737,20 +658,19 @@ function Image(container, style, options) {
     // TODO - height and width
 }
 
-Image.prototype.addStyle = function(style) {
+Image.prototype.style = function(style) {
     this.image.style.cssText += style;
     return this;
 };
 
-Image.prototype.addTransform = function(transform) {
-    this.style.transform = 0;
+Image.prototype.transform = function(transform) {
     this.image.style.transform += " " + transform;
     this.image.style.webkitTransform += " " + transform;
     return this;
 };
 
 Image.prototype.show = function(next) {
-    this.image.style.cssText += this.style;
+    this.image.style.cssText = this.initStyle + this.image.style.cssText;
     this.container.appendChild(this.image);
     if (next) next();
     return this;
@@ -759,6 +679,7 @@ Image.prototype.show = function(next) {
 Image.prototype.hide = function(next) {
     console.log("Image#hide NYI");
     // if (next) next();
+    return this;
 };
 
 Image.prototype.remove = function(next) {
@@ -1032,6 +953,9 @@ function SuperHearts() {
     return result;
 }
 
+
+
+
 SuperHearts.registerPreset = function(name, presetDefaults) {
 
     SuperHearts[name] = function() {
@@ -1043,6 +967,12 @@ SuperHearts.registerPreset = function(name, presetDefaults) {
         if (!isArray(presetDefaults)) presetDefaults = [presetDefaults]; // TODO- get rid of this assumption (that not-arry implies object)
 
         var copy = presetDefaults.map(function(p) { return extend({}, p); });
+
+        optionsArray.forEach(function(o) {
+            copy.forEach(function(c) {
+                extend(c, o);
+            });
+        });
 
         SuperHearts.apply(this, [selector].concat(copy));
 

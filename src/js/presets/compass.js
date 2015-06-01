@@ -1,4 +1,4 @@
-var extend = require("../utilities/extend"),
+var extend = require("boots-utils").extend,
     base = {
         count: 1,
         imageHeight: 88,

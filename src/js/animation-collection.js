@@ -1,10 +1,10 @@
-var B = require("boots-utils");
+var B = require("boots-utils"),
+    nTimes = B.nTimes;
 
-
-var Range = require("./range"),
-    Animator = require("./animator"),
+var Animator = require("./animator"),
+    Icon = require("./icon"),
     Image = require("./image"),
-    Icon = require("./icon");
+    Range = require("./range");
 
 module.exports = AnimationCollection;
 
@@ -40,8 +40,8 @@ AnimationCollection.prototype.animate = function animate(elt, x, y) {
         }
 
 
-        current.clear();
         current
+            .clear()  // Resets queues
             .position("fixed")
             .x(0)
             .y(0)
@@ -51,29 +51,18 @@ AnimationCollection.prototype.animate = function animate(elt, x, y) {
             .rotate(o.angle)
             .scale(o.scalar);
 
-        B.nTimes(times, function() {
+        nTimes(times, function() {
 
             var img = new Image(elt, "", o);
-            img.addStyle(current.print());
-            img.show();
+            img.style(current.print())
+                .show();
 
             window.requestAnimationFrame(function() {
-                var styles = current.next.printNonTransforms(),
+                var styles     = current.next.printNonTransforms(),
                     transforms = current.next._compileTransforms();
 
-                img.addStyle(styles)
-                    .addTransform(transforms);
+                img.style(styles).transform(transforms);
             });
-
-            function _animate(current) {
-                return function() {
-                    var styles = current.printNonTransforms(),
-                        transforms = current._compileTransforms();
-
-                    img.addStyle(styles)
-                        .addTransform(transforms);
-                };
-            }
 
         });
     });
