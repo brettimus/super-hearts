@@ -7,30 +7,20 @@ function HeartImage(container, style, options) {
     this.style = style;
     this.image = document.createElement("img");
     this.image.src = options.imageSrc; // icon should be default;
+    this.imageHeight = options.imageHeight;
+    this.imageWidth = options.imageWidth;
     // TODO - height and width
 }
 
 HeartImage.prototype.addStyle = function(style) {
-    console.log("Current style", this.image.style.cssText);
-    console.log("Adding style: ", style);
     this.image.style.cssText += style;
-    console.log("Post style: ", this.image.style.cssText);
-
     return this;
 };
 
 HeartImage.prototype.addTransform = function(transform) {
     this.style.transform = 0;
-    console.log("Current transform", this.image.style.transform);
-    console.log("Adding transform: ", transform);
-    this.image.style.transform += transform;
-    this.image.style.webkitTransform += transform;
-
-    // this.image.style.cssText += "transform:" + this.image.style.transform + " " + transform + ";";
-    console.log("After transform added", this.image.style.transform);
-    // this.image.style.webkitTransform += (" " + transform);
-    console.log("Post transform: ", this.image.style.cssText);
-
+    this.image.style.transform += " " + transform;
+    this.image.style.webkitTransform += " " + transform;
     return this;
 };
 

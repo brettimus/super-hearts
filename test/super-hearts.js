@@ -230,17 +230,96 @@ function extendHelper(destination, source) {
     return destination;
 }
 },{"./ajax":4,"./array":5}],7:[function(require,module,exports){
+var B = require("boots-utils");
+
+
+var Range = require("./range"),
+    Animator = require("./animator"),
+    HeartImage = require("./heart-image");
+
+module.exports = AnimationCollection;
+
+/**
+ * Object returned by SuperHearts
+ * @constructor
+ */
+function AnimationCollection() {
+    this.animations = [];
+}
+
+/**
+ * Adds an animation
+ * @method
+ */
+AnimationCollection.prototype.add = function add(animation) {
+    this.animations.push(animation);
+    return this;
+};
+
+AnimationCollection.prototype.animate = function animate(elt, x, y) {
+    this.animations.forEach(function(a) {
+        var o = a.options;
+        var times = a.count.get();
+        var current = a.start;
+        var startX = x - (o.imageWidth/2),
+            startY = y - (o.imageHeight/2);
+
+        current.clear();
+        current
+            .position("fixed")
+            .x(0)
+            .y(0)
+            .transformOrigin("center center")
+            .translate(startX, startY)
+            .opacity(o.opacity)
+            .rotate(o.angle)
+            .scale(o.scalar);
+
+        B.nTimes(times, function() {
+            console.log(a.options);
+            var img = new HeartImage(elt, "", a.options);
+            img.addStyle(current.print());
+            img.show();
+
+            window.requestAnimationFrame(function() {
+                var styles = current.next.printNonTransforms(),
+                    transforms = current.next._compileTransforms();
+
+                img.addStyle(styles)
+                    .addTransform(transforms);
+            });
+
+            function _animate(current) {
+                return function() {
+                    var styles = current.printNonTransforms(),
+                        transforms = current._compileTransforms();
+
+                    img.addStyle(styles)
+                        .addTransform(transforms);
+                };
+            }
+
+        });
+    });
+};
+},{"./animator":9,"./heart-image":12,"./range":22,"boots-utils":6}],8:[function(require,module,exports){
 var Range = require("./range");
 
 module.exports = Animation;
 
-function Animation(start, end, options) {
+function Animation(animationSteps, options) {
+
     this.count = new Range(options.count); // could define this as a property with get function that accesses this.countRange
-    this.start = start;
-    this.end = end;
     this.options = options;
+
+    this.start = animationSteps[0];
+
+    // make the animations into a linked list
+    for (var i = 0; i < animationSteps.length; i++) {
+        animationSteps[i].next = animationSteps[i+1];
+    }
 }
-},{"./range":40}],8:[function(require,module,exports){
+},{"./range":22}],9:[function(require,module,exports){
 var isNully = require("boots-utils").nully,
     BooTemplate = require("boo-templates");
 var Range = require("./range");
@@ -314,7 +393,7 @@ Animator.prototype.printNonTransforms = function() {
 
 Animator.prototype.clear = function() {
     this.clearTransforms();
-    this._styles = [];
+    this.clearStyles();
     return this;
 };
 
@@ -327,7 +406,7 @@ Animator.prototype.clearTransforms = function() {
 };
 
 Animator.prototype.clearStyles = function() {
-    this._style = [];
+    this._styles = [];
     return this;
 };
 
@@ -353,10 +432,8 @@ Animator.prototype.position = function(n) {
  * Adds a rotation transform.
  */
 Animator.prototype.rotate = function(n) {
-    console.log("rotating");
     var r = new Range(n);
     return this._addTransform("rotate", r, "deg");
-
 };
 
 
@@ -507,7 +584,7 @@ Animator.prototype._addStyle = function(property, range, units) {
     });
     return this;
 };
-},{"./range":40,"boo-templates":2,"boots-utils":6}],9:[function(require,module,exports){
+},{"./range":22,"boo-templates":2,"boots-utils":6}],10:[function(require,module,exports){
 module.exports = function argumentsHelper() {
     var args = [].slice.call(arguments),
         result = {
@@ -529,7 +606,7 @@ module.exports = function argumentsHelper() {
 
     return result;
 };
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 // module.exports = {
 //     blur: 0,
 //     doNotRemove: false,
@@ -552,7 +629,7 @@ module.exports = function argumentsHelper() {
 // };
 
 module.exports = require("./presets/circle");
-},{"./presets/circle":16}],11:[function(require,module,exports){
+},{"./presets/circle":17}],12:[function(require,module,exports){
 var B = require("boots-utils");
 
 module.exports = HeartImage;
@@ -562,30 +639,20 @@ function HeartImage(container, style, options) {
     this.style = style;
     this.image = document.createElement("img");
     this.image.src = options.imageSrc; // icon should be default;
+    this.imageHeight = options.imageHeight;
+    this.imageWidth = options.imageWidth;
     // TODO - height and width
 }
 
 HeartImage.prototype.addStyle = function(style) {
-    console.log("Current style", this.image.style.cssText);
-    console.log("Adding style: ", style);
     this.image.style.cssText += style;
-    console.log("Post style: ", this.image.style.cssText);
-
     return this;
 };
 
 HeartImage.prototype.addTransform = function(transform) {
     this.style.transform = 0;
-    console.log("Current transform", this.image.style.transform);
-    console.log("Adding transform: ", transform);
-    this.image.style.transform += transform;
-    this.image.style.webkitTransform += transform;
-
-    // this.image.style.cssText += "transform:" + this.image.style.transform + " " + transform + ";";
-    console.log("After transform added", this.image.style.transform);
-    // this.image.style.webkitTransform += (" " + transform);
-    console.log("Post transform: ", this.image.style.cssText);
-
+    this.image.style.transform += " " + transform;
+    this.image.style.webkitTransform += " " + transform;
     return this;
 };
 
@@ -610,7 +677,7 @@ HeartImage.prototype.remove = function(next) {
 
 // animator generated by options
 // x and y are set on an event
-},{"boots-utils":6}],12:[function(require,module,exports){
+},{"boots-utils":6}],13:[function(require,module,exports){
 // TODO - construct this from actual SVG file (close!)
 //      - look into using an SVG lib instead of xml2js
 //
@@ -683,14 +750,14 @@ HeartImage.prototype.remove = function(next) {
 
 var SVG = '<?xml version="1.0" encoding="utf-8"?><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="100px" height="87.501px" viewBox="-12.058 0.441 100 87.501" enable-background="new -12.058 0.441 100 87.501" xml:space="preserve"><filter id="blur"><feGaussianBlur in="SourceGraphic" stdDeviation="%BLUR%" result="blurry" /><feMerge><feMergeNode in="SourceGraphic"></feMergeNode><feMergeNode in="blurry"></feMergeNode></feMerge></filter><g id="heart" style="filter:url(#blur); "><path style="fill: %FILL%; %STYLES%" d="M0.441,50.606c-8.714-8.552-12.499-17.927-12.499-26.316c0-14.308,9.541-23.849,24.011-23.849c13.484,0,18.096,6.252,25.989,15.297C45.836,6.693,50.44,0.441,63.925,0.441c14.477,0,24.018,9.541,24.018,23.849c0,8.389-3.784,17.765-12.498,26.316L37.942,87.942L0.441,50.606z"/></g></svg>';
 module.exports = function(options) {
-    var fill = options.fill,
+    var fill = options.fill || "#B91319",
         blur = options.blur || 0,
         styles = options.styles || "",
         icon = SVG.replace("%FILL%", fill).replace("%BLUR%", blur).replace("%STYLES%", styles),
         src = 'data:image/svg+xml;charset=utf-8,'+icon;
     return src;
 };
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 var extend = require("../utilities/extend"),
     range = require("../utilities/range"),
     angles = range(0, 360, 20),
@@ -708,7 +775,7 @@ angles.forEach(function(a) {
 
 module.exports = result;
 
-},{"../utilities/extend":42,"../utilities/range":45}],14:[function(require,module,exports){
+},{"../utilities/extend":24,"../utilities/range":25}],15:[function(require,module,exports){
 var extend = require("../utilities/extend"),
     range = require("../utilities/range"),
     angles = range(0, 360, 20),
@@ -727,7 +794,7 @@ angles.forEach(function(a) {
 
 module.exports = result;
 
-},{"../utilities/extend":42,"../utilities/range":45}],15:[function(require,module,exports){
+},{"../utilities/extend":24,"../utilities/range":25}],16:[function(require,module,exports){
 module.exports = {
     angle: [0, 359],
     count: [6, 10],
@@ -737,7 +804,7 @@ module.exports = {
     transitionDuration: 600,
     translateY: [15, 45],
 };
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 var extend = require("../utilities/extend");
 
 var circle = {
@@ -762,16 +829,22 @@ var circle = {
 };
 
 module.exports = circle;
-},{"../utilities/extend":42}],17:[function(require,module,exports){
+},{"../utilities/extend":24}],18:[function(require,module,exports){
 var extend = require("../utilities/extend"),
-    base = {count: 1, scalar: 0.4, translateY: 100 },
+    base = {
+        count: 1,
+        imageHeight: 88,
+        imageWidth: 100,
+        scalar: 0.4,
+        translateY: 100,
+    },
     n = extend({}, base, {angle: 0}),
     e = extend({}, base, {angle: 90, color: "darkgreen"}),
     s = extend({}, base, {angle: 180, color: "blue"}),
     w = extend({}, base, {angle: 270, color: "purple"});
 
 module.exports = [n, e, s, w];
-},{"../utilities/extend":42}],18:[function(require,module,exports){
+},{"../utilities/extend":24}],19:[function(require,module,exports){
 module.exports = {
     angle: [-10, 10],
     geyser: true,
@@ -783,13 +856,31 @@ module.exports = {
     translateX: [-45, 45],
     translateY: [30, 60]
 };
-},{}],19:[function(require,module,exports){
-module.exports = {
-    rotate: false,
-    transitionDuration: 650,
-    translateX: [-60, 60]
-};
 },{}],20:[function(require,module,exports){
+var icon = require("../icon-factory");
+module.exports = {
+    angle: 0,
+    blur: 0,
+    count: [5, 8],
+    color: "#B91319",
+    doNotRemove: false,
+    fan: false,
+    floatingInSpace: false,
+    geyser: false,
+    imageHeight: 88,
+    imageWidth: 100,
+    opacity: [0.10, 0.65],
+    scalar: [0.10, 0.35],
+    transformOrigin: "center center",
+    transitionDuration: 660,
+    transitionFunction: "ease-out",
+    translateX: [-60, 60],
+    translateY: [15, 45],
+    xNoise: 0,
+    yNoise: 0,
+    rotate: false,
+};
+},{"../icon-factory":13}],21:[function(require,module,exports){
 var bigRingDefaults = require("./big-ring"),
     buttonDefaults  = require("./button"),
     buttonBigRingDefaults = require("./button-big-ring"),
@@ -809,607 +900,7 @@ module.exports = function loadPresets(SuperHearts) {
 };
 
 
-},{"./big-ring":13,"./button":15,"./button-big-ring":14,"./circle":16,"./compass":17,"./geyser":18,"./line":19}],21:[function(require,module,exports){
-var animationCollectionProto = require("./animation-collection-prototype");
-
-module.exports = function animationCollectionFactory(selector) {
-    var animationCollection = Object.create(animationCollectionProto).setSelector(selector).setElement(selector);
-    animationCollection.animations = []; // NB - this is necessary to keep the collection's prototype from being modified by calls to `addAnimation`
-    return animationCollection;
-};
-},{"./animation-collection-prototype":22}],22:[function(require,module,exports){
-var animationFactory = require("../animation/animation-factory");
-
-module.exports = {
-    animations: null, // Array (assigned on instance creation in factory function).
-    element: null,    // will be frozen
-    selector: null,   // will be frozen
-
-    addAnimation: function addAnimation(options) {
-        var result = animationFactory(this.selector, options);
-        this.animations.push(result);
-        return this;
-    },
-
-    removeAnimation: function removeAnimation() {
-        console.log("removeAnimation is _not yet implemented_");
-        return this;
-    },
-
-    compose: function compose(options) {
-        this.addAnimation(options);
-        return this;
-    },
-
-    removeAll: function removeAll() {
-        this.animations.forEach(function(animation, i, animations) {
-            animation.remove(this.selector);
-            animations[i] = null;
-        }, this);
-        this.animations = [];
-        return this;
-    },
-
-    // TODO - store element instead of selector
-    // Not in use
-    setElement: function setElement(selector) {
-        var value = document.querySelector(selector),
-            description = {
-                configurable: false,
-                writable: false,
-                value: value,
-            };
-        Object.defineProperty(this, "element", description);
-        return this;
-    },
-
-    // NB Freezes selector
-    setSelector: function setSelector(selector) {
-        var description = {
-            configurable: false,
-            writable: false,
-            value: selector,
-        };
-        Object.defineProperty(this, "selector", description);
-        return this;
-    },
-
-};
-},{"../animation/animation-factory":23}],23:[function(require,module,exports){
-var heartProtoFactory = require("../heart/heart-prototype-factory"),
-    animationProto = require("./animation-prototype"),
-    fixed = require("./mixins/events-fixed"),
-    unfixed = require("./mixins/events-unfixed"),
-    geyser = require("./mixins/geyser");
-
-var mainDefault = require("../../default"),
-    extend = require("../../utilities/extend");
-
-
-
-module.exports = function animationFactory(selector, options) {
-
-    var animation,
-        elt           = document.querySelector(selector),
-        modHeartProto = heartProtoFactory(extend({}, mainDefault, options));
-
-    if (elt === null) {
-        console.log("No element matched the given selector: \""+selector+"\"");
-        console.log("~i shall fail silently~");
-        return;
-    }
-
-    if (modHeartProto.geyser) {
-        animation = Object.create(extend(animationProto, geyser));
-        animation.modHeartProto = modHeartProto;
-        animation.modHeartProto.geyserInterval = animation.modHeartProto.geyserInterval || animation.modHeartProto.transitionDuration/2;
-    }
-    else {
-        if (modHeartProto.fixed) {
-            animation = Object.create(extend(animationProto, fixed));
-        } else {
-            animation = Object.create(extend(animationProto, unfixed));
-        }
-        animation.events = {
-            click: null,
-            touch: null,
-        };
-        animation.modHeartProto = modHeartProto;
-    }
-
-    animation.count = modHeartProto.count;
-    // animation.selector = selector; // where is this used?
-    animation.heartFactory = function heartFactory(x, y) {
-        return Object.create(modHeartProto).setCoordinates(x, y).setImage();
-    };
-
-    animation.start(elt);
-
-    return animation;
-};
-},{"../../default":10,"../../utilities/extend":42,"../heart/heart-prototype-factory":29,"./animation-prototype":24,"./mixins/events-fixed":26,"./mixins/events-unfixed":27,"./mixins/geyser":28}],24:[function(require,module,exports){
-var randomInRange = require("../../utilities/random").randomInRange;
-
-var animationProto = {
-
-    count: null, // TODO - should store this here...
-
-    remove: function remove(selector) {
-        var elt = document.querySelector(selector);
-        Object.keys(this.events).forEach(function(eventName) {
-            elt.removeEventListener(eventName, this.events[eventName]);
-        }, this);
-    },
-
-    spewHearts: function spewHearts(x,y) {
-        var count = randomInRange(this.count);
-        for (var i = 0; i < count; i++) {
-            window.requestAnimationFrame(this.heartSpewer(x, y).bind(this));
-        }
-    },
-
-    heartSpewer: function heartSpewer(x,y) {
-        return function() {
-            this.heartFactory(x, y).show().animate();
-        };
-    },
-
-    heartFactory: function heartFactory(x, y) {
-        throw new Error("Must define heartFactory on an animation");
-    },
-
-    start: function start() {
-        throw new Error("Must define start method on an animation.");
-    },
-
-};
-
-module.exports = animationProto;
-},{"../../utilities/random":44}],25:[function(require,module,exports){
-module.exports = {
-    events: null,
-    start: function start(elt) {
-        this.events.click = this.onclick.bind(this);
-        this.events.touchend = this.ontouch.bind(this);
-        elt.addEventListener("click", this.events.click);
-        elt.addEventListener("touchend", this.events.touchend);
-    },
-    onclick: function onclick(e) {
-        throw new Error("Must define onclick");
-    },
-    ontouch: function ontouch(e) {
-        throw new Error("Must define ontouch");
-    },
-    remove: function remove(selector) {
-        var elt = document.querySelector(selector);
-        Object.keys(this.events).forEach(function(eventName) {
-            elt.removeEventListener(eventName, this.events[eventName]);
-        }, this);
-    },
-};
-},{}],26:[function(require,module,exports){
-var base = require("./events-base");
-var extend = require("../../../utilities/extend");
-
-
-var proto = {
-    onclick: function onclick(e) {
-        var elt = e.target;
-        var eltRect = elt.getBoundingClientRect(),
-            x       = eltRect.left + ((eltRect.width) / 2),
-            y       = eltRect.top + (eltRect.height / 2);
-        this.spewHearts(x, y);
-    },
-
-    ontouch: function ontouch(e) {
-        var elt = e.target;
-        var eltRect = elt.getBoundingClientRect(),
-            x       = eltRect.left + ((eltRect.width) / 2),
-            y       = eltRect.top + (eltRect.height / 2);
-        this.spewHearts(x, y);
-    },
-};
-
-module.exports = extend({}, base, proto);
-},{"../../../utilities/extend":42,"./events-base":25}],27:[function(require,module,exports){
-var extend = require("../../../utilities/extend");
-var base = require("./events-base");
-
-var proto = {
-    onclick: function onclick(e) {
-        var x = e.clientX,
-            y = e.clientY;
-        this.spewHearts(x, y);
-    },
-    ontouch: function ontouch(e) {
-        var x = e.changedTouches[0].clientX,
-            y = e.changedTouches[0].clientY;
-        this.spewHearts(x, y);
-    },
-};
-
-module.exports = extend({}, base, proto);
-},{"../../../utilities/extend":42,"./events-base":25}],28:[function(require,module,exports){
-module.exports = {
-    start: function start(elt) {
-        var eltRect = elt.getBoundingClientRect(),
-            geyserX = eltRect.left + ((eltRect.width) / 2),
-            geyserY = eltRect.top + (eltRect.height / 2);
-
-        setInterval(function(){
-            this.spewHearts(geyserX, geyserY);
-        }.bind(this), this.modHeartProto.geyserInterval);
-    },
-};
-},{}],29:[function(require,module,exports){
-var heartProto  = require("./heart-prototype"),
-    animate     = require("./mixins/animate-default"),
-    fanimate    = require("./mixins/animate-fan"),
-    extend      = require("../../utilities/extend"),
-    mainDefault = require("../../default"),
-    mixins      = require("./mixins");
-
-module.exports = function heartFactory(options) {
-    // var toExtend = [{}, heartProto, options].concat(getMixins(options));  // TODO - figure out better sequencing here
-    var animater;
-    if (options.fan) {
-        animater = fanimate;
-    }
-    else {
-        animater = animate;
-    }
-    var toExtend = [{}, heartProto, animater, options];
-    return extend.apply(null, toExtend);
-};
-},{"../../default":10,"../../utilities/extend":42,"./heart-prototype":30,"./mixins":34,"./mixins/animate-default":31,"./mixins/animate-fan":32}],30:[function(require,module,exports){
-var extend = require("../../utilities/extend"),
-    image = require("./mixins/image"),
-    position = require("./mixins/position"),
-    rotate = require("./mixins/rotate"),
-    scale = require("./mixins/scale"),
-    transition = require("./mixins/transition"),
-    translate = require("./mixins/translate");
-
-
-heartProto = {
-    doNotRemove: null,
-    fan: null,
-    floatingInSpace: null,
-    geyser: null,
-    count: null,
-    fixed: null,
-
-    animate: function animate() {
-        var translate,
-            transforms = this.getInitialTransforms();
-
-        transforms.forEach(this.addTransform.bind(this));
-        window.requestAnimationFrame(function() {
-            this.getAnimatedTransforms().forEach(function(transform) {
-                this.addTransform(transform).hide();
-            }, this);
-        }.bind(this));
-
-        return this;
-    },
-    hide: function hide() {
-        throw new Error("Must specify a hide function");
-    },
-    remove: function remove() {
-        throw new Error("Must specify a remove function");
-    },
-    show: function show() {
-        // should call window.requestAnimationFrame
-        // add initial transforms
-        // append to body
-        throw new Error("Must define show function");
-    },
-    getInitialTransforms: function getInitialTransforms() {
-        throw new Error("Must define initial transforms getter");
-    },
-    getAnimatedTransforms: function getAnimatedTransforms() {
-        throw new Error("Must define animated transforms getter");
-    },
-};
-
-module.exports = extend(heartProto, position, image, rotate, scale, transition, translate);
-},{"../../utilities/extend":42,"./mixins/image":33,"./mixins/position":35,"./mixins/rotate":36,"./mixins/scale":37,"./mixins/transition":38,"./mixins/translate":39}],31:[function(require,module,exports){
-module.exports = {
-    getInitialTransforms: function getInitialTransforms() {
-        var transforms = [];
-        if (this.getScale) transforms.push(this.getScale(1));  // apparently this helps for animation on an iPad... yet to test. remember seeing it on a stack overflow thingy
-        if (this.getRotate) transforms.push(this.getRotate());
-        if (this.getScale) transforms.push(this.getScale());
-        return transforms;
-    },
-    getAnimatedTransforms: function getAnimatedTransforms() {
-        var transforms = [];
-        if (this.getTranslate) transforms.push(this.getTranslate());
-        return transforms;
-    },
-};
-
-// *** This had a weird effect on animation... not sure where to put it *** //
-// function weird() {
-//     var translate,
-//         transforms = this.getInitialTransforms();
-
-//     if (this.fan) return console.log("Sorry! Fanning is temporarily out of order.");
-
-//     // transforms.forEach(this.addTransform.bind(this));
-
-//     window.requestAnimationFrame(function() {
-//         transforms.forEach(this.addTransform.bind(this));
-//         window.requestAnimationFrame(function() {
-//             this.addTransform(this.getTranslate()).hide();
-//         }.bind(this));
-//     }.bind(this));
-
-//     return this;
-// }
-},{}],32:[function(require,module,exports){
-// fanimation throws an error on element removal now... :(
-module.exports = {
-    getInitialTransforms: function getInitialTransforms() {
-        var transforms = [];
-        return transforms;
-    },
-    getAnimatedTransforms: function getAnimatedTransforms() {
-        var transforms = [];
-        if (this.getRotate) transforms.push(this.getRotate());
-        if (this.getScale) transforms.push(this.getScale());
-        if (this.getTranslate) transforms.push(this.getTranslate());
-        return transforms;
-    },
-};
-},{}],33:[function(require,module,exports){
-// TODO - refactor getStyle
-var heartIconFactory = require("../../../icon-factory");
-var randomInRange = require("../../../utilities/random").randomInRange;
-var randomOpacity = require("../../../utilities/random").randomOpacity;
-
-
-module.exports = {
-    blur: null,
-    color: null,
-    image: null,
-    imageSrc: null,
-    opacity: null,
-    transformOrigin: null,
-
-    addTransform: function addTransform(operation) {
-        this.image.style["-webkit-transform"] += operation;
-        this.image.style["-ms-transform"]     += operation;
-        this.image.style.transform            += operation;
-        return this;
-    },
-    appendToDOM: function appendToDOM() {
-        var selector = this.getContainerSelector();
-        document.querySelector(selector).appendChild(this.image);
-        return this;
-    },
-    fadeOut: function fadeOut() {
-        if (!this.doNotRemove) {
-            var removeHeart = this.remove.bind(this);
-            this.image.style.opacity = 0;
-            setTimeout(removeHeart, this.transitionDuration);
-            return this;
-        }
-    },
-    getContainerSelector: function getContainerSelector() {
-        var selector = "body";
-        if (this.imageAppendedTo) selector = this.imageAppendedTo;
-        return selector;
-    },
-    getImageSrc: function getImageSrc() {
-        if (!this.imageSrc) {
-            this.imageSrc = heartIconFactory({
-                fill: this.color,
-                blur: this.blur,
-            });
-        }
-        return this.imageSrc;
-    },
-    hide: function hide() {
-        return this.fadeOut();
-    },
-    remove: function remove() {
-        var selector = this.getContainerSelector();
-        document.querySelector(selector).removeChild(this.image);
-        return this;
-    },
-    setImage: function setImage() {
-        this.image = document.createElement("img");
-        this.image.src = this.getImageSrc();
-        if (this.imageClass) this.image.className += " " + this.imageClass;
-        if (this.imageHeight) this.image.height = this.imageHeight;
-        if (this.imageWidth) this.image.width = this.imageWidth;
-        return this;
-    },
-    show: function show() {
-        this.image.style.cssText += this.getStyle();
-        this.appendToDOM();
-        return this;
-    },
-    getStyle: function getStyle() {
-        var left       = this.getInitialX(),
-            top        = this.getInitialY(),
-            opacity    = randomOpacity(this.opacity),
-            position   = this.position ? this.position : "fixed",
-            transform  = "translate3d("+ left + "px, " + top + "px, 0)",
-            transition = this.getTransition();
-
-        return [
-            "left:"+0+"px",
-            "opacity:"+opacity,
-            "position:"+position,
-            "pointer-events:none",
-            "top:"+0+"px",
-            "transform-origin:"+this.transformOrigin,
-            "-webkit-transform-origin:"+this.transformOrigin,
-            "-ms-transform-origin:"+this.transformOrigin,
-            "transform:" + transform,
-            "-webkit-transform:" + transform,
-            "transition:" + transition,
-            "-moz-transition:" + transition,
-            "-webkit-transition:" + transition,
-        ].join(";");
-    },
-};
-},{"../../../icon-factory":12,"../../../utilities/random":44}],34:[function(require,module,exports){
-// THIS IS NOT ACTUALLY BEING USED...
-
-var rotate = require("./rotate"),
-    scale = require("./scale"),
-    transition = require("./transition"),
-    translate = require("./translate"),
-    animate = require("./animate-default");
-module.exports = {
-    animate: animate,
-    rotate: rotate,
-    scale: scale,
-    transition: transition,
-    translate: translate,
-};
-
-
-// var fs              = require("fs"),
-//     path            = require("path"),
-//     files           = ["rotate","scale"];
-
-// function normalizeFileName(name) {
-//     return path.basename(name, path.extname(name));
-// }
-
-// function isNotCurrentFile(file) {
-//     return file !== normalizeFileName(module.filename);
-// }
-
-// function exportMixin(name) {
-//     module.exports[name] = require(name);
-// }
-
-// module.exports = (function() {
-//     files.filter(isNotCurrentFile).forEach(exportMixin);
-// })();
-},{"./animate-default":31,"./rotate":36,"./scale":37,"./transition":38,"./translate":39}],35:[function(require,module,exports){
-// TODO - remove references to this.image
-var randomInRange = require("../../../utilities/random").randomInRange;
-
-module.exports = {
-    x: null,
-    xNoise: null,
-    y: null,
-    yNoise: null,
-
-    // TODO - abstract away the offset here
-    getInitialX: function getInitialX() {
-        var x = this.getX() - this.image.width/2;
-        return x;
-    },
-    getInitialY: function getInitialY() {
-        var y = this.getY() - this.image.height/2;
-        return y;
-    },
-
-    getX: function getX() {
-        return this.x + this.getXNoise();
-    },
-    getXNoise: function getXNoise() {
-        return randomInRange(this.xNoise||0);
-    },
-    getY: function getY() {
-        return this.y + this.getYNoise();
-    },
-    getYNoise: function getYNoise() {
-        return randomInRange(this.yNoise||0);
-    },
-
-    setCoordinates: function setCoordinates(x, y) {
-        this.x = x;
-        this.y = y;
-        return this;
-    },
-};
-},{"../../../utilities/random":44}],36:[function(require,module,exports){
-var randomAngle    = require("../../../utilities/random").randomAngle,
-    normalizeAngle = require("../../../utilities/misc").normalizeAngle;
-
-module.exports = {
-    "_THETA": null,
-    angle: null,
-    rotate: true,
-    getAngle: function getAngle() {
-        if (!this.rotate) return 0;
-        if (typeof this._THETA !== "number") {
-            this._THETA = normalizeAngle(randomAngle(this.angle));
-        }
-        return this._THETA;
-    },
-    getRotate: function getRotate(theta) {
-        if (theta === undefined) theta = this.getAngle();
-        return "rotate("+theta+"deg)";
-    },
-};
-},{"../../../utilities/misc":43,"../../../utilities/random":44}],37:[function(require,module,exports){
-var randomScalar = require("../../../utilities/random").randomScalar;
-
-module.exports = {
-    "_SCALAR": null,
-    scalar: null,
-
-    getScalar: function getScalar() {
-        if (typeof this._SCALAR !== "number") {
-            this._SCALAR = randomScalar(this.scalar);
-        }
-        return this._SCALAR;
-    },
-    getScale: function getScale(k) {
-        if (k === undefined) k = this.getScalar();
-        return "scale("+k+")";
-    },
-};
-},{"../../../utilities/random":44}],38:[function(require,module,exports){
-module.exports = {
-    transitionDuration: null,
-    transitionFunction: null,
-    getTransition: function getTransition() {
-        return this.transitionDuration+"ms "+ this.transitionFunction;
-    },
-};
-},{}],39:[function(require,module,exports){
-var randomInRange = require("../../../utilities/random").randomInRange;
-
-module.exports = {
-    translateX: null,
-    translateY: null,
-
-    getTranslateX: function getTranslateX() {
-        var tx = randomInRange(this.translateX);
-        if (this.getScalar) tx = tx / this.getScalar();
-        return tx;
-    },
-    getTranslateY: function getTranslateY() {
-        var ty = -randomInRange(this.translateY);
-        if (this.getScalar) ty = ty / this.getScalar();
-        return ty;
-    },
-    getTranslateZ: function getTranslateZ() {
-        var tz = -randomInRange(this.translateZ || 0);
-        if (this.getScalar) tz = tz / this.getScalar();
-        return tz;
-    },
-
-    getTranslate: function getTranslate() {
-        // TODO: separate this into getTranslateX and getTranslateY
-        var tx = this.getTranslateX(),
-            ty = this.getTranslateY(),
-            tz = this.getTranslateZ();
-
-        return "translate3d("+tx+"px,"+ty+"px,"+tz+"px)";
-    },
-};
-},{"../../../utilities/random":44}],40:[function(require,module,exports){
+},{"./big-ring":14,"./button":16,"./button-big-ring":15,"./circle":17,"./compass":18,"./geyser":19,"./line":20}],22:[function(require,module,exports){
 var B = require("boots-utils");
 
 Range.RangeHundredths = RangeHundredths;
@@ -1475,23 +966,22 @@ RangeHundredths.prototype._array = function(ary) {
 function newGet() {
     return Range.prototype.get.call(this) / 100;
 }
-},{"boots-utils":6}],41:[function(require,module,exports){
+},{"boots-utils":6}],23:[function(require,module,exports){
 (function (global){
 var B = require("boots-utils");
 
+var icon = require("./icon-factory");
+
 var argumentsHelper = require("./arguments-helper");
 var loadPresets = require("./presets/preset-loader");
-var animationCollectionFactory = require("./prototypes/animation-collection/animation-collection-factory");
 
-var argumentsHelper = require("./arguments-helper"),
-    extend          = require("./utilities/extend"),
+var extend          = B.extend,
     isArray         = require("boots-utils").array.isArray,
     forEach         = [].forEach;
 
-var Range = require("./range"),
-    Animation = require("./animation"),
+var Animation = require("./animation"),
     Animator = require("./animator"),
-    HeartImage = require("./heart-image");
+    AnimationCollection = require("./animation-collection");
 
 var defaults = require("./default");
 
@@ -1504,7 +994,7 @@ function SuperHearts() {
     var args         = argumentsHelper.apply(null, arguments),
         selector     = args.selector,
         optionsArray = args.optionsArray,
-        result = {};
+        result = new AnimationCollection();
 
     result.animations = [];
     optionsArray.forEach(function(options) {
@@ -1512,102 +1002,81 @@ function SuperHearts() {
             start = new Animator(),
             end = new Animator();
 
+        if (!o.imageSrc) o.imageSrc = icon({
+            fill: o.color || "#B91319",
+        });
 
         end.translate(o.translateX, o.translateY, 0)
             .transitionDuration(o.transitionDuration)
             .transitionFunction(o.transitionFunction)
             .transitionProperty("all");
-        console.log("BASE END", end);
 
-        result.animations.push(new Animation(start, end, o));
+        result.add(new Animation([start, end], o));
     });
 
     forEach.call(document.querySelectorAll(selector), function(elt) {
-        console.log(elt);
         elt.addEventListener("click", function(e) {
             var x = e.clientX,
                 y = e.clientY;
-
-            result.animations.forEach(function(a) {
-
-                B.nTimes(a.count.get(), function() {
-                    var start = new Animator();
-                    var o = a.options;
-                    start.clear();
-                    start
-                        .position("fixed")
-                        .x(0)
-                        .y(0)
-                        .transformOrigin("center center")
-                        .translate(x-50, y-50)
-                        .opacity(o.opacity)
-                        .rotate(o.angle)
-                        .scale(o.scalar);
-
-                    var img = new HeartImage(elt, start.print(), a.options);
-                        img.show();
-                        window.requestAnimationFrame(function() {
-                            console.log("INIT: ", img);
-                            console.log("INIT STYLE: ", start.print());
-                            console.log("STYLE TO ADD: ", a.end.printNonTransforms());
-                            img.addStyle(a.end.printNonTransforms());
-                            console.log("AFTER ADDED STYLES: ", img.image.style.cssText);
-
-                            var apt = a.end._compileTransforms();
-                            console.log("ADDING TRANS: ", apt);
-                            img.addTransform(apt);
-                            console.log("AFTER ADDING TRANS: ", img.image.style.cssText);
-                            img.hide(function() {
-                                img.remove(); // TODO use ontransition end in the hide function
-                            });
-                        });
-
-                        // function() {
-              
-                        // });
-
-                });
-            });
+            console.log(x, y);
+            result.animate(elt, x, y);
         });
     });
 
-    return result; // TODO - return new object...?
+    return result;
 }
 
+SuperHearts.registerPreset = function(name, presetDefaults) {
+
+    SuperHearts[name] = function() {
+        var args         = argumentsHelper.apply(null, arguments),
+            selector     = args.selector,
+            optionsArray = args.optionsArray,
+            result = new AnimationCollection();
+
+        if (!isArray(presetDefaults)) presetDefaults = [presetDefaults]; // TODO- get rid of this assumption (that not-arry implies object)
+
+        var copy = presetDefaults.map(function(p) { return extend({}, p); });
+
+        SuperHearts.apply(this, [selector].concat(copy));
+
+    };
+    return this;
+};
+
+
 // SuperHearts.registerPreset = function registerPreset(name, presetDefaults) {
+
 //     SuperHearts[name] = function() {
+
 //         var args         = argumentsHelper.apply(null, arguments),
 //             selector     = args.selector,
-//             optionsArray = args.optionsArray;
+//             optionsArray = args.optionsArray,
+//             toCall; // return copy presetDefaults
 
 //         if (!isArray(presetDefaults)) {
 //             presetDefaults = [presetDefaults];
 //         }
 
-//         if (presetDefaults.length > optionsArray.length) {
-//             presetDefaults.forEach(function(preset, i) {
-//                 optionsArray[i] = extend({}, preset, optionsArray[i]);
-//             });
-//         }
-//         else {
-//             // Merge user options _after_ preset defaults so they can still override the defaults of a given preset
-//             optionsArray.forEach(function(options, i) {
-//                 optionsArray[i] = extend({}, presetDefaults[i], options);
-//             });
-//         }
+//         toCall = presetDefaults.map(function(defaults) { console.log("PRESET: ", defaults); return extend({}, defaults); });
 
-//         return SuperHearts.apply(SuperHearts, [selector].concat(optionsArray));
+//         optionsArray.forEach(function(options) {
+
+//             toCall = toCall.forEach(function(defaults) {
+//                 extend(defaults, options);
+//             });
+//         });
+
+//         return SuperHearts.apply(SuperHearts, [selector].concat(toCall));
 //     };
 // };
 
 
-
-
-// loadPresets(SuperHearts);
+loadPresets(SuperHearts);
 global.SuperHearts = SuperHearts;
 module.exports = SuperHearts;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./animation":7,"./animator":8,"./arguments-helper":9,"./default":10,"./heart-image":11,"./presets/preset-loader":20,"./prototypes/animation-collection/animation-collection-factory":21,"./range":40,"./utilities/extend":42,"boots-utils":6}],42:[function(require,module,exports){
+},{"./animation":8,"./animation-collection":7,"./animator":9,"./arguments-helper":10,"./default":11,"./icon-factory":13,"./presets/preset-loader":21,"boots-utils":6}],24:[function(require,module,exports){
 module.exports = function extend() {
     // extends an arbitrary number of objects
     var args   = [].slice.call(arguments, 0),
@@ -1630,70 +1099,7 @@ function extendHelper(destination, source) {
     }
     return destination;
 }
-},{}],43:[function(require,module,exports){
-module.exports = {
-    toRadians: function toRadians(theta) {
-        return normalizeAngle(theta)*(Math.PI / 180);
-    },
-    normalizeAngle: normalizeAngle,
-};
-
-function normalizeAngle(theta) {
-    while (theta < 0) { theta += 360; }
-    return theta % 360;
-}
-},{}],44:[function(require,module,exports){
-module.exports = {
-    randomAngle: function randomAngle() {
-        return randomInRange.apply(null, arguments);
-    },
-    randomOpacity: function randomOpacity() {
-        return randomInRange_hundreths.apply(null, arguments);
-    },
-    randomScalar: function randomScalar() {
-        return randomInRange_hundreths.apply(null, arguments);
-    },
-    randomInRange: randomInRange,
-};
-
-function randomInRange() {
-    var args = normalizeArguments(arguments),
-        min  = args[0],
-        max  = args[1];
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function randomInRange_hundreths() {
-    var args = normalizeArguments(arguments),
-        min  = args[0],
-        max  = args[1];
-    return randomInRange(min*100, max*100)/100;
-}
-
-function normalizeArguments(args) {
-
-    args = [].slice.call(args);
-    var result = [],
-        head   = args[0];
-
-    if (!args.length) noArgumentError();
-
-    // Case 1: Two numbers (hopefully), which we return as a Range
-    if (args.length > 1) return args;
-
-    // Case 2: Only one argument, and it's a number.
-    if (typeof head === "number") {
-        return [head, head];
-    }
-
-    // Case 3: Only one argument, and it's a Range (hopefully)
-    return head;
-}
-
-function noArgumentError() {
-    throw new Error("You supplied no arguments to a function that needed arguments. Check the call stack!");
-}
-},{}],45:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 module.exports = range;
 
 function range(start, end, step) {
@@ -1702,4 +1108,4 @@ function range(start, end, step) {
     for (;start <= end; start += step) result.push(start);
     return result;
 }
-},{}]},{},[41]);
+},{}]},{},[23]);

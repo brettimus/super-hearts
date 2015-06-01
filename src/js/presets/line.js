@@ -1,5 +1,23 @@
+var icon = require("../icon-factory");
 module.exports = {
+    angle: 0,
+    blur: 0,
+    count: [5, 8],
+    color: "#B91319",
+    doNotRemove: false,
+    fan: false,
+    floatingInSpace: false,
+    geyser: false,
+    imageHeight: 88,
+    imageWidth: 100,
+    opacity: [0.10, 0.65],
+    scalar: [0.10, 0.35],
+    transformOrigin: "center center",
+    transitionDuration: 660,
+    transitionFunction: "ease-out",
+    translateX: [-60, 60],
+    translateY: [15, 45],
+    xNoise: 0,
+    yNoise: 0,
     rotate: false,
-    transitionDuration: 650,
-    translateX: [-60, 60]
 };

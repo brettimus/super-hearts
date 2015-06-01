@@ -71,7 +71,7 @@ Animator.prototype.printNonTransforms = function() {
 
 Animator.prototype.clear = function() {
     this.clearTransforms();
-    this._styles = [];
+    this.clearStyles();
     return this;
 };
 
@@ -84,7 +84,7 @@ Animator.prototype.clearTransforms = function() {
 };
 
 Animator.prototype.clearStyles = function() {
-    this._style = [];
+    this._styles = [];
     return this;
 };
 
@@ -110,10 +110,8 @@ Animator.prototype.position = function(n) {
  * Adds a rotation transform.
  */
 Animator.prototype.rotate = function(n) {
-    console.log("rotating");
     var r = new Range(n);
     return this._addTransform("rotate", r, "deg");
-
 };
 
 
