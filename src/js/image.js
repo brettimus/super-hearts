@@ -1,8 +1,8 @@
 var B = require("boots-utils");
 
-module.exports = HeartImage;
+module.exports = Image;
 
-function HeartImage(container, style, options) {
+function Image(container, style, options) {
     this.container = container;
     this.style = style;
     this.image = document.createElement("img");
@@ -12,31 +12,31 @@ function HeartImage(container, style, options) {
     // TODO - height and width
 }
 
-HeartImage.prototype.addStyle = function(style) {
+Image.prototype.addStyle = function(style) {
     this.image.style.cssText += style;
     return this;
 };
 
-HeartImage.prototype.addTransform = function(transform) {
+Image.prototype.addTransform = function(transform) {
     this.style.transform = 0;
     this.image.style.transform += " " + transform;
     this.image.style.webkitTransform += " " + transform;
     return this;
 };
 
-HeartImage.prototype.show = function(next) {
+Image.prototype.show = function(next) {
     this.image.style.cssText += this.style;
     this.container.appendChild(this.image);
     if (next) next();
     return this;
 };
 
-HeartImage.prototype.hide = function(next) {
-    console.log("HeartImage#hide NYI");
+Image.prototype.hide = function(next) {
+    console.log("Image#hide NYI");
     // if (next) next();
 };
 
-HeartImage.prototype.remove = function(next) {
+Image.prototype.remove = function(next) {
     this.container.removeChild(this.image);
     if (next) next();
     return this;

@@ -1,7 +1,5 @@
 var B = require("boots-utils");
 
-var icon = require("./icon-factory");
-
 var argumentsHelper = require("./arguments-helper");
 var loadPresets = require("./presets/preset-loader");
 
@@ -31,10 +29,6 @@ function SuperHearts() {
         var o = extend({}, defaults, options),
             start = new Animator(),
             end = new Animator();
-
-        if (!o.imageSrc) o.imageSrc = icon({
-            fill: o.color || "#B91319",
-        });
 
         end.translate(o.translateX, o.translateY, 0)
             .transitionDuration(o.transitionDuration)

@@ -3,7 +3,8 @@ var B = require("boots-utils");
 
 var Range = require("./range"),
     Animator = require("./animator"),
-    HeartImage = require("./heart-image");
+    Image = require("./image"),
+    Icon = require("./icon");
 
 module.exports = AnimationCollection;
 
@@ -32,6 +33,13 @@ AnimationCollection.prototype.animate = function animate(elt, x, y) {
         var startX = x - (o.imageWidth/2),
             startY = y - (o.imageHeight/2);
 
+        var icon;
+        if (!o.imageSrc) {
+            icon = new Icon(o.color, o.blur);
+            o.imageSrc = icon.src;
+        }
+
+
         current.clear();
         current
             .position("fixed")
@@ -44,8 +52,8 @@ AnimationCollection.prototype.animate = function animate(elt, x, y) {
             .scale(o.scalar);
 
         B.nTimes(times, function() {
-            console.log(a.options);
-            var img = new HeartImage(elt, "", a.options);
+
+            var img = new Image(elt, "", o);
             img.addStyle(current.print());
             img.show();
 

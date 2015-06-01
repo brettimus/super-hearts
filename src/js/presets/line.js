@@ -1,4 +1,3 @@
-var icon = require("../icon-factory");
 module.exports = {
     angle: 0,
     blur: 0,
