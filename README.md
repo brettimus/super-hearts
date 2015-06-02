@@ -304,9 +304,10 @@ hehe.count()
       .transition(...)
       .translate(...)
 ```
-// A Range should be formally abstracted.
-// It should be a constructor that takes a number, array of length 2, or an object with a `data` property and `sample` function. 
+~~A Range should be formally abstracted.~~
+~~It should be a constructor that takes a number, array of length 2, or an object with a `data` property and `sample` function.~~
 
+I dont' want to keep adding functions, i just want to make the core api work well and be flexible. I see things like `geyser` from v0 (or `wallpaper` from this liminal version) being separate wrappers, tagged appropriately on npm.
 
 ## TODO
 * Write Tests 

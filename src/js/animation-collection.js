@@ -39,6 +39,7 @@ AnimationCollection.prototype._animate = function(a, elt, x, y, starter) {
     var o = a.options;
     var times = a.count.get();
     var current = a.start;
+    var k = o.scalar || 1;
 
     var icon;
     if (!o.imageSrc) {
@@ -66,7 +67,7 @@ AnimationCollection.prototype._animate = function(a, elt, x, y, starter) {
         .translate(startX, startY)
         .opacity(o.opacity)
         .rotate(o.rotate)
-        .scale(o.scalar);
+        .scale(k);
 
     nTimes(times, function() {
 

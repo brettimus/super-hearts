@@ -271,6 +271,7 @@ AnimationCollection.prototype._animate = function(a, elt, x, y, starter) {
     var o = a.options;
     var times = a.count.get();
     var current = a.start;
+    var k = o.scalar || 1;
 
     var icon;
     if (!o.imageSrc) {
@@ -298,7 +299,7 @@ AnimationCollection.prototype._animate = function(a, elt, x, y, starter) {
         .translate(startX, startY)
         .opacity(o.opacity)
         .rotate(o.rotate)
-        .scale(o.scalar);
+        .scale(k);
 
     nTimes(times, function() {
 
@@ -717,9 +718,10 @@ var extend = require("boots-utils").extend,
     angles = range(0, 360, 20),
     base = {
         count: 1,
-        scalar: [0.18, 0.22],
-        transitionDuration: 2400,
-        translateY: 140,
+        scalar: .2,
+        transitionDuration: 4200,
+        translateY: -140/.2,
+        translatZ: -20,
     },
     result = [];
 
@@ -739,6 +741,7 @@ var extend = require("boots-utils").extend,
         scalar: [0.18, 0.22],
         transitionDuration: 2400,
         translateY: 140,
+        translateX: 0,
     },
     result = [];
 
@@ -760,16 +763,14 @@ module.exports = {
 };
 },{}],17:[function(require,module,exports){
 var circle = {
-    rotate: [0, 359],
     blur: 0,
     doNotRemove: false,
-    fan: false,
-    floatingInSpace: false,
-    geyser: false,
-    count: [5, 8],
+    count: [2, 5],
     color: "#B91319",
-    imageSrc: undefined,
+    imageHeight: 88,
+    imageWidth: 100,
     opacity: [0.10, 0.65],
+    rotate: [0, 359],
     scalar: [0.10, 0.35],
     transformOrigin: "center center",
     transitionDuration: 600,
@@ -790,10 +791,10 @@ var extend = require("boots-utils").extend,
         scalar: 0.4,
         translateY: 100,
     },
-    n = extend({}, base, {rotate: 0}),
-    e = extend({}, base, {rotate: 90, color: "darkgreen"}),
-    s = extend({}, base, {rotate: 180, color: "blue"}),
-    w = extend({}, base, {rotate: 270, color: "purple"});
+    n = extend({}, base, {rotate: 0, color: "#A30015"}),
+    e = extend({}, base, {rotate: 90, color: "#73BA9B"}),
+    s = extend({}, base, {rotate: 180, color: "#258EA6"}),
+    w = extend({}, base, {rotate: 270, color: "#493548"});
 
 module.exports = [n, e, s, w];
 },{"boots-utils":6}],19:[function(require,module,exports){

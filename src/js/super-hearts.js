@@ -29,7 +29,8 @@ function SuperHearts() {
     optionsArray.forEach(function(options) {
         var o = extend({}, defaults, options),
             start = new Animator(),
-            end = new Animator();
+            end = new Animator(),
+            k = o.scalar || 1;
 
         end.translate(o.translateX, o.translateY, 0)
             .transitionDuration(o.transitionDuration)
