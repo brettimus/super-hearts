@@ -335,6 +335,27 @@ Random noise added to the initial `x` coordinate of an image.
 Default is `0`.
 
 
+## Vision for V1
+
+A more descriptive and fluid interface for constructing animations. E.g.,
+```javascript
+var hehe = SuperHearts(selector, {/* config */}); // => returns an unanimated SuperHearts object
+// Each method call sets a property on the config
+// Each image property should return its corresponding style rules
+// These rules get held in a fifo queue
+// #transition 
+hehe.count()
+      .x(...) // standard input- Range or number
+      .y(...)
+      .rotate(...)
+      .scale(...)
+      .transition(...)
+      .translate(...)
+```
+// A Range should be formally abstracted.
+// It should be a constructor that takes a number, array of length 2, or an object with a `data` property and `sample` function. 
+
+
 ## TODO
 * Write Tests 
 * Switch to using [jsdoc](http://usejsdoc.org/) after refactoring prototypes + factories 
